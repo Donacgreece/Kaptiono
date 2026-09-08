@@ -1,22 +1,17 @@
-# Kaptiono Web Lab 0.3
+# Kaptiono Web Lab 0.4
 
-Experimental browser-only Kaptiono build. Video and audio processing stay on the user's device.
+Browser-only Kaptiono build. Video and audio processing stay on the user's device.
 
-## What changed in 0.3
+## What changed in 0.4
 
-- High quality Whisper Small timestamped model option, with Base and Tiny alternatives.
-- Greek is selected explicitly by default in the Greek UI, instead of relying on short-clip auto detection.
-- Whisper receives continuous audio with context-aware chunking and overlap instead of independent 25 second chunks.
-- Audio extraction uses Mediabunny + WebCodecs first, designed to work with MP4/MOV media on modern Safari/iPhone.
-- Web Audio remains a fallback.
-- Desktop Caption Studio control model ported to the web build: 8 presets and 6 settings panels.
-- Full live caption reflow when words-per-caption, speed, width or line count changes.
-- New service-worker cache version to avoid stale 0.1 code.
+- Whisper Small is now the default AI model because it gives the best caption quality.
+- Base and Tiny remain available as lighter alternatives.
+- A clear **Download video with captions** action now appears directly under the main preview player.
+- The Export tab now has a large primary burned-in video download button.
+- Video export chooses the best browser-supported local format automatically: MP4 when MediaRecorder supports it, otherwise WebM.
+- SRT and TXT remain available separately.
+- New service-worker cache version avoids stale 0.3 UI.
 
-## Test target
+## Notes
 
-1. Windows Edge/Chrome with Whisper Small + Greek.
-2. iPhone Safari 26.x with Whisper Base + Greek first.
-3. If Base is stable on the iPhone, test Small.
-
-The first model load can be large. Model files are cached by the browser where supported.
+The browser records the rendered preview locally in real time, so a 1 minute video normally needs roughly 1 minute to export. Browser codec support varies by platform.

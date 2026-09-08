@@ -69,6 +69,12 @@
               <span id="duration">0:00</span>
               <button id="muteBtn" class="player-icon" type="button" aria-label="Mute">♪</button>
             </div>
+            <div class="preview-export-bar">
+              <button id="quickVideoExportBtn" class="quick-export-btn" type="button" disabled>
+                <span><b data-i18n="downloadVideo">Λήψη video με υπότιτλους</b><small id="quickExportHint" data-i18n="downloadVideoHint">Δημιουργείται τοπικά στη συσκευή σου.</small></span>
+                <strong>↓</strong>
+              </button>
+            </div>
             <div id="compatNote" class="compat-note hidden"></div>
           </section>
 
@@ -83,9 +89,9 @@
               <div class="panel-title"><div><span class="eyebrow">LOCAL AI</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Για ποιότητα κοντά στο desktop χρησιμοποίησε Small και δήλωσε Ελληνικά.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
               <div class="field-grid two">
                 <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
-                  <option value="onnx-community/whisper-base_timestamped" selected>Whisper Base · Stable</option>
+                  <option value="onnx-community/whisper-small_timestamped" selected>Whisper Small · High quality · Recommended</option>
+                  <option value="onnx-community/whisper-base_timestamped">Whisper Base · Stable</option>
                   <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
-                  <option value="onnx-community/whisper-small_timestamped">Whisper Small · High quality</option>
                 </select><small id="modelHint">—</small></label>
                 <label class="setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect">
                   <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
@@ -180,9 +186,12 @@
 
             <div class="main-panel" data-main-panel="export">
               <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2><p data-i18n="exportHint">Το αρχείο δημιουργείται τοπικά στον browser.</p></div></div>
-              <div class="export-grid"><button id="srtBtn" type="button" class="export-btn" disabled><strong>SRT</strong><span data-i18n="srtHint">Υπότιτλοι με timestamps</span></button><button id="txtBtn" type="button" class="export-btn" disabled><strong>TXT</strong><span data-i18n="txtHint">Καθαρό transcript</span></button><button id="webmBtn" type="button" class="export-btn experimental" disabled><strong>WebM · LAB</strong><span data-i18n="webmHint">Burned captions, Chromium</span></button></div>
+              <button id="videoDownloadBtn" class="video-download-cta" type="button" disabled>
+                <span><small data-i18n="burnedCaptions">BURNED-IN CAPTIONS</small><strong data-i18n="downloadVideo">Λήψη video με υπότιτλους</strong><em id="videoExportFormat">—</em></span><b>↓</b>
+              </button>
               <div id="exportProgress" class="progress-box hidden"><div class="progress-copy"><strong data-i18n="exporting">Local export…</strong><span id="exportDetail">0%</span></div><div class="progress-track"><i id="exportBar"></i></div></div>
-              <div class="info-callout"><strong data-i18n="mp4Next">MP4 export βρίσκεται ακόμη σε ανάπτυξη.</strong><span data-i18n="mp4NextHint">Πρώτα σταθεροποιούμε transcription και iPhone compatibility.</span></div>
+              <div class="export-grid two"><button id="srtBtn" type="button" class="export-btn" disabled><strong>SRT</strong><span data-i18n="srtHint">Υπότιτλοι με timestamps</span></button><button id="txtBtn" type="button" class="export-btn" disabled><strong>TXT</strong><span data-i18n="txtHint">Καθαρό transcript</span></button></div>
+              <div id="videoExportNote" class="info-callout"><strong data-i18n="videoExportLocal">Το video δημιουργείται τοπικά.</strong><span data-i18n="videoExportLocalHint">Η διαθέσιμη μορφή εξαρτάται από τον browser σου.</span></div>
             </div>
           </section>
         </div>
@@ -191,8 +200,8 @@
       </section>
     </main>
 
-    <footer><span>Kaptiono Web Lab 0.3</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.4</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.3.0"></script>
+  <script type="module" src="./app.js?v=0.4.0"></script>
 </body>
 </html>

@@ -1,19 +1,5 @@
-# GitHub Pages
+# Deploy Kaptiono Web Lab 0.4
 
-Repository: `Donacgreece/Kaptiono`
+Replace the existing repository files with this build, commit and push to `main`. GitHub Pages deploys automatically through the included workflow.
 
-The included `.github/workflows/pages.yml` deploys the static app from `main`.
-
-After replacing the repository files:
-
-```powershell
-git add .
-git commit -m "Kaptiono Web Lab 0.3: quality, iPhone audio and full studio"
-git push
-```
-
-Pages URL:
-
-`https://donacgreece.github.io/Kaptiono/`
-
-On iPhone, close any old installed PWA tab and reload once after deployment so the 0.3 service worker takes control.
+After deployment, close old PWA/browser tabs once so the 0.4 service worker and UI replace the cached 0.3 build.
