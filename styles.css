@@ -275,3 +275,72 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   .roadmap-item-icon{width:34px;height:34px;border-radius:10px}
   .roadmap-support{padding:17px}
 }
+
+
+/* v0.5.10 immediate local export feedback */
+.quick-export-progress{
+  margin-top:9px;padding:10px 11px 11px;border:1px solid #dfe5d8;border-radius:12px;
+  background:#fbfdf7;
+}
+.quick-export-progress-head{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:2px;
+}
+.quick-export-progress-head span{
+  font-size:8px;font-weight:900;letter-spacing:.1em;color:#788174;
+}
+.quick-export-progress-head strong{
+  font-size:9px;font-weight:900;color:#53604f;
+}
+.quick-export-progress small{
+  display:block;color:var(--muted);font-size:9px;line-height:1.45;
+}
+.export-progress-box{margin:0 0 12px}
+.export-progress-stage{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.export-progress-stage span{
+  font-size:8px;font-weight:900;letter-spacing:.1em;color:#71806a;
+}
+.export-progress-stage strong{
+  font-size:9px;color:#505a52;
+}
+.export-progress-copy{
+  display:flex;flex-direction:column;gap:3px;margin-top:8px;
+}
+.export-progress-copy strong{font-size:12px}
+.export-progress-copy span{font-size:10px;line-height:1.5;color:var(--muted)}
+.export-progress-box>small{
+  display:block;font-size:9px;line-height:1.45;color:var(--muted);
+}
+.export-progress-track{position:relative}
+.export-progress-track.is-indeterminate i{
+  width:32%!important;
+  animation:kaptionoExportIndeterminate 1.05s ease-in-out infinite;
+  transition:none;
+}
+.export-progress-track.is-error i{background:var(--danger)!important;animation:none}
+.export-progress-track.is-done i{background:var(--lime)!important;animation:none}
+@keyframes kaptionoExportIndeterminate{
+  0%{transform:translateX(-115%)}
+  55%{transform:translateX(145%)}
+  100%{transform:translateX(320%)}
+}
+.quick-export-btn:disabled,
+.video-download-cta:disabled{
+  cursor:not-allowed;
+}
+.quick-export-btn:disabled:not([data-unavailable]),
+.video-download-cta:disabled:not([data-unavailable]){
+  opacity:.78;
+}
+@media(prefers-reduced-motion:reduce){
+  .export-progress-track.is-indeterminate i{
+    animation:none;
+    width:100%!important;
+    opacity:.38;
+  }
+}
+@media(max-width:620px){
+  .quick-export-progress{padding:9px 10px 10px}
+  .export-progress-copy span,.export-progress-box>small{font-size:9.5px}
+}

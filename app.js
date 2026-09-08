@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.9';
+const APP_VERSION='0.5.10';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -36,10 +36,10 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null};
 const video=$('#video');
 
-function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';}
+function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);}
 $$('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(state.uiLang);
 
 function formatTime(sec){sec=Math.max(0,Number(sec)||0);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=Math.floor(sec%60).toString().padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${s}`:`${m}:${s}`}
@@ -403,6 +403,141 @@ function failProgress(msg){
 }
 
 // Export helpers
+
+function exportUiCopy(stage,pct){
+  const el=isGreekUI();
+  if(stage==='prepare')return el?{
+    stage:'ΒΗΜΑ 1 ΑΠΟ 3',
+    label:'Προετοιμασία video…',
+    detail:'Ετοιμάζουμε το local renderer και το αρχείο για export.',
+    safety:'Η επεξεργασία γίνεται τοπικά. Μην κλείσεις αυτή τη σελίδα.',
+    value:'ΠΡΟΕΤΟΙΜΑΣΙΑ'
+  }:{
+    stage:'STEP 1 OF 3',
+    label:'Preparing video…',
+    detail:'Preparing the local renderer and video for export.',
+    safety:'Processing stays local. Keep this page open until the download starts.',
+    value:'PREPARING'
+  };
+  if(stage==='render')return el?{
+    stage:'ΒΗΜΑ 2 ΑΠΟ 3',
+    label:'Rendering captions…',
+    detail:'Σχεδιάζουμε τους υπότιτλους και κωδικοποιούμε το video τοπικά.',
+    safety:'Μπορείς να συνεχίσεις να βλέπεις την πρόοδο. Μην κλείσεις τη σελίδα.',
+    value:`${Math.max(0,Math.min(100,Math.round(Number(pct)||0)))}%`
+  }:{
+    stage:'STEP 2 OF 3',
+    label:'Rendering captions…',
+    detail:'Rendering captions and encoding the video locally.',
+    safety:'You can follow the progress here. Keep this page open until it finishes.',
+    value:`${Math.max(0,Math.min(100,Math.round(Number(pct)||0)))}%`
+  };
+  if(stage==='finalize')return el?{
+    stage:'ΒΗΜΑ 3 ΑΠΟ 3',
+    label:'Ολοκλήρωση αρχείου…',
+    detail:'Το rendering τελείωσε. Συνθέτουμε το τελικό αρχείο για λήψη.',
+    safety:'Λίγο ακόμη. Η λήψη θα ξεκινήσει αυτόματα.',
+    value:'FINALIZING'
+  }:{
+    stage:'STEP 3 OF 3',
+    label:'Finalizing file…',
+    detail:'Rendering is complete. Building the final file for download.',
+    safety:'Almost there. The download will start automatically.',
+    value:'FINALIZING'
+  };
+  if(stage==='done')return el?{
+    stage:'ΟΛΟΚΛΗΡΩΘΗΚΕ',
+    label:'Το video είναι έτοιμο',
+    detail:'Η λήψη ξεκίνησε στη συσκευή σου.',
+    safety:'Μπορείς να συνεχίσεις την επεξεργασία ή να κάνεις νέο export.',
+    value:'100%'
+  }:{
+    stage:'COMPLETED',
+    label:'Your video is ready',
+    detail:'The download has started on your device.',
+    safety:'You can keep editing or create another export.',
+    value:'100%'
+  };
+  if(stage==='error')return el?{
+    stage:'ΠΡΟΒΛΗΜΑ',
+    label:'Το export δεν ολοκληρώθηκε',
+    detail:'Δες το μήνυμα σφάλματος και δοκίμασε ξανά.',
+    safety:'Το αρχικό video και τα captions σου δεν επηρεάστηκαν.',
+    value:'!'
+  }:{
+    stage:'PROBLEM',
+    label:'Export did not complete',
+    detail:'Check the error message and try again.',
+    safety:'Your original video and captions were not affected.',
+    value:'!'
+  };
+  return el?{
+    stage:'LOCAL EXPORT',
+    label:'Λήψη video με υπότιτλους',
+    detail:'Δημιουργείται τοπικά στη συσκευή σου.',
+    safety:'',
+    value:''
+  }:{
+    stage:'LOCAL EXPORT',
+    label:'Download video with captions',
+    detail:'Created locally on your device.',
+    safety:'',
+    value:''
+  };
+}
+
+function setExportUi(stage,pct=null){
+  state.exportStage=stage;
+  state.exportPct=pct;
+  const copy=exportUiCopy(stage,pct);
+  const active=stage!=='idle';
+  const indeterminate=stage==='prepare'||stage==='finalize';
+  const numeric=stage==='render'?Math.max(0,Math.min(100,Number(pct)||0)):(stage==='done'?100:null);
+
+  $('#quickVideoExportLabel').textContent=copy.label;
+  $('#quickExportHint').textContent=active?copy.detail:(isGreekUI()?'Δημιουργείται τοπικά στη συσκευή σου.':'Created locally on your device.');
+  $('#videoDownloadLabel').textContent=copy.label;
+  $('#quickVideoExportIcon').textContent=stage==='done'?'✓':stage==='error'?'!':active?'…':'↓';
+  $('#videoDownloadIcon').textContent=stage==='done'?'✓':stage==='error'?'!':active?'…':'↓';
+
+  $('#quickExportProgress').classList.toggle('hidden',!active);
+  $('#exportProgress').classList.toggle('hidden',!active);
+  if(!active)return;
+
+  $('#quickExportStage').textContent=copy.stage;
+  $('#quickExportProgressValue').textContent=copy.value;
+  $('#quickExportProgressText').textContent=copy.safety;
+  $('#exportStageLabel').textContent=copy.stage;
+  $('#exportDetail').textContent=copy.value;
+  $('#exportProgressTitle').textContent=copy.label.replace(/…$/,'');
+  $('#exportProgressText').textContent=copy.detail;
+  $('#exportProgressSafety').textContent=copy.safety;
+
+  for(const id of ['quickExportTrack','exportTrack']){
+    const track=$('#'+id);
+    track.classList.toggle('is-indeterminate',indeterminate);
+    track.classList.toggle('is-error',stage==='error');
+    track.classList.toggle('is-done',stage==='done');
+  }
+
+  const width=numeric===null?(stage==='finalize'?100:0):numeric;
+  $('#quickExportBar').style.width=`${width}%`;
+  $('#exportBar').style.width=`${width}%`;
+}
+
+function resetExportUi(){
+  state.exportStage='idle';
+  state.exportPct=null;
+  setExportUi('idle',null);
+  $('#quickExportProgress').classList.add('hidden');
+  $('#exportProgress').classList.add('hidden');
+  $('#quickVideoExportLabel').textContent=isGreekUI()?'Λήψη video με υπότιτλους':'Download video with captions';
+  $('#quickExportHint').textContent=isGreekUI()?'Δημιουργείται τοπικά στη συσκευή σου.':'Created locally on your device.';
+  $('#videoDownloadLabel').textContent=isGreekUI()?'Λήψη video με υπότιτλους':'Download video with captions';
+  $('#quickVideoExportIcon').textContent='↓';
+  $('#videoDownloadIcon').textContent='↓';
+}
+
 function preferredVideoRecorderFormat(){
   if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream||!window.AudioContext)return null;
   const candidates=[
@@ -416,7 +551,7 @@ function preferredVideoRecorderFormat(){
   return null;
 }
 function updateExportButtons(){
-  const ok=state.captions.length>0,format=preferredVideoRecorderFormat(),videoOk=ok&&!!format;
+  const ok=state.captions.length>0,format=preferredVideoRecorderFormat(),videoOk=ok&&!!format&&!state.exporting;
   $('#srtBtn').disabled=!ok;$('#txtBtn').disabled=!ok;
   $('#quickVideoExportBtn').disabled=!videoOk;$('#videoDownloadBtn').disabled=!videoOk;
   const label=format?`${format.label} · burned captions`:(isGreekUI()?'Δεν υποστηρίζεται video export σε αυτόν τον browser':'Video export is not supported in this browser');
@@ -429,23 +564,125 @@ $('#srtBtn').addEventListener('click',()=>{const s=state.captions.map((c,i)=>`${
 $('#txtBtn').addEventListener('click',()=>downloadBlob(new Blob([state.captions.map(c=>c.text).join(' ')],{type:'text/plain;charset=utf-8'}),baseName()+'.txt'));
 $('#quickVideoExportBtn').addEventListener('click',exportVideo);$('#videoDownloadBtn').addEventListener('click',exportVideo);
 async function exportVideo(){
-  trackEvent('video_export_started',{caption_count:state.captions.length});
   if(state.exporting||!state.file||!state.captions.length)return;
-  const format=preferredVideoRecorderFormat();if(!format){alert(isGreekUI()?'Ο browser σου δεν υποστηρίζει ακόμη local video export. Μπορείς να κατεβάσεις SRT/TXT.':'Your browser does not support local video export yet. You can still download SRT/TXT.');return}
-  state.exporting=true;updateExportButtons();$('#exportProgress').classList.remove('hidden');$('#exportBar').style.width='0%';$('#exportDetail').textContent='0%';
+  const format=preferredVideoRecorderFormat();
+  if(!format){
+    alert(isGreekUI()?'Ο browser σου δεν υποστηρίζει ακόμη local video export. Μπορείς να κατεβάσεις SRT/TXT.':'Your browser does not support local video export yet. You can still download SRT/TXT.');
+    return;
+  }
+
+  trackEvent('video_export_started',{caption_count:state.captions.length,format:format.ext});
+  state.exporting=true;
+  updateExportButtons();
+
+  // Immediate acknowledgement of the click, before metadata/audio/canvas setup begins.
+  setExportUi('prepare',null);
+
   let ac=null;
+  let src=null;
   try{
-    const src=document.createElement('video');src.src=state.url;src.preload='auto';src.playsInline=true;src.setAttribute('playsinline','');
-    await new Promise((res,rej)=>{src.onloadedmetadata=res;src.onerror=()=>rej(new Error(isGreekUI()?'Αποτυχία φόρτωσης video για export.':'Video load failed for export.'))});
-    const maxDim=1080,sc=Math.min(1,maxDim/Math.max(src.videoWidth,src.videoHeight)),w=Math.max(2,Math.round(src.videoWidth*sc/2)*2),h=Math.max(2,Math.round(src.videoHeight*sc/2)*2),canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
-    const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw new Error('Canvas unavailable');
-    const stream=canvas.captureStream(30);ac=new AudioContext();await ac.resume();const node=ac.createMediaElementSource(src),dest=ac.createMediaStreamDestination();node.connect(dest);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
-    const rec=new MediaRecorder(stream,{mimeType:format.mime,videoBitsPerSecond:6_000_000}),blobs=[];rec.ondataavailable=e=>e.data.size&&blobs.push(e.data);const stopped=new Promise((res,rej)=>{rec.onstop=res;rec.onerror=e=>rej(e.error||new Error('MediaRecorder error'))});
+    // Let the browser paint the feedback state before starting heavier setup work.
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+
+    src=document.createElement('video');
+    src.src=state.url;
+    src.preload='auto';
+    src.playsInline=true;
+    src.setAttribute('playsinline','');
+
+    await new Promise((res,rej)=>{
+      src.onloadedmetadata=res;
+      src.onerror=()=>rej(new Error(isGreekUI()?'Αποτυχία φόρτωσης video για export.':'Video load failed for export.'));
+    });
+
+    const maxDim=1080;
+    const sc=Math.min(1,maxDim/Math.max(src.videoWidth,src.videoHeight));
+    const w=Math.max(2,Math.round(src.videoWidth*sc/2)*2);
+    const h=Math.max(2,Math.round(src.videoHeight*sc/2)*2);
+    const canvas=document.createElement('canvas');
+    canvas.width=w;
+    canvas.height=h;
+
+    const ctx=canvas.getContext('2d',{alpha:false});
+    if(!ctx)throw new Error('Canvas unavailable');
+
+    const stream=canvas.captureStream(30);
+    ac=new AudioContext();
+    await ac.resume();
+    const node=ac.createMediaElementSource(src);
+    const dest=ac.createMediaStreamDestination();
+    node.connect(dest);
+    dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
+
+    const rec=new MediaRecorder(stream,{mimeType:format.mime,videoBitsPerSecond:6_000_000});
+    const blobs=[];
+    rec.ondataavailable=e=>e.data.size&&blobs.push(e.data);
+    const stopped=new Promise((res,rej)=>{
+      rec.onstop=res;
+      rec.onerror=e=>rej(e.error||new Error('MediaRecorder error'));
+    });
+
     rec.start(1000);
-    const draw=()=>{try{ctx.drawImage(src,0,0,w,h);drawCanvasCaption(ctx,w,h,src.currentTime)}catch{}const pct=Math.min(100,src.duration?src.currentTime/src.duration*100:0);$('#exportBar').style.width=`${pct}%`;$('#exportDetail').textContent=`${Math.round(pct)}%`;if(!src.paused&&!src.ended)requestAnimationFrame(draw)};
-    await src.play();draw();await new Promise((res,rej)=>{src.onended=res;src.onerror=()=>rej(new Error('Playback failed during export'))});rec.stop();await stopped;
-    const outMime=rec.mimeType||format.mime;downloadBlob(new Blob(blobs,{type:outMime}),`${baseName()}.${format.ext}`);
-  }catch(e){alert((isGreekUI()?'Το video export απέτυχε: ':'Video export failed: ')+(e?.message||String(e)))}finally{try{await ac?.close()}catch{}state.exporting=false;updateExportButtons();setTimeout(()=>$('#exportProgress').classList.add('hidden'),900)}
+    setExportUi('render',0);
+
+    let lastPct=-1;
+    const draw=()=>{
+      try{
+        ctx.drawImage(src,0,0,w,h);
+        drawCanvasCaption(ctx,w,h,src.currentTime);
+      }catch{}
+
+      const pct=Math.min(100,src.duration?src.currentTime/src.duration*100:0);
+      const rounded=Math.round(pct);
+      if(rounded!==lastPct){
+        lastPct=rounded;
+        setExportUi('render',pct);
+      }
+      if(!src.paused&&!src.ended)requestAnimationFrame(draw);
+    };
+
+    await src.play();
+    draw();
+
+    await new Promise((res,rej)=>{
+      src.onended=res;
+      src.onerror=()=>rej(new Error('Playback failed during export'));
+    });
+
+    setExportUi('finalize',null);
+    rec.stop();
+    await stopped;
+
+    const outMime=rec.mimeType||format.mime;
+    const outputBlob=new Blob(blobs,{type:outMime});
+    downloadBlob(outputBlob,`${baseName()}.${format.ext}`);
+
+    trackEvent('video_export_completed',{
+      caption_count:state.captions.length,
+      format:format.ext,
+      size_bytes:outputBlob.size
+    });
+
+    setExportUi('done',100);
+  }catch(e){
+    setExportUi('error',null);
+    alert((isGreekUI()?'Το video export απέτυχε: ':'Video export failed: ')+(e?.message||String(e)));
+  }finally{
+    try{src?.pause()}catch{}
+    try{await ac?.close()}catch{}
+    state.exporting=false;
+    updateExportButtons();
+
+    // Success clears automatically after the acknowledgement. Errors remain visible
+    // long enough to make it clear that the click was registered and something failed.
+    if(state.exportStage==='done'){
+      setTimeout(()=>resetExportUi(),1800);
+    }else if(state.exportStage==='error'){
+      setTimeout(()=>resetExportUi(),5000);
+    }else{
+      setTimeout(()=>resetExportUi(),1200);
+    }
+  }
 }
 function canvasFontSpec(s,font){
   const family=/\s/.test(s.font_family)?`"${s.font_family}"`:s.font_family;

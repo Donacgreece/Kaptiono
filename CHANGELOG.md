@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.10
+- Added immediate visual acknowledgement when video export is clicked.
+- Added an export status panel directly below the player, so quick export no longer appears frozen.
+- Added accurate export stages: Preparing video, Rendering captions, and Finalizing file.
+- Uses real video playback/render progress during the rendering stage instead of fake percentages.
+- Added an indeterminate progress animation only for stages where the browser cannot provide a meaningful percentage.
+- Download buttons are disabled during an active export to prevent accidental double exports.
+- Added clear local-processing and keep-this-page-open messaging in Greek and English.
+- Added completed and failed export states.
+- Preserved the permanent full product README unchanged.
+
 ## 0.5.9
 - Replaced the simple Support roadmap block with a dedicated Product Roadmap view.
 - Added Now, Next, Later and Exploring roadmap lanes with creator-focused feature directions.

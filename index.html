@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.9" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.10" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -133,7 +133,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.9</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.10</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -341,9 +341,17 @@
             </div>
             <div class="preview-export-bar">
               <button id="quickVideoExportBtn" class="quick-export-btn" type="button" disabled>
-                <span><b data-i18n="downloadVideo">Λήψη video με υπότιτλους</b><small id="quickExportHint" data-i18n="downloadVideoHint">Δημιουργείται τοπικά στη συσκευή σου.</small></span>
-                <strong>↓</strong>
+                <span><b id="quickVideoExportLabel" data-i18n="downloadVideo">Λήψη video με υπότιτλους</b><small id="quickExportHint" data-i18n="downloadVideoHint">Δημιουργείται τοπικά στη συσκευή σου.</small></span>
+                <strong id="quickVideoExportIcon">↓</strong>
               </button>
+              <div id="quickExportProgress" class="quick-export-progress hidden" aria-live="polite">
+                <div class="quick-export-progress-head">
+                  <span id="quickExportStage">LOCAL EXPORT</span>
+                  <strong id="quickExportProgressValue">—</strong>
+                </div>
+                <div id="quickExportTrack" class="progress-track export-progress-track"><i id="quickExportBar"></i></div>
+                <small id="quickExportProgressText">—</small>
+              </div>
             </div>
             <div id="compatNote" class="compat-note hidden"></div>
           </section>
@@ -462,9 +470,20 @@
             <div class="main-panel" data-main-panel="export">
               <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2><p data-i18n="exportHint">Το αρχείο δημιουργείται τοπικά στον browser.</p></div></div>
               <button id="videoDownloadBtn" class="video-download-cta" type="button" disabled>
-                <span><small data-i18n="burnedCaptions">BURNED-IN CAPTIONS</small><strong data-i18n="downloadVideo">Λήψη video με υπότιτλους</strong><em id="videoExportFormat">—</em></span><b>↓</b>
+                <span><small id="videoExportEyebrow" data-i18n="burnedCaptions">BURNED-IN CAPTIONS</small><strong id="videoDownloadLabel" data-i18n="downloadVideo">Λήψη video με υπότιτλους</strong><em id="videoExportFormat">—</em></span><b id="videoDownloadIcon">↓</b>
               </button>
-              <div id="exportProgress" class="progress-box hidden"><div class="progress-copy"><strong data-i18n="exporting">Local export…</strong><span id="exportDetail">0%</span></div><div class="progress-track"><i id="exportBar"></i></div></div>
+              <div id="exportProgress" class="progress-box export-progress-box hidden" aria-live="polite">
+                <div class="export-progress-stage">
+                  <span id="exportStageLabel">LOCAL EXPORT</span>
+                  <strong id="exportDetail">—</strong>
+                </div>
+                <div class="export-progress-copy">
+                  <strong id="exportProgressTitle">Προετοιμασία video</strong>
+                  <span id="exportProgressText">Η επεξεργασία γίνεται τοπικά στη συσκευή σου.</span>
+                </div>
+                <div id="exportTrack" class="progress-track export-progress-track"><i id="exportBar"></i></div>
+                <small id="exportProgressSafety">Μην κλείσεις αυτή τη σελίδα μέχρι να ολοκληρωθεί η λήψη.</small>
+              </div>
               <div class="export-grid two"><button id="srtBtn" type="button" class="export-btn" disabled><strong>SRT</strong><span data-i18n="srtHint">Υπότιτλοι με timestamps</span></button><button id="txtBtn" type="button" class="export-btn" disabled><strong>TXT</strong><span data-i18n="txtHint">Καθαρό transcript</span></button></div>
               <div id="videoExportNote" class="info-callout"><strong data-i18n="videoExportLocal">Το video δημιουργείται τοπικά.</strong><span data-i18n="videoExportLocalHint">Η διαθέσιμη μορφή εξαρτάται από τον browser σου.</span></div>
             </div>
@@ -505,8 +524,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.9</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.10</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.9"></script>
+  <script type="module" src="./app.js?v=0.5.10"></script>
 </body>
 </html>
