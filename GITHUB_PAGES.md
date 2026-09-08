@@ -1,18 +1,19 @@
-# GitHub Pages quick deploy
+# GitHub Pages
 
-The repository root must contain `index.html`.
+Repository: `Donacgreece/Kaptiono`
 
-The included GitHub Actions workflow is already configured for Pages.
+The included `.github/workflows/pages.yml` deploys the static app from `main`.
 
-After pushing to `main`:
+After replacing the repository files:
 
-1. Repository → Settings → Pages
-2. Source: GitHub Actions
-3. Wait for the `Deploy Kaptiono Web Lab to GitHub Pages` workflow to finish
-4. Open the Pages URL shown by GitHub
+```powershell
+git add .
+git commit -m "Kaptiono Web Lab 0.2: quality, iPhone audio and full studio"
+git push
+```
 
-## Notes
+Pages URL:
 
-GitHub Pages only serves the static application. It does not process video or run Whisper. AI inference is performed in the visitor's browser.
+`https://donacgreece.github.io/Kaptiono/`
 
-The browser still downloads the AI model from Hugging Face the first time it is needed. That is not a video upload.
+On iPhone, close any old installed PWA tab and reload once after deployment so the 0.2 service worker takes control.

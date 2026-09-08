@@ -3,140 +3,196 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111511" />
+  <meta name="theme-color" content="#f7f8f4" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="description" content="Kaptiono Web Lab — private local captions in your browser." />
   <title>Kaptiono Web Lab</title>
   <link rel="icon" href="./favicon.ico" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=0.2.0" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="./" aria-label="Kaptiono Web Lab">
+      <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <div><strong>Kaptiono</strong><span>WEB LAB</span></div>
-      </a>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.2</small></span>
+      </button>
       <div class="top-actions">
-        <span class="privacy-chip"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
-        <div class="lang-switch" role="group" aria-label="Language">
-          <button type="button" data-lang="el" class="active">EL</button>
-          <button type="button" data-lang="en">EN</button>
-        </div>
+        <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
+        <div class="lang-switch" aria-label="Language"><button type="button" data-lang="el" class="active">EL</button><button type="button" data-lang="en">EN</button></div>
+        <a class="support-btn" href="https://www.paypal.com/paypalme/DimitrisGalatsanos" target="_blank" rel="noopener"><span>♡</span><b>Support</b></a>
       </div>
     </header>
 
-    <main class="page">
-      <section class="hero">
-        <span class="eyebrow">KAPTIONO WEB LAB · 0.1</span>
-        <h1 data-i18n="heroTitle">Υπότιτλοι μέσα στον browser. Χωρίς upload.</h1>
-        <p data-i18n="heroText">Διάλεξε ένα video. Η απομαγνητοφώνηση γίνεται στη συσκευή σου με Whisper και το αρχείο δεν ανεβαίνει σε server.</p>
-        <div class="capability-row">
-          <span id="webgpuBadge">WebGPU · checking</span>
-          <span id="wasmBadge">WASM · ready</span>
-          <span data-i18n="sameLanguage">Auto language · ίδια γλώσσα captions</span>
+    <main>
+      <section id="startCard" class="start-card card">
+        <div class="hero-copy">
+          <span class="eyebrow">LOCAL AI · NO UPLOAD</span>
+          <h1 data-i18n="heroTitle">Υπότιτλοι μέσα στον browser. Χωρίς upload.</h1>
+          <p data-i18n="heroText">Διάλεξε ένα video. Η απομαγνητοφώνηση γίνεται στη συσκευή σου και το αρχείο δεν ανεβαίνει σε server.</p>
+          <div class="hero-badges"><span>Whisper</span><span>WebGPU / WASM</span><span>iPhone fallback</span><span>No watermark</span></div>
         </div>
-      </section>
-
-      <section id="startCard" class="upload-card card">
-        <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.webm,.m4v" hidden />
-        <button id="dropzone" type="button" class="dropzone">
+        <button id="dropzone" class="dropzone" type="button">
           <span class="upload-icon">＋</span>
           <strong data-i18n="chooseVideo">Διάλεξε video</strong>
           <small data-i18n="dropHint">ή σύρε MP4 / MOV / WebM εδώ</small>
+          <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.m4v,.webm" hidden />
         </button>
-        <div class="privacy-note">
-          <strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong>
-          <span data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</span>
-        </div>
+        <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</small></div></div>
       </section>
 
       <section id="workspace" class="workspace hidden">
-        <div class="workspace-grid">
-          <section class="video-card card">
-            <div class="section-head compact">
-              <div><span class="live-dot"></span><div><strong data-i18n="livePreview">Ζωντανή προεπισκόπηση</strong><small id="videoMeta">—</small></div></div>
-              <span id="captionCountBadge" class="mini-badge">0 captions</span>
+        <div class="workspace-head">
+          <div><span class="eyebrow">EDITOR</span><h1>Caption Studio</h1><p id="projectMeta">—</p></div>
+          <div class="workspace-status"><span id="saveState"><i></i><b data-i18n="liveChanges">LIVE PREVIEW</b></span><button id="changeVideoBtn" type="button" class="ghost-btn" data-i18n="changeVideo">Άλλο video</button></div>
+        </div>
+
+        <div class="editor-layout">
+          <section class="preview-card card">
+            <div class="preview-head">
+              <div><span class="status-dot"></span><div><strong data-i18n="livePreview">Ζωντανή προεπισκόπηση</strong><small data-i18n="previewHint">Οι αλλαγές εφαρμόζονται αμέσως.</small></div></div>
+              <div class="preview-meta"><span id="videoResolution">—</span><span id="captionCountBadge">0 captions</span></div>
             </div>
-            <div id="videoStage" class="video-stage">
-              <video id="video" playsinline preload="metadata"></video>
-              <div id="captionOverlay" class="caption-overlay" aria-live="polite"></div>
-              <div id="videoLoading" class="video-loading hidden"><span></span><small data-i18n="loadingVideo">Φόρτωση video…</small></div>
+            <div class="video-shell" id="videoShell">
+              <div id="videoStage" class="video-stage">
+                <video id="video" playsinline webkit-playsinline preload="metadata"></video>
+                <div id="captionOverlay" class="caption-overlay" aria-live="off"></div>
+                <div id="videoLoading" class="video-loading"><span></span><b data-i18n="loadingVideo">Φόρτωση video…</b></div>
+              </div>
             </div>
             <div class="player-controls">
-              <button id="playBtn" class="icon-btn" type="button" aria-label="Play">▶</button>
+              <button id="playBtn" class="player-icon" type="button" aria-label="Play">▶</button>
               <span id="currentTime">0:00</span>
-              <input id="seek" class="seek" type="range" min="0" max="1" value="0" step="0.01" />
+              <input id="seek" type="range" min="0" max="1" step="0.01" value="0" />
               <span id="duration">0:00</span>
-              <button id="muteBtn" class="icon-btn" type="button" aria-label="Mute">♪</button>
+              <button id="muteBtn" class="player-icon" type="button" aria-label="Mute">♪</button>
             </div>
+            <div id="compatNote" class="compat-note hidden"></div>
           </section>
 
-          <aside class="control-card card">
-            <div class="tabs" role="tablist">
-              <button type="button" class="active" data-tab="captions" data-i18n="tabCaptions">Captions</button>
-              <button type="button" data-tab="style" data-i18n="tabStyle">Στυλ</button>
-              <button type="button" data-tab="export" data-i18n="tabExport">Export</button>
+          <section class="studio-card card">
+            <div class="main-tabs" role="tablist">
+              <button type="button" class="active" data-main-tab="captions" data-i18n="tabCaptions">Κείμενο</button>
+              <button type="button" data-main-tab="design" data-i18n="tabDesign">Σχεδίαση</button>
+              <button type="button" data-main-tab="export" data-i18n="tabExport">Export</button>
             </div>
 
-            <div class="tab-panel active" data-panel="captions">
-              <div class="panel-title"><div><span class="eyebrow" data-i18n="localAi">LOCAL AI</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
+            <div class="main-panel active" data-main-panel="captions">
+              <div class="panel-title"><div><span class="eyebrow">LOCAL AI</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Για ποιότητα κοντά στο desktop χρησιμοποίησε Small και δήλωσε Ελληνικά.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
               <div class="field-grid two">
-                <label class="field"><span data-i18n="aiModel">AI model</span><select id="modelSelect"><option value="onnx-community/whisper-tiny">Whisper Tiny · multilingual</option></select></label>
-                <label class="field"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect"><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="greek">Ελληνικά</option><option value="english">English</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option></select></label>
+                <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
+                  <option value="onnx-community/whisper-small_timestamped">Whisper Small · High quality</option>
+                  <option value="onnx-community/whisper-base_timestamped">Whisper Base · Mobile</option>
+                  <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
+                </select><small id="modelHint">—</small></label>
+                <label class="setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect">
+                  <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
+                </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></label>
               </div>
               <button id="generateBtn" class="primary-btn" type="button"><span data-i18n="generateButton">Δημιουργία captions</span><b>→</b></button>
-
-              <div id="progressBox" class="progress-box hidden">
-                <div class="progress-copy"><strong id="progressTitle" data-i18n="preparingAi">Προετοιμασία AI…</strong><span id="progressDetail">—</span></div>
-                <div class="progress-track"><i id="progressBar"></i></div>
-                <div class="progress-footer"><span id="progressPercent">0%</span><span id="elapsed">0:00</span></div>
-              </div>
-
+              <div id="progressBox" class="progress-box hidden"><div class="progress-copy"><strong id="progressTitle">Προετοιμασία AI…</strong><span id="progressDetail">—</span></div><div class="progress-track"><i id="progressBar"></i></div><div class="progress-footer"><span id="progressPercent">0%</span><span id="elapsed">0:00</span></div></div>
               <div id="emptyCaptions" class="empty-state"><strong data-i18n="noCaptions">Δεν υπάρχουν captions ακόμη.</strong><span data-i18n="noCaptionsHint">Πάτησε «Δημιουργία captions» για να ξεκινήσεις.</span></div>
               <div id="captionEditor" class="caption-editor hidden"></div>
             </div>
 
-            <div class="tab-panel" data-panel="style">
-              <div class="panel-title"><div><span class="eyebrow" data-i18n="design">DESIGN</span><h2 data-i18n="styleTitle">Στυλ υποτίτλων</h2></div></div>
-              <div id="presetGrid" class="preset-grid"></div>
-              <div class="field-grid two style-fields">
-                <label class="field"><span data-i18n="fontSize">Μέγεθος</span><div class="range-row"><input id="fontSize" type="range" min="28" max="90" value="54" /><b id="fontSizeValue">54</b></div></label>
-                <label class="field"><span data-i18n="position">Θέση</span><div class="range-row"><input id="position" type="range" min="20" max="90" value="78" /><b id="positionValue">78%</b></div></label>
-                <label class="field color-field"><span data-i18n="textColor">Χρώμα κειμένου</span><input id="textColor" type="color" value="#FFD84D" /></label>
-                <label class="field color-field"><span data-i18n="outlineColor">Outline</span><input id="outlineColor" type="color" value="#000000" /></label>
+            <div class="main-panel" data-main-panel="design">
+              <div class="panel-title"><div><span class="eyebrow">DESIGN</span><h2 data-i18n="styleTitle">Στυλ υποτίτλων</h2><p data-i18n="designHint">Ίδια λογική ρυθμίσεων με το desktop Caption Studio.</p></div></div>
+              <div id="presetGrid" class="preset-grid" aria-label="Caption presets"></div>
+              <div id="inspectorTabs" class="inspector-tabs" role="tablist">
+                <button type="button" class="active" data-settings-tab="typography"><span>01</span><b data-i18n="typography">Τυπογραφία</b></button>
+                <button type="button" data-settings-tab="color"><span>02</span><b data-i18n="colorContrast">Χρώμα & αντίθεση</b></button>
+                <button type="button" data-settings-tab="position"><span>03</span><b data-i18n="positionFrame">Θέση & κάδρο</b></button>
+                <button type="button" data-settings-tab="flow"><span>04</span><b data-i18n="flow">Ροή</b></button>
+                <button type="button" data-settings-tab="motion"><span>05</span><b data-i18n="motion">Κίνηση & έμφαση</b></button>
+                <button type="button" data-settings-tab="effects"><span>06</span><b data-i18n="effects">Εφέ & φόντο</b></button>
               </div>
-              <label class="switch-row"><span><strong data-i18n="uppercase">UPPERCASE</strong><small data-i18n="uppercaseHint">Χωρίς τόνους στα ελληνικά κεφαλαία</small></span><input id="uppercase" type="checkbox" /><i></i></label>
+
+              <div class="settings-stage">
+                <section class="settings-panel active" data-settings-panel="typography">
+                  <div class="section-head"><div><strong data-i18n="typography">Τυπογραφία</strong><small data-i18n="typographySub">Γραμματοσειρά, μέγεθος και έμφαση</small></div><span>01</span></div>
+                  <div class="field-grid two">
+                    <label class="setting"><span data-i18n="fontFamily">Γραμματοσειρά</span><select id="fontFamily"></select></label>
+                    <label class="setting range-setting"><span><b data-i18n="fontSize">Μέγεθος</b><output id="fontSizeValue">52</output></span><input id="fontSize" type="range" min="24" max="120" value="52" /></label>
+                    <label class="setting range-setting"><span><b data-i18n="letterSpacing">Απόσταση γραμμάτων</b><output id="letterSpacingValue">0</output></span><input id="letterSpacing" type="range" min="-4" max="12" value="0" /></label>
+                    <label class="setting range-setting"><span><b data-i18n="scale">Κλίμακα</b><output id="scaleValue">100%</output></span><input id="scale" type="range" min="50" max="180" value="100" /></label>
+                  </div>
+                  <div class="boolean-grid"><label class="boolean-row"><b>Bold</b><input id="bold" type="checkbox"><span></span></label><label class="boolean-row"><b>Italic</b><input id="italic" type="checkbox"><span></span></label><label class="boolean-row"><b>UPPERCASE</b><input id="uppercase" type="checkbox"><span></span></label></div>
+                </section>
+
+                <section class="settings-panel" data-settings-panel="color">
+                  <div class="section-head"><div><strong data-i18n="colorContrast">Χρώμα & αντίθεση</strong><small data-i18n="colorSub">Κείμενο, highlight και outline</small></div><span>02</span></div>
+                  <div class="color-grid">
+                    <label class="color-setting"><span data-i18n="text">Κείμενο</span><input id="textColor" type="color"><code id="textColorHex"></code></label>
+                    <label class="color-setting"><span>Highlight</span><input id="highlightColor" type="color"><code id="highlightColorHex"></code></label>
+                    <label class="color-setting"><span>Outline</span><input id="outlineColor" type="color"><code id="outlineColorHex"></code></label>
+                    <label class="color-setting"><span data-i18n="background">Φόντο</span><input id="backgroundColor" type="color"><code id="backgroundColorHex"></code></label>
+                  </div>
+                  <div class="field-grid two">
+                    <label class="setting range-setting"><span><b data-i18n="textOpacity">Αδιαφάνεια κειμένου</b><output id="textOpacityValue">100%</output></span><input id="textOpacity" type="range" min="10" max="100"></label>
+                    <label class="setting range-setting"><span><b>Outline</b><output id="outlineWidthValue">4px</output></span><input id="outlineWidth" type="range" min="0" max="14"></label>
+                  </div>
+                </section>
+
+                <section class="settings-panel" data-settings-panel="position">
+                  <div class="section-head"><div><strong data-i18n="positionFrame">Θέση & κάδρο</strong><small data-i18n="positionSub">Τοποθέτηση, πλάτος και στοίχιση</small></div><span>03</span></div>
+                  <div class="position-layout"><div><span class="field-label" data-i18n="quickPosition">Γρήγορη θέση</span><div id="positionGrid" class="position-grid"></div></div><div class="field-grid two">
+                    <label class="setting range-setting"><span><b data-i18n="horizontal">Οριζόντια</b><output id="horizontalPositionValue">50%</output></span><input id="horizontalPosition" type="range" min="2" max="98"></label>
+                    <label class="setting range-setting"><span><b data-i18n="vertical">Κάθετα</b><output id="verticalPositionValue">78%</output></span><input id="verticalPosition" type="range" min="2" max="98"></label>
+                    <label class="setting range-setting"><span><b data-i18n="captionWidth">Πλάτος caption</b><output id="captionWidthValue">84%</output></span><input id="captionWidth" type="range" min="25" max="98"></label>
+                    <label class="setting range-setting"><span><b data-i18n="rotation">Περιστροφή</b><output id="rotationValue">0°</output></span><input id="rotation" type="range" min="-30" max="30"></label>
+                  </div></div>
+                  <div class="alignment-row"><span data-i18n="alignment">Στοίχιση</span><div id="alignment" class="segmented"><button type="button" data-align="left" data-i18n="left">Αριστερά</button><button type="button" data-align="center" class="active" data-i18n="center">Κέντρο</button><button type="button" data-align="right" data-i18n="right">Δεξιά</button></div></div>
+                </section>
+
+                <section class="settings-panel" data-settings-panel="flow">
+                  <div class="section-head"><div><strong data-i18n="flow">Ροή</strong><small data-i18n="flowSub">Λέξεις ανά caption και ταχύτητα</small></div><span>04</span></div>
+                  <div class="field-grid three">
+                    <label class="setting range-setting"><span><b data-i18n="maxWords">Λέξεις ανά caption</b><output id="maxWordsValue">4</output></span><input id="maxWords" type="range" min="1" max="10"></label>
+                    <label class="setting"><span data-i18n="maxLines">Μέγιστες γραμμές</span><select id="maxLines"><option value="1">1</option><option value="2">2</option></select></label>
+                    <label class="setting"><span data-i18n="captionSpeed">Ταχύτητα</span><select id="captionSpeed"><option value="fast" data-i18n="fast">Γρήγορη</option><option value="balanced" data-i18n="balanced">Ισορροπημένη</option><option value="relaxed" data-i18n="relaxed">Χαλαρή</option></select></label>
+                  </div>
+                </section>
+
+                <section class="settings-panel" data-settings-panel="motion">
+                  <div class="section-head"><div><strong data-i18n="motion">Κίνηση & έμφαση</strong><small data-i18n="motionSub">Animation και ενεργή λέξη</small></div><span>05</span></div>
+                  <div class="field-grid two">
+                    <label class="setting"><span>Animation</span><select id="animation"><option value="none" data-i18n="none">Χωρίς</option><option value="fade">Soft fade</option><option value="pop">Quick pop</option></select></label>
+                    <label class="setting range-setting"><span><b data-i18n="animationStrength">Ένταση animation</b><output id="animationStrengthValue">42%</output></span><input id="animationStrength" type="range" min="0" max="100"></label>
+                    <label class="setting range-setting"><span><b>Fade in</b><output id="fadeInValue">70ms</output></span><input id="fadeIn" type="range" min="0" max="1000" step="10"></label>
+                    <label class="setting range-setting"><span><b>Fade out</b><output id="fadeOutValue">90ms</output></span><input id="fadeOut" type="range" min="0" max="1000" step="10"></label>
+                  </div>
+                  <div class="boolean-grid one"><label class="boolean-row"><b data-i18n="wordHighlight">Highlight ανά λέξη</b><input id="wordHighlight" type="checkbox"><span></span></label></div>
+                </section>
+
+                <section class="settings-panel" data-settings-panel="effects">
+                  <div class="section-head"><div><strong data-i18n="effects">Εφέ & φόντο</strong><small data-i18n="effectsSub">Σκιά, box και padding</small></div><span>06</span></div>
+                  <div class="field-grid two">
+                    <div class="setting"><span data-i18n="background">Φόντο</span><div id="backgroundMode" class="segmented"><button type="button" data-bg="none" class="active" data-i18n="none">Χωρίς</button><button type="button" data-bg="box">Box</button></div></div>
+                    <label class="setting range-setting"><span><b data-i18n="shadow">Σκιά</b><output id="shadowValue">1</output></span><input id="shadow" type="range" min="0" max="10"></label>
+                    <label class="setting range-setting"><span><b data-i18n="boxOpacity">Αδιαφάνεια box</b><output id="backgroundOpacityValue">65%</output></span><input id="backgroundOpacity" type="range" min="0" max="100"></label>
+                    <label class="setting range-setting"><span><b data-i18n="boxPadding">Padding box</b><output id="boxPaddingValue">8px</output></span><input id="boxPadding" type="range" min="0" max="24"></label>
+                  </div>
+                </section>
+              </div>
             </div>
 
-            <div class="tab-panel" data-panel="export">
-              <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2></div></div>
-              <div class="export-grid">
-                <button id="srtBtn" type="button" class="export-btn" disabled><strong>SRT</strong><span data-i18n="srtHint">Υπότιτλοι με timestamps</span></button>
-                <button id="txtBtn" type="button" class="export-btn" disabled><strong>TXT</strong><span data-i18n="txtHint">Καθαρό transcript</span></button>
-                <button id="webmBtn" type="button" class="export-btn experimental" disabled><strong>WebM · LAB</strong><span data-i18n="webmHint">Πειραματικό local video export</span></button>
-              </div>
+            <div class="main-panel" data-main-panel="export">
+              <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2><p data-i18n="exportHint">Το αρχείο δημιουργείται τοπικά στον browser.</p></div></div>
+              <div class="export-grid"><button id="srtBtn" type="button" class="export-btn" disabled><strong>SRT</strong><span data-i18n="srtHint">Υπότιτλοι με timestamps</span></button><button id="txtBtn" type="button" class="export-btn" disabled><strong>TXT</strong><span data-i18n="txtHint">Καθαρό transcript</span></button><button id="webmBtn" type="button" class="export-btn experimental" disabled><strong>WebM · LAB</strong><span data-i18n="webmHint">Burned captions, Chromium</span></button></div>
               <div id="exportProgress" class="progress-box hidden"><div class="progress-copy"><strong data-i18n="exporting">Local export…</strong><span id="exportDetail">0%</span></div><div class="progress-track"><i id="exportBar"></i></div></div>
-              <div class="info-callout"><strong data-i18n="mp4Next">MP4 browser export: επόμενο βήμα.</strong><span data-i18n="mp4NextHint">Η πρώτη έκδοση δοκιμάζει πρώτα local AI, preview, SRT και WebM σε Chromium.</span></div>
+              <div class="info-callout"><strong data-i18n="mp4Next">MP4 export βρίσκεται ακόμη σε ανάπτυξη.</strong><span data-i18n="mp4NextHint">Πρώτα σταθεροποιούμε transcription και iPhone compatibility.</span></div>
             </div>
-          </aside>
+          </section>
         </div>
 
-        <section class="system-card card">
-          <div><span class="eyebrow" data-i18n="browserCheck">BROWSER CHECK</span><h2 data-i18n="systemTitle">Τι θα χρησιμοποιήσει η συσκευή σου</h2></div>
-          <div class="system-grid">
-            <div><span>AI</span><strong id="systemAi">Checking…</strong></div>
-            <div><span>Audio</span><strong id="systemAudio">Checking…</strong></div>
-            <div><span>Export</span><strong id="systemExport">Checking…</strong></div>
-            <div><span data-i18n="fileStatus">Αρχείο</span><strong id="systemFile">—</strong></div>
-          </div>
-        </section>
+        <section class="system-card card"><div><span class="eyebrow">BROWSER CHECK</span><h2 data-i18n="systemTitle">Μηχανή επεξεργασίας</h2></div><div class="system-grid"><div><span>AI</span><strong id="systemAi">Checking…</strong></div><div><span>Audio</span><strong id="systemAudio">Mediabunny</strong></div><div><span>Device</span><strong id="systemDevice">—</strong></div><div><span data-i18n="fileStatus">Αρχείο</span><strong id="systemFile">—</strong></div></div></section>
       </section>
     </main>
 
-    <footer><span>Kaptiono Web Lab 0.1</span><span data-i18n="footer">Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.2</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=0.2.0"></script>
 </body>
 </html>
