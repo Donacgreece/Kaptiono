@@ -1,6 +1,7 @@
 {
   "name": "Kaptiono",
   "short_name": "Kaptiono",
+  "id": "./",
   "description": "Local AI subtitles for creators. Private browser-based caption generation with no upload and no watermark.",
   "start_url": "./",
   "scope": "./",

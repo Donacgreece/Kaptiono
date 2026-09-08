@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.0" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.1" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -114,7 +114,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.0</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.1</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -140,62 +140,6 @@
         <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</small></div></div>
       </section>
 
-      <section class="home-seo-grid" aria-label="Kaptiono overview">
-        <article class="seo-card card">
-          <span class="eyebrow">WHY KAPTIONO</span>
-          <h2>Local AI captions with privacy first.</h2>
-          <p>Kaptiono is made for creators who want browser-based subtitle generation without sending private video files to a cloud processing server.</p>
-        </article>
-        <article class="seo-card card">
-          <span class="eyebrow">WHAT IT DOES</span>
-          <h2>Transcribe, style and export.</h2>
-          <p>Upload a video locally, generate subtitles with Whisper, adjust the caption look and export clean results for short-form or long-form content.</p>
-        </article>
-        <article class="seo-card card">
-          <span class="eyebrow">WHO IT IS FOR</span>
-          <h2>Built for creators and editors.</h2>
-          <p>Kaptiono fits TikTok, Reels, Shorts, YouTube and creator workflows that need fast captions, a simple editor and no watermark output.</p>
-        </article>
-      </section>
-
-      <section class="how-it-works card" aria-labelledby="howItWorksTitle">
-        <div class="section-copy">
-          <span class="eyebrow">HOW IT WORKS</span>
-          <h2 id="howItWorksTitle">A simple subtitle workflow in the browser.</h2>
-          <p>Choose a video, run local AI transcription, fine-tune the style and export the result. The experience is designed to feel lightweight, direct and app-like on desktop and mobile.</p>
-        </div>
-        <div class="how-grid">
-          <article><b>01</b><h3>Choose video</h3><p>Open an MP4, MOV or WebM clip directly from your device.</p></article>
-          <article><b>02</b><h3>Generate captions</h3><p>Use Whisper models for high quality subtitle generation in the browser.</p></article>
-          <article><b>03</b><h3>Style and export</h3><p>Edit the caption look, preview the result and export clean creator-ready outputs.</p></article>
-        </div>
-      </section>
-
-      <section class="faq-card card" aria-labelledby="faqTitle">
-        <div class="section-copy">
-          <span class="eyebrow">FAQ</span>
-          <h2 id="faqTitle">Questions people usually ask.</h2>
-        </div>
-        <div class="faq-grid">
-          <details open>
-            <summary>Does Kaptiono upload the video?</summary>
-            <p>No. Kaptiono is designed around local processing so the video can stay on the user device.</p>
-          </details>
-          <details>
-            <summary>Can Kaptiono create subtitles for social media?</summary>
-            <p>Yes. The app is made for creator workflows such as TikTok, Instagram Reels, YouTube Shorts and other video formats.</p>
-          </details>
-          <details>
-            <summary>Is Kaptiono only for desktop?</summary>
-            <p>No. The web app is intended to be mobile friendly too, while the desktop edition can provide a stronger editing workflow.</p>
-          </details>
-          <details>
-            <summary>What makes Kaptiono different?</summary>
-            <p>It focuses on local AI subtitles, privacy-first handling, no watermark output and a clean editor experience.</p>
-          </details>
-        </div>
-      </section>
-
       <section id="supportPage" class="support-page hidden">
         <div class="support-hero card">
           <button id="supportBackBtn" class="support-back" type="button"><span>←</span><b data-i18n="supportBack">Πίσω στο Kaptiono</b></button>
@@ -209,6 +153,50 @@
           <article class="support-tile card"><span class="support-index">02</span><h2 data-i18n="supportFreeTitle">Δωρεάν για creators</h2><p data-i18n="supportFreeText">Το Kaptiono χτίζεται χωρίς credits, watermark και υποχρεωτική συνδρομή για τις βασικές λειτουργίες δημιουργίας captions.</p></article>
           <article class="support-tile card"><span class="support-index">03</span><h2 data-i18n="supportBuiltTitle">Χτίζεται σαν πραγματικό εργαλείο</h2><p data-i18n="supportBuiltText">Desktop, web και mobile σχεδιάζονται με κοινή λογική ώστε το workflow να παραμένει απλό, γρήγορο και οικείο.</p></article>
         </div>
+
+        <section class="support-discovery">
+          <article class="seo-card card">
+            <span class="eyebrow">WHY KAPTIONO</span>
+            <h2 data-i18n="seoWhyTitle">Local AI captions με privacy first.</h2>
+            <p data-i18n="seoWhyText">Το Kaptiono είναι για creators που θέλουν δημιουργία υποτίτλων μέσα στον browser χωρίς να στέλνουν τα video τους σε cloud processing server.</p>
+          </article>
+          <article class="seo-card card">
+            <span class="eyebrow">WHAT IT DOES</span>
+            <h2 data-i18n="seoWhatTitle">Απομαγνητοφώνηση, σχεδίαση και export.</h2>
+            <p data-i18n="seoWhatText">Διάλεξε τοπικά ένα video, δημιούργησε captions με Whisper, ρύθμισε το στυλ και κάνε export για short-form ή long-form περιεχόμενο.</p>
+          </article>
+          <article class="seo-card card">
+            <span class="eyebrow">WHO IT IS FOR</span>
+            <h2 data-i18n="seoWhoTitle">Για creators και editors.</h2>
+            <p data-i18n="seoWhoText">Το Kaptiono ταιριάζει σε TikTok, Reels, Shorts, YouTube και creator workflows που χρειάζονται γρήγορους υπότιτλους, καθαρό editor και export χωρίς watermark.</p>
+          </article>
+        </section>
+
+        <section class="how-it-works card" aria-labelledby="howItWorksTitle">
+          <div class="section-copy">
+            <span class="eyebrow">HOW IT WORKS</span>
+            <h2 id="howItWorksTitle" data-i18n="howTitle">Απλό workflow υποτίτλων μέσα στον browser.</h2>
+            <p data-i18n="howText">Διάλεξε video, τρέξε local AI transcription, ρύθμισε το στυλ και κάνε export. Η εμπειρία έχει σχεδιαστεί ώστε να είναι γρήγορη και app-like σε desktop και mobile.</p>
+          </div>
+          <div class="how-grid">
+            <article><b>01</b><h3 data-i18n="howStep1Title">Διάλεξε video</h3><p data-i18n="howStep1Text">Άνοιξε MP4, MOV ή WebM απευθείας από τη συσκευή σου.</p></article>
+            <article><b>02</b><h3 data-i18n="howStep2Title">Δημιούργησε captions</h3><p data-i18n="howStep2Text">Χρησιμοποίησε Whisper για υψηλής ποιότητας subtitle generation στον browser.</p></article>
+            <article><b>03</b><h3 data-i18n="howStep3Title">Σχεδίασε και κάνε export</h3><p data-i18n="howStep3Text">Ρύθμισε το look, δες live preview και εξήγαγε καθαρό creator-ready αποτέλεσμα.</p></article>
+          </div>
+        </section>
+
+        <section class="faq-card card" aria-labelledby="faqTitle">
+          <div class="section-copy">
+            <span class="eyebrow">FAQ</span>
+            <h2 id="faqTitle" data-i18n="faqTitle">Συχνές ερωτήσεις.</h2>
+          </div>
+          <div class="faq-grid">
+            <details open><summary data-i18n="faqUploadQ">Ανεβάζει το Kaptiono το video σε server;</summary><p data-i18n="faqUploadA">Όχι. Το Kaptiono έχει σχεδιαστεί γύρω από local processing ώστε το video να μένει στη συσκευή.</p></details>
+            <details><summary data-i18n="faqSocialQ">Μπορεί να φτιάξει υπότιτλους για social media;</summary><p data-i18n="faqSocialA">Ναι. Το workflow είναι σχεδιασμένο για TikTok, Instagram Reels, YouTube Shorts και άλλα video formats.</p></details>
+            <details><summary data-i18n="faqDesktopQ">Είναι μόνο για desktop;</summary><p data-i18n="faqDesktopA">Όχι. Η web εφαρμογή έχει σχεδιαστεί και για mobile, ενώ η desktop έκδοση μπορεί να προσφέρει ισχυρότερο editing workflow.</p></details>
+            <details><summary data-i18n="faqDiffQ">Τι κάνει το Kaptiono διαφορετικό;</summary><p data-i18n="faqDiffA">Εστιάζει σε local AI subtitles, privacy-first επεξεργασία, no-watermark output και καθαρό editor.</p></details>
+          </div>
+        </section>
 
         <section class="support-roadmap card">
           <div class="support-section-head"><span class="eyebrow">ROADMAP</span><h2 data-i18n="supportRoadmapTitle">Τι θέλουμε να ακολουθήσει</h2><p data-i18n="supportRoadmapText">Οι παρακάτω κατευθύνσεις είναι στόχοι ανάπτυξης και θα προχωρούν μόνο όταν είναι αρκετά σταθερές.</p></div>
@@ -384,8 +372,38 @@
       </section>
     </main>
 
-    <footer><span>Kaptiono Web Lab 0.5.0</span><span>Free · Local · Private · No watermark</span></footer>
+    <aside id="installBanner" class="install-banner hidden" aria-live="polite">
+      <button id="installDismiss" class="install-dismiss" type="button" aria-label="Close">×</button>
+      <img src="./assets/icons/icon-64.png" alt="" />
+      <div class="install-copy">
+        <strong id="installTitle" data-i18n="installTitle">Εγκατάσταση Kaptiono</strong>
+        <span id="installText" data-i18n="installText">Χρησιμοποίησέ το σαν κανονική εφαρμογή στο κινητό σου.</span>
+      </div>
+      <button id="installAction" class="install-action" type="button" data-i18n="installAction">Download</button>
+    </aside>
+
+    <div id="iosInstallModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="iosInstallTitle">
+      <div class="app-modal-card">
+        <button id="iosInstallClose" class="modal-close" type="button" aria-label="Close">×</button>
+        <img src="./assets/icons/icon-192.png" alt="Kaptiono" />
+        <span class="eyebrow">INSTALL ON IPHONE / IPAD</span>
+        <h2 id="iosInstallTitle" data-i18n="iosInstallTitle">Βάλε το Kaptiono στην Αρχική οθόνη</h2>
+        <ol>
+          <li><span>1</span><div><b data-i18n="iosStep1Title">Άνοιξε το Share</b><small data-i18n="iosStep1Text">Στο Safari πάτησε το εικονίδιο Κοινοποίησης.</small></div></li>
+          <li><span>2</span><div><b data-i18n="iosStep2Title">Add to Home Screen</b><small data-i18n="iosStep2Text">Διάλεξε «Προσθήκη στην οθόνη Αφετηρίας».</small></div></li>
+          <li><span>3</span><div><b data-i18n="iosStep3Title">Πάτησε Add</b><small data-i18n="iosStep3Text">Το Kaptiono θα εμφανιστεί σαν εφαρμογή.</small></div></li>
+        </ol>
+        <button id="iosInstallDone" class="primary-btn modal-primary" type="button" data-i18n="iosDone">Έγινε</button>
+      </div>
+    </div>
+
+    <div id="updateToast" class="update-toast hidden" role="status">
+      <div><strong data-i18n="updateTitle">Νέα έκδοση διαθέσιμη</strong><span data-i18n="updateText">Το Kaptiono μπορεί να ενημερωθεί τώρα.</span></div>
+      <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
+    </div>
+
+    <footer><span>Kaptiono Web Lab 0.5.1</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.0"></script>
+  <script type="module" src="./app.js?v=0.5.1"></script>
 </body>
 </html>
