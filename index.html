@@ -83,9 +83,9 @@
               <div class="panel-title"><div><span class="eyebrow">LOCAL AI</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Για ποιότητα κοντά στο desktop χρησιμοποίησε Small και δήλωσε Ελληνικά.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
               <div class="field-grid two">
                 <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
-                  <option value="onnx-community/whisper-small_timestamped">Whisper Small · High quality</option>
-                  <option value="onnx-community/whisper-base_timestamped">Whisper Base · Mobile</option>
+                  <option value="onnx-community/whisper-base_timestamped" selected>Whisper Base · Stable</option>
                   <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
+                  <option value="onnx-community/whisper-small_timestamped">Whisper Small · High quality</option>
                 </select><small id="modelHint">—</small></label>
                 <label class="setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect">
                   <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
@@ -191,8 +191,8 @@
       </section>
     </main>
 
-    <footer><span>Kaptiono Web Lab 0.2</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.3</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.2.0"></script>
+  <script type="module" src="./app.js?v=0.3.0"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@ After replacing the repository files:
 
 ```powershell
 git add .
-git commit -m "Kaptiono Web Lab 0.2: quality, iPhone audio and full studio"
+git commit -m "Kaptiono Web Lab 0.3: quality, iPhone audio and full studio"
 git push
 ```
 
@@ -16,4 +16,4 @@ Pages URL:
 
 `https://donacgreece.github.io/Kaptiono/`
 
-On iPhone, close any old installed PWA tab and reload once after deployment so the 0.2 service worker takes control.
+On iPhone, close any old installed PWA tab and reload once after deployment so the 0.3 service worker takes control.

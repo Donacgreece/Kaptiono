@@ -1,8 +1,8 @@
-# Kaptiono Web Lab 0.2
+# Kaptiono Web Lab 0.3
 
 Experimental browser-only Kaptiono build. Video and audio processing stay on the user's device.
 
-## What changed in 0.2
+## What changed in 0.3
 
 - High quality Whisper Small timestamped model option, with Base and Tiny alternatives.
 - Greek is selected explicitly by default in the Greek UI, instead of relying on short-clip auto detection.
