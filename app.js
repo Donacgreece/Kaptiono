@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.6';
+const APP_VERSION='0.5.7';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -36,7 +36,7 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false};
 const video=$('#video');
 
 function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';}
@@ -135,8 +135,122 @@ function destroyWorker(){if(state.watchdog){clearInterval(state.watchdog);state.
 function touchWorker(){state.lastWorkerActivity=Date.now()}
 function createWorker(){destroyWorker();state.worker=new Worker(`./whisper-worker.js?v=${encodeURIComponent(APP_VERSION)}`,{type:'module'});state.worker.onmessage=e=>{touchWorker();onWorkerMessage(e)};state.worker.onerror=e=>{destroyWorker();failProgress(e.message||'Worker error');$('#generateBtn').disabled=false};touchWorker();return state.worker}
 function startWatchdog(){if(state.watchdog)clearInterval(state.watchdog);state.watchdog=setInterval(()=>{if(!state.worker)return;const silent=Date.now()-state.lastWorkerActivity;if(silent>90000){destroyWorker();failProgress(isGreekUI()?'Το AI δεν απάντησε για 90 δευτερόλεπτα. Η διαδικασία σταμάτησε αντί να μείνει κολλημένη. Δοκίμασε Base ή Tiny και ξανά.':'The AI did not respond for 90 seconds. Processing was stopped instead of hanging indefinitely. Try Base or Tiny and retry.');$('#generateBtn').disabled=false}},5000)}
+
+function selectedModelFriendlyName(){
+  const value=$('#modelSelect')?.value||'';
+  if(value.includes('small'))return 'Whisper Small';
+  if(value.includes('base'))return 'Whisper Base';
+  if(value.includes('tiny'))return 'Whisper Tiny';
+  return 'Whisper';
+}
+function modelReadyStorageKey(){
+  return `kaptiono:model-ready:${$('#modelSelect')?.value||'default'}`;
+}
+function clearProgressMotion(){
+  if(state.progressTicker){clearInterval(state.progressTicker);state.progressTicker=null}
+  if(state.progressRaf){cancelAnimationFrame(state.progressRaf);state.progressRaf=0}
+}
+function resetProgressFlow(){
+  clearProgressMotion();
+  state.progressValue=0;
+  state.progressTarget=0;
+  $('#progressBar').style.width='0%';
+  $('#progressPercent').textContent='0%';
+}
+function paintProgressValue(){
+  $('#progressBar').style.width=`${state.progressValue.toFixed(2)}%`;
+  $('#progressPercent').textContent=`${Math.round(state.progressValue)}%`;
+}
+function setProgressTarget(next){
+  const target=Math.max(state.progressTarget,state.progressValue,Math.min(100,Math.max(0,Number(next)||0)));
+  state.progressTarget=target;
+  if(state.progressRaf)return;
+  const animate=()=>{
+    const diff=state.progressTarget-state.progressValue;
+    if(diff<=0.08){
+      state.progressValue=state.progressTarget;
+      paintProgressValue();
+      state.progressRaf=0;
+      return;
+    }
+    state.progressValue+=Math.max(0.08,diff*.065);
+    if(state.progressValue>state.progressTarget)state.progressValue=state.progressTarget;
+    paintProgressValue();
+    state.progressRaf=requestAnimationFrame(animate);
+  };
+  state.progressRaf=requestAnimationFrame(animate);
+}
+function startProgressDrift(cap,amount=.45,interval=550){
+  if(state.progressTicker)clearInterval(state.progressTicker);
+  state.progressTicker=setInterval(()=>{
+    if(state.progressTarget>=cap)return;
+    setProgressTarget(Math.min(cap,state.progressTarget+amount));
+  },interval);
+}
+function stopProgressDrift(){
+  if(state.progressTicker){clearInterval(state.progressTicker);state.progressTicker=null}
+}
+function progressCopy(stage){
+  const el=isGreekUI(),model=selectedModelFriendlyName();
+  if(stage==='audio')return el
+    ?{step:'Βήμα 1 από 4',title:'Προετοιμασία video',detail:'Διαβάζουμε και προετοιμάζουμε το audio τοπικά. Το video δεν ανεβαίνει πουθενά.'}
+    :{step:'Step 1 of 4',title:'Preparing video',detail:'We read and prepare the audio locally. Your video is not uploaded anywhere.'};
+  if(stage==='model'){
+    if(state.modelFirstRun){
+      if(!window.isSecureContext)return el
+        ?{step:'Βήμα 2 από 4',title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή για αυτή τη χρήση. Με HTTPS θα μπορεί να αποθηκεύεται τοπικά για τις επόμενες φορές.`}
+        :{step:'Step 2 of 4',title:'Downloading Local AI',detail:`First run: ${model} is downloading to your device for this session. With HTTPS it can be stored locally for future runs.`};
+      return el
+        ?{step:'Βήμα 2 από 4',title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή σου. Στις επόμενες χρήσεις θα φορτώνει από το τοπικό cache.`}
+        :{step:'Step 2 of 4',title:'Downloading Local AI',detail:`First run: ${model} is downloading to your device. Future runs can load it from the local browser cache.`};
+    }
+    return el
+      ?{step:'Βήμα 2 από 4',title:'Φόρτωση Local AI',detail:`Ετοιμάζουμε το ${model} στη συσκευή σου για την απομαγνητοφώνηση.`}
+      :{step:'Step 2 of 4',title:'Loading Local AI',detail:`Preparing ${model} on your device for transcription.`};
+  }
+  if(stage==='transcribe')return el
+    ?{step:'Βήμα 3 από 4',title:'Απομαγνητοφώνηση',detail:'Το Local AI ακούει το video και δημιουργεί το κείμενο μαζί με τα timestamps.'}
+    :{step:'Step 3 of 4',title:'Transcribing',detail:'Local AI is listening to the video and generating text with timestamps.'};
+  if(stage==='finalize')return el
+    ?{step:'Βήμα 4 από 4',title:'Δημιουργία captions',detail:'Χωρίζουμε το transcript σε captions και εφαρμόζουμε τη ροή και το επιλεγμένο style.'}
+    :{step:'Step 4 of 4',title:'Creating captions',detail:'We split the transcript into captions and apply the selected flow and style.'};
+  if(stage==='done')return el
+    ?{step:'Ολοκληρώθηκε',title:'Οι υπότιτλοι είναι έτοιμοι',detail:'Τα captions εμφανίζονται τώρα στη ζωντανή προεπισκόπηση και μπορείς να τα επεξεργαστείς ή να τα εξαγάγεις.'}
+    :{step:'Completed',title:'Your captions are ready',detail:'Captions are now visible in the live preview and can be edited or exported.'};
+  return el
+    ?{step:'Πρόβλημα',title:'Αποτυχία επεξεργασίας',detail:'Η διαδικασία σταμάτησε πριν ολοκληρωθεί.'}
+    :{step:'Problem',title:'Processing failed',detail:'The process stopped before it could finish.'};
+}
+
 $('#generateBtn').addEventListener('click',generateCaptions);
-async function generateCaptions(){if(!state.file)return;trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value});$('#generateBtn').disabled=true;state.startedAt=performance.now();showProgress('audio',2,isGreekUI()?'Εξαγωγή audio τοπικά…':'Extracting audio locally…');try{const audio=await extractAudio16k(state.file,p=>showProgress('audio',Math.min(28,2+p*.26),isGreekUI()?`Αποκωδικοποίηση audio ${Math.round(p)}%`:`Decoding audio ${Math.round(p)}%`));showProgress('model',30,isGreekUI()?'Εκκίνηση Stable AI engine…':'Starting Stable AI engine…');$('#engineBadge').textContent='WASM';$('#systemAi').textContent='WASM + Whisper';const worker=createWorker();startWatchdog();worker.postMessage({type:'transcribe',audio:audio.buffer,duration:video.duration,device:'wasm',model:$('#modelSelect').value,language:$('#languageSelect').value},[audio.buffer])}catch(e){destroyWorker();failProgress(friendlyError(e));$('#generateBtn').disabled=false}}
+async function generateCaptions(){
+  if(!state.file)return;
+  trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value});
+  $('#generateBtn').disabled=true;
+  state.startedAt=performance.now();
+  state.modelFirstRun=localStorage.getItem(modelReadyStorageKey())!=='1';
+  resetProgressFlow();
+  showProgress('audio',2);
+  startProgressDrift(10,.18,600);
+  try{
+    const audio=await extractAudio16k(state.file,p=>{
+      showProgress('audio',Math.min(14,2+p*.12));
+    });
+    stopProgressDrift();
+    showProgress('model',16);
+    startProgressDrift(54,.22,650);
+    $('#engineBadge').textContent='WASM';
+    $('#systemAi').textContent='WASM + Whisper';
+    const worker=createWorker();
+    startWatchdog();
+    worker.postMessage({type:'transcribe',audio:audio.buffer,duration:video.duration,device:'wasm',model:$('#modelSelect').value,language:$('#languageSelect').value},[audio.buffer]);
+  }catch(e){
+    stopProgressDrift();
+    destroyWorker();
+    failProgress(friendlyError(e));
+    $('#generateBtn').disabled=false;
+  }
+}
 
 async function extractAudio16k(file,onProgress=()=>{}){
   // Primary path: demux + decode through Mediabunny/WebCodecs. This is specifically
@@ -153,9 +267,83 @@ function resampleLinear(input,fromRate,toRate){if(fromRate===toRate)return input
 function concatFloat32(parts,total){const out=new Float32Array(total);let pos=0;for(const p of parts){out.set(p,pos);pos+=p.length}return out}
 function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
 
-function onWorkerMessage({data}){if(data.type==='cache-status'){if(!data.enabled&&!window.isSecureContext){$('#systemAi').textContent='WASM + Whisper · no cache';}}if(data.type==='worker-ready'){showProgress('model',31,isGreekUI()?'Stable AI engine έτοιμο. Φόρτωση μοντέλου…':'Stable AI engine ready. Loading model…')}if(data.type==='model-file'){showProgress('model',Math.max(31,Number(data.overall)||31),data.label||'AI model')}if(data.type==='model-progress'){const p=Number(data.progress)||0;showProgress('model',31+Math.min(34,p*.34),data.file?`${data.file} · ${Math.round(p)}%`:`AI model · ${Math.round(p)}%`)}if(data.type==='model-ready'){showProgress('model',66,isGreekUI()?'Το AI model φορτώθηκε.':'AI model loaded.')}if(data.type==='device'){const d=data.device||'wasm';$('#engineBadge').textContent=d.toUpperCase();$('#systemAi').textContent=`${d.toUpperCase()} + Whisper`;}if(data.type==='transcribe-start'){showProgress('transcribe',68,isGreekUI()?'Απομαγνητοφώνηση…':'Transcribing…')}if(data.type==='transcribe-progress'){const p=Number(data.progress)||0;showProgress('transcribe',68+Math.min(30,p*.30),isGreekUI()?`Απομαγνητοφώνηση ${Math.round(p)}%`:`Transcribing ${Math.round(p)}%`)}if(data.type==='result'){trackEvent('captions_generated',{word_count:(data.words||[]).length});destroyWorker();state.sourceWords=data.words||[];reflowCaptions();showProgress('done',100,isGreekUI()?'Ολοκληρώθηκε':'Done');setTimeout(()=>$('#progressBox').classList.add('hidden'),800);$('#generateBtn').disabled=false;updateCaptionOverlay()}if(data.type==='error'){destroyWorker();failProgress(data.message||'Transcription failed');$('#generateBtn').disabled=false}}
-function showProgress(stage,pct,detail){const box=$('#progressBox');box.classList.remove('hidden');$('#progressBar').style.width=`${Math.max(0,Math.min(100,pct))}%`;$('#progressPercent').textContent=`${Math.round(pct)}%`;$('#progressDetail').textContent=detail;const title=stage==='audio'?(isGreekUI()?'Προετοιμασία audio':'Preparing audio'):stage==='model'?(isGreekUI()?'Φόρτωση AI model':'Loading AI model'):stage==='transcribe'?(isGreekUI()?'Απομαγνητοφώνηση':'Transcribing'):stage==='done'?(isGreekUI()?'Έτοιμο':'Done'):(isGreekUI()?'Αποτυχία επεξεργασίας':'Processing failed');$('#progressTitle').textContent=title;$('#progressBar').style.background=stage==='error'?'var(--danger)':'var(--lime)';updateElapsed()}
-function updateElapsed(){if(!state.startedAt)return;$('#elapsed').textContent=formatTime((performance.now()-state.startedAt)/1000);if(!$('#progressBox').classList.contains('hidden'))setTimeout(updateElapsed,700)}function failProgress(msg){showProgress('error',0,msg)}
+function onWorkerMessage({data}){
+  if(data.type==='cache-status'){
+    if(!data.enabled&&!window.isSecureContext)$('#systemAi').textContent='WASM + Whisper · no cache';
+  }
+  if(data.type==='worker-ready'){
+    showProgress('model',18);
+  }
+  if(data.type==='model-progress'){
+    const p=Math.max(0,Math.min(100,Number(data.progress)||0));
+    // Model callbacks can restart from 0 for different files. The UI progress is
+    // intentionally monotonic, so it never jumps backwards from e.g. 40% to 30%.
+    showProgress('model',Math.min(56,18+p*.38));
+  }
+  if(data.type==='model-ready'){
+    stopProgressDrift();
+    try{localStorage.setItem(modelReadyStorageKey(),'1')}catch{}
+    state.modelFirstRun=false;
+    showProgress('model',58);
+  }
+  if(data.type==='device'){
+    const d=data.device||'wasm';
+    $('#engineBadge').textContent=d.toUpperCase();
+    $('#systemAi').textContent=`${d.toUpperCase()} + Whisper`;
+  }
+  if(data.type==='transcribe-start'){
+    stopProgressDrift();
+    showProgress('transcribe',62);
+    startProgressDrift(92,.32,700);
+  }
+  if(data.type==='transcribe-progress'){
+    const p=Math.max(0,Math.min(100,Number(data.progress)||0));
+    showProgress('transcribe',Math.min(94,62+p*.32));
+  }
+  if(data.type==='result'){
+    stopProgressDrift();
+    showProgress('finalize',96);
+    trackEvent('captions_generated',{word_count:(data.words||[]).length});
+    destroyWorker();
+    state.sourceWords=data.words||[];
+    reflowCaptions();
+    updateCaptionOverlay();
+    setTimeout(()=>{
+      showProgress('done',100);
+      $('#generateBtn').disabled=false;
+      setTimeout(()=>{
+        $('#progressBox').classList.add('hidden');
+        clearProgressMotion();
+      },1400);
+    },260);
+  }
+  if(data.type==='error'){
+    stopProgressDrift();
+    destroyWorker();
+    failProgress(data.message||'Transcription failed');
+    $('#generateBtn').disabled=false;
+  }
+}
+function showProgress(stage,pct,detailOverride=''){
+  const box=$('#progressBox');
+  box.classList.remove('hidden');
+  const copy=progressCopy(stage);
+  $('#progressStep').textContent=copy.step;
+  $('#progressTitle').textContent=copy.title;
+  $('#progressDetail').textContent=detailOverride||copy.detail;
+  setProgressTarget(stage==='error'?state.progressValue:pct);
+  $('#progressBar').style.background=stage==='error'?'var(--danger)':'var(--lime)';
+  updateElapsed();
+}
+function updateElapsed(){
+  if(!state.startedAt)return;
+  $('#elapsed').textContent=formatTime((performance.now()-state.startedAt)/1000);
+  if(!$('#progressBox').classList.contains('hidden'))setTimeout(updateElapsed,700);
+}
+function failProgress(msg){
+  stopProgressDrift();
+  showProgress('error',state.progressValue,msg);
+}
 
 // Export helpers
 function preferredVideoRecorderFormat(){

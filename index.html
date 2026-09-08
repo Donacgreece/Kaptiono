@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.6" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.7" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -125,7 +125,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.6</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.7</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -248,7 +248,12 @@
                 </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></label>
               </div>
               <button id="generateBtn" class="primary-btn" type="button"><span data-i18n="generateButton">Δημιουργία captions</span><b>→</b></button>
-              <div id="progressBox" class="progress-box hidden"><div class="progress-copy"><strong id="progressTitle">Προετοιμασία AI…</strong><span id="progressDetail">—</span></div><div class="progress-track"><i id="progressBar"></i></div><div class="progress-footer"><span id="progressPercent">0%</span><span id="elapsed">0:00</span></div></div>
+              <div id="progressBox" class="progress-box hidden">
+                <div class="progress-stage-row"><span id="progressStep" class="progress-step">Βήμα 1 από 4</span><span id="elapsed">0:00</span></div>
+                <div class="progress-message"><strong id="progressTitle">Προετοιμασία video</strong><span id="progressDetail">Διαβάζουμε το audio τοπικά.</span></div>
+                <div class="progress-track"><i id="progressBar"></i></div>
+                <div class="progress-footer"><span id="progressPercent">0%</span><span class="progress-local">LOCAL PROCESSING</span></div>
+              </div>
               <div id="emptyCaptions" class="empty-state"><strong data-i18n="noCaptions">Δεν υπάρχουν captions ακόμη.</strong><span data-i18n="noCaptionsHint">Πάτησε «Δημιουργία captions» για να ξεκινήσεις.</span></div>
               <div id="captionEditor" class="caption-editor hidden"></div>
             </div>
@@ -380,8 +385,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.6</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.7</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.6"></script>
+  <script type="module" src="./app.js?v=0.5.7"></script>
 </body>
 </html>
