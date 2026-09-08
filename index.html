@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.2" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.3" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -114,7 +114,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.2</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.3</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -153,52 +153,19 @@
           <article class="support-tile card"><span class="support-index">02</span><h2 data-i18n="supportFreeTitle">Δωρεάν για creators</h2><p data-i18n="supportFreeText">Το Kaptiono χτίζεται χωρίς credits, watermark και υποχρεωτική συνδρομή για τις βασικές λειτουργίες δημιουργίας captions.</p></article>
           <article class="support-tile card"><span class="support-index">03</span><h2 data-i18n="supportBuiltTitle">Χτίζεται σαν πραγματικό εργαλείο</h2><p data-i18n="supportBuiltText">Desktop, web και mobile σχεδιάζονται με κοινή λογική ώστε το workflow να παραμένει απλό, γρήγορο και οικείο.</p></article>
         </div>
-
-        <section class="support-discovery">
-          <article class="seo-card card">
-            <span class="eyebrow">WHY KAPTIONO</span>
-            <h2 data-i18n="seoWhyTitle">Local AI captions με privacy first.</h2>
-            <p data-i18n="seoWhyText">Το Kaptiono είναι για creators που θέλουν δημιουργία υποτίτλων μέσα στον browser χωρίς να στέλνουν τα video τους σε cloud processing server.</p>
-          </article>
-          <article class="seo-card card">
-            <span class="eyebrow">WHAT IT DOES</span>
-            <h2 data-i18n="seoWhatTitle">Απομαγνητοφώνηση, σχεδίαση και export.</h2>
-            <p data-i18n="seoWhatText">Διάλεξε τοπικά ένα video, δημιούργησε captions με Whisper, ρύθμισε το στυλ και κάνε export για short-form ή long-form περιεχόμενο.</p>
-          </article>
-          <article class="seo-card card">
-            <span class="eyebrow">WHO IT IS FOR</span>
-            <h2 data-i18n="seoWhoTitle">Για creators και editors.</h2>
-            <p data-i18n="seoWhoText">Το Kaptiono ταιριάζει σε TikTok, Reels, Shorts, YouTube και creator workflows που χρειάζονται γρήγορους υπότιτλους, καθαρό editor και export χωρίς watermark.</p>
-          </article>
-        </section>
-
-        <section class="how-it-works card" aria-labelledby="howItWorksTitle">
-          <div class="section-copy">
-            <span class="eyebrow">HOW IT WORKS</span>
-            <h2 id="howItWorksTitle" data-i18n="howTitle">Απλό workflow υποτίτλων μέσα στον browser.</h2>
-            <p data-i18n="howText">Διάλεξε video, τρέξε local AI transcription, ρύθμισε το στυλ και κάνε export. Η εμπειρία έχει σχεδιαστεί ώστε να είναι γρήγορη και app-like σε desktop και mobile.</p>
-          </div>
-          <div class="how-grid">
-            <article><b>01</b><h3 data-i18n="howStep1Title">Διάλεξε video</h3><p data-i18n="howStep1Text">Άνοιξε MP4, MOV ή WebM απευθείας από τη συσκευή σου.</p></article>
-            <article><b>02</b><h3 data-i18n="howStep2Title">Δημιούργησε captions</h3><p data-i18n="howStep2Text">Χρησιμοποίησε Whisper για υψηλής ποιότητας subtitle generation στον browser.</p></article>
-            <article><b>03</b><h3 data-i18n="howStep3Title">Σχεδίασε και κάνε export</h3><p data-i18n="howStep3Text">Ρύθμισε το look, δες live preview και εξήγαγε καθαρό creator-ready αποτέλεσμα.</p></article>
-          </div>
-        </section>
-
-        <section class="faq-card card" aria-labelledby="faqTitle">
-          <div class="section-copy">
+        <section class="support-faq card" aria-labelledby="faqTitle">
+          <div class="support-faq-head">
             <span class="eyebrow">FAQ</span>
             <h2 id="faqTitle" data-i18n="faqTitle">Συχνές ερωτήσεις.</h2>
           </div>
-          <div class="faq-grid">
+          <div class="support-faq-list">
             <details open><summary data-i18n="faqUploadQ">Ανεβάζει το Kaptiono το video σε server;</summary><p data-i18n="faqUploadA">Όχι. Το Kaptiono έχει σχεδιαστεί γύρω από local processing ώστε το video να μένει στη συσκευή.</p></details>
             <details><summary data-i18n="faqSocialQ">Μπορεί να φτιάξει υπότιτλους για social media;</summary><p data-i18n="faqSocialA">Ναι. Το workflow είναι σχεδιασμένο για TikTok, Instagram Reels, YouTube Shorts και άλλα video formats.</p></details>
             <details><summary data-i18n="faqDesktopQ">Είναι μόνο για desktop;</summary><p data-i18n="faqDesktopA">Όχι. Η web εφαρμογή έχει σχεδιαστεί και για mobile, ενώ η desktop έκδοση μπορεί να προσφέρει ισχυρότερο editing workflow.</p></details>
             <details><summary data-i18n="faqDiffQ">Τι κάνει το Kaptiono διαφορετικό;</summary><p data-i18n="faqDiffA">Εστιάζει σε local AI subtitles, privacy-first επεξεργασία, no-watermark output και καθαρό editor.</p></details>
           </div>
         </section>
-
-        <section class="support-roadmap card">
+<section class="support-roadmap card">
           <div class="support-section-head"><span class="eyebrow">ROADMAP</span><h2 data-i18n="supportRoadmapTitle">Τι θέλουμε να ακολουθήσει</h2><p data-i18n="supportRoadmapText">Οι παρακάτω κατευθύνσεις είναι στόχοι ανάπτυξης και θα προχωρούν μόνο όταν είναι αρκετά σταθερές.</p></div>
           <div class="roadmap-grid">
             <div><span>01</span><b data-i18n="roadmapAi">Καλύτερη και ταχύτερη local AI απομαγνητοφώνηση</b></div>
@@ -402,8 +369,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.2</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.3</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.2"></script>
+  <script type="module" src="./app.js?v=0.5.3"></script>
 </body>
 </html>
