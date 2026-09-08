@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111511" />
+  <meta name="description" content="Kaptiono Web Lab — private local captions in your browser." />
+  <title>Kaptiono Web Lab</title>
+  <link rel="icon" href="./favicon.ico" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Kaptiono Web Lab">
+        <img src="./assets/icons/icon-64.png" alt="" />
+        <div><strong>Kaptiono</strong><span>WEB LAB</span></div>
+      </a>
+      <div class="top-actions">
+        <span class="privacy-chip"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-lang="el" class="active">EL</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="hero">
+        <span class="eyebrow">KAPTIONO WEB LAB · 0.1</span>
+        <h1 data-i18n="heroTitle">Υπότιτλοι μέσα στον browser. Χωρίς upload.</h1>
+        <p data-i18n="heroText">Διάλεξε ένα video. Η απομαγνητοφώνηση γίνεται στη συσκευή σου με Whisper και το αρχείο δεν ανεβαίνει σε server.</p>
+        <div class="capability-row">
+          <span id="webgpuBadge">WebGPU · checking</span>
+          <span id="wasmBadge">WASM · ready</span>
+          <span data-i18n="sameLanguage">Auto language · ίδια γλώσσα captions</span>
+        </div>
+      </section>
+
+      <section id="startCard" class="upload-card card">
+        <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.webm,.m4v" hidden />
+        <button id="dropzone" type="button" class="dropzone">
+          <span class="upload-icon">＋</span>
+          <strong data-i18n="chooseVideo">Διάλεξε video</strong>
+          <small data-i18n="dropHint">ή σύρε MP4 / MOV / WebM εδώ</small>
+        </button>
+        <div class="privacy-note">
+          <strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong>
+          <span data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</span>
+        </div>
+      </section>
+
+      <section id="workspace" class="workspace hidden">
+        <div class="workspace-grid">
+          <section class="video-card card">
+            <div class="section-head compact">
+              <div><span class="live-dot"></span><div><strong data-i18n="livePreview">Ζωντανή προεπισκόπηση</strong><small id="videoMeta">—</small></div></div>
+              <span id="captionCountBadge" class="mini-badge">0 captions</span>
+            </div>
+            <div id="videoStage" class="video-stage">
+              <video id="video" playsinline preload="metadata"></video>
+              <div id="captionOverlay" class="caption-overlay" aria-live="polite"></div>
+              <div id="videoLoading" class="video-loading hidden"><span></span><small data-i18n="loadingVideo">Φόρτωση video…</small></div>
+            </div>
+            <div class="player-controls">
+              <button id="playBtn" class="icon-btn" type="button" aria-label="Play">▶</button>
+              <span id="currentTime">0:00</span>
+              <input id="seek" class="seek" type="range" min="0" max="1" value="0" step="0.01" />
+              <span id="duration">0:00</span>
+              <button id="muteBtn" class="icon-btn" type="button" aria-label="Mute">♪</button>
+            </div>
+          </section>
+
+          <aside class="control-card card">
+            <div class="tabs" role="tablist">
+              <button type="button" class="active" data-tab="captions" data-i18n="tabCaptions">Captions</button>
+              <button type="button" data-tab="style" data-i18n="tabStyle">Στυλ</button>
+              <button type="button" data-tab="export" data-i18n="tabExport">Export</button>
+            </div>
+
+            <div class="tab-panel active" data-panel="captions">
+              <div class="panel-title"><div><span class="eyebrow" data-i18n="localAi">LOCAL AI</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
+              <div class="field-grid two">
+                <label class="field"><span data-i18n="aiModel">AI model</span><select id="modelSelect"><option value="onnx-community/whisper-tiny">Whisper Tiny · multilingual</option></select></label>
+                <label class="field"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect"><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="greek">Ελληνικά</option><option value="english">English</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option></select></label>
+              </div>
+              <button id="generateBtn" class="primary-btn" type="button"><span data-i18n="generateButton">Δημιουργία captions</span><b>→</b></button>
+
+              <div id="progressBox" class="progress-box hidden">
+                <div class="progress-copy"><strong id="progressTitle" data-i18n="preparingAi">Προετοιμασία AI…</strong><span id="progressDetail">—</span></div>
+                <div class="progress-track"><i id="progressBar"></i></div>
+                <div class="progress-footer"><span id="progressPercent">0%</span><span id="elapsed">0:00</span></div>
+              </div>
+
+              <div id="emptyCaptions" class="empty-state"><strong data-i18n="noCaptions">Δεν υπάρχουν captions ακόμη.</strong><span data-i18n="noCaptionsHint">Πάτησε «Δημιουργία captions» για να ξεκινήσεις.</span></div>
+              <div id="captionEditor" class="caption-editor hidden"></div>
+            </div>
+
+            <div class="tab-panel" data-panel="style">
+              <div class="panel-title"><div><span class="eyebrow" data-i18n="design">DESIGN</span><h2 data-i18n="styleTitle">Στυλ υποτίτλων</h2></div></div>
+              <div id="presetGrid" class="preset-grid"></div>
+              <div class="field-grid two style-fields">
+                <label class="field"><span data-i18n="fontSize">Μέγεθος</span><div class="range-row"><input id="fontSize" type="range" min="28" max="90" value="54" /><b id="fontSizeValue">54</b></div></label>
+                <label class="field"><span data-i18n="position">Θέση</span><div class="range-row"><input id="position" type="range" min="20" max="90" value="78" /><b id="positionValue">78%</b></div></label>
+                <label class="field color-field"><span data-i18n="textColor">Χρώμα κειμένου</span><input id="textColor" type="color" value="#FFD84D" /></label>
+                <label class="field color-field"><span data-i18n="outlineColor">Outline</span><input id="outlineColor" type="color" value="#000000" /></label>
+              </div>
+              <label class="switch-row"><span><strong data-i18n="uppercase">UPPERCASE</strong><small data-i18n="uppercaseHint">Χωρίς τόνους στα ελληνικά κεφαλαία</small></span><input id="uppercase" type="checkbox" /><i></i></label>
+            </div>
+
+            <div class="tab-panel" data-panel="export">
+              <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2></div></div>
+              <div class="export-grid">
+                <button id="srtBtn" type="button" class="export-btn" disabled><strong>SRT</strong><span data-i18n="srtHint">Υπότιτλοι με timestamps</span></button>
+                <button id="txtBtn" type="button" class="export-btn" disabled><strong>TXT</strong><span data-i18n="txtHint">Καθαρό transcript</span></button>
+                <button id="webmBtn" type="button" class="export-btn experimental" disabled><strong>WebM · LAB</strong><span data-i18n="webmHint">Πειραματικό local video export</span></button>
+              </div>
+              <div id="exportProgress" class="progress-box hidden"><div class="progress-copy"><strong data-i18n="exporting">Local export…</strong><span id="exportDetail">0%</span></div><div class="progress-track"><i id="exportBar"></i></div></div>
+              <div class="info-callout"><strong data-i18n="mp4Next">MP4 browser export: επόμενο βήμα.</strong><span data-i18n="mp4NextHint">Η πρώτη έκδοση δοκιμάζει πρώτα local AI, preview, SRT και WebM σε Chromium.</span></div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="system-card card">
+          <div><span class="eyebrow" data-i18n="browserCheck">BROWSER CHECK</span><h2 data-i18n="systemTitle">Τι θα χρησιμοποιήσει η συσκευή σου</h2></div>
+          <div class="system-grid">
+            <div><span>AI</span><strong id="systemAi">Checking…</strong></div>
+            <div><span>Audio</span><strong id="systemAudio">Checking…</strong></div>
+            <div><span>Export</span><strong id="systemExport">Checking…</strong></div>
+            <div><span data-i18n="fileStatus">Αρχείο</span><strong id="systemFile">—</strong></div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer><span>Kaptiono Web Lab 0.1</span><span data-i18n="footer">Free · Local · Private · No watermark</span></footer>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
