@@ -1,12 +1,19 @@
-# Kaptiono Web Lab v0.5.5
+# Kaptiono Web Lab v0.5.6
 
-Hotfix release for transcription on custom domains while HTTPS is still provisioning.
+Critical transcription hotfix.
 
-## Fixed
-- Whisper no longer crashes when the browser Cache API is unavailable.
-- Browser model cache is used only when the current context supports it.
-- On temporary HTTP custom-domain access, transcription continues without persistent browser cache.
-- A clear compatibility note explains that the AI model may need to download again until HTTPS is active.
-- PWA/static cache version bumped to 0.5.5.
+## Root cause fixed
+The app was still creating the Whisper worker with the hard-coded URL:
 
-The Google Analytics configuration and all v0.5.4 features remain included.
+`whisper-worker.js?v=0.4.0`
+
+That meant browsers could keep serving an old worker even after the main app had been upgraded to v0.5.5. The old worker forced Browser Cache and failed on the temporary non-HTTPS custom domain.
+
+## Fixes
+- Whisper worker now uses the current `APP_VERSION` as its cache-busting query.
+- The v0.5.6 PWA shell includes the matching versioned Whisper worker.
+- Browser AI cache is enabled only in a secure HTTPS context.
+- On temporary HTTP access, Kaptiono uses WASM without persistent model cache.
+- HTTPS notice now correctly explains which PWA features require HTTPS.
+
+Google Analytics and all previous features remain included.

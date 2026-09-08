@@ -13,8 +13,8 @@ async function loadTransformers(){
   // Never force browser caching when it is unavailable, otherwise
   // Transformers.js aborts before loading Whisper.
   const browserCacheAvailable =
-    typeof caches !== 'undefined' &&
-    (typeof self.isSecureContext === 'undefined' || self.isSecureContext === true);
+    self.isSecureContext === true &&
+    typeof self.caches !== 'undefined';
   envRef.useBrowserCache = browserCacheAvailable;
   postMessage({type:'cache-status',enabled:browserCacheAvailable});
 }
