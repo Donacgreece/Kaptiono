@@ -44,7 +44,13 @@ fileInput.addEventListener('change',()=>fileInput.files?.[0]&&loadFile(fileInput
 ['dragleave','drop'].forEach(name=>dropzone.addEventListener(name,e=>{e.preventDefault();dropzone.classList.remove('drag')}));
 dropzone.addEventListener('drop',e=>{const f=e.dataTransfer.files?.[0];if(f)loadFile(f)});
 $('#changeVideoBtn').addEventListener('click',()=>fileInput.click());
-$('#brandHome').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+function goHome(){
+  try{video.pause()}catch{}
+  $('#workspace').classList.add('hidden');
+  $('#startCard').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+$('#brandHome').addEventListener('click',goHome);
 
 function loadFile(file){
   if(!file.type.startsWith('video/')&&!/\.(mp4|mov|m4v|webm)$/i.test(file.name)){alert(isGreekUI()?'Διάλεξε αρχείο video.':'Choose a video file.');return}

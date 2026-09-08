@@ -1,17 +1,20 @@
-# Kaptiono Web Lab 0.4
+# Kaptiono Web Lab 0.4.1
 
 Browser-only Kaptiono build. Video and audio processing stay on the user's device.
 
-## What changed in 0.4
+## What changed in 0.4.1
 
-- Whisper Small is now the default AI model because it gives the best caption quality.
-- Base and Tiny remain available as lighter alternatives.
-- A clear **Download video with captions** action now appears directly under the main preview player.
-- The Export tab now has a large primary burned-in video download button.
-- Video export chooses the best browser-supported local format automatically: MP4 when MediaRecorder supports it, otherwise WebM.
-- SRT and TXT remain available separately.
-- New service-worker cache version avoids stale 0.3 UI.
+- The Kaptiono logo now really returns to the home screen instead of only scrolling to the top while the home card stays hidden.
+- The home hero is rebuilt as a balanced 50/50 desktop grid.
+- The copy panel and upload panel now use matching heights and spacing.
+- Home feature badges use a symmetric 2x2 grid.
+- The privacy note is centered under both columns.
+- Responsive behavior keeps the same visual balance on tablet and mobile.
+- Service-worker and asset versions were bumped to avoid stale cached UI.
 
-## Notes
+## Existing 0.4 behavior
 
-The browser records the rendered preview locally in real time, so a 1 minute video normally needs roughly 1 minute to export. Browser codec support varies by platform.
+- Whisper Small is the default AI model.
+- Clear local video download with burned-in captions.
+- MP4 when supported by MediaRecorder, otherwise WebM.
+- SRT and TXT export remain available.

@@ -10,14 +10,14 @@
   <title>Kaptiono Web Lab</title>
   <link rel="icon" href="./favicon.ico" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.2.0" />
+  <link rel="stylesheet" href="./styles.css?v=0.4.1" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.2</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.4.1</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -28,13 +28,13 @@
 
     <main>
       <section id="startCard" class="start-card card">
-        <div class="hero-copy">
+        <div class="hero-copy home-panel">
           <span class="eyebrow">LOCAL AI · NO UPLOAD</span>
           <h1 data-i18n="heroTitle">Υπότιτλοι μέσα στον browser. Χωρίς upload.</h1>
           <p data-i18n="heroText">Διάλεξε ένα video. Η απομαγνητοφώνηση γίνεται στη συσκευή σου και το αρχείο δεν ανεβαίνει σε server.</p>
           <div class="hero-badges"><span>Whisper</span><span>WebGPU / WASM</span><span>iPhone fallback</span><span>No watermark</span></div>
         </div>
-        <button id="dropzone" class="dropzone" type="button">
+        <button id="dropzone" class="dropzone home-panel" type="button">
           <span class="upload-icon">＋</span>
           <strong data-i18n="chooseVideo">Διάλεξε video</strong>
           <small data-i18n="dropHint">ή σύρε MP4 / MOV / WebM εδώ</small>
@@ -202,6 +202,6 @@
 
     <footer><span>Kaptiono Web Lab 0.4</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.4.0"></script>
+  <script type="module" src="./app.js?v=0.4.1"></script>
 </body>
 </html>
