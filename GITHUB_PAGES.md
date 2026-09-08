@@ -9,3 +9,8 @@ The PWA uses a stable `sw.js` registration plus `version.json` checks. Do not re
 - asset query versions in `index.html` and `sw.js`
 
 When `kaptiono.com` is connected, keep GitHub Pages HTTPS enabled.
+
+
+## README policy
+
+`README.md` is the permanent public product presentation for Kaptiono. Do not replace it with per-version hotfix notes. Put release-specific changes in `CHANGELOG.md`.

@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.7';
+const APP_VERSION='0.5.8';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -120,7 +120,60 @@ function labelsFit(labels,maxLineChars,maxLines){const total=labels.join(' ').le
 function reflowCaptions(){const words=state.sourceWords.filter(w=>w.word?.trim()&&Number.isFinite(w.start)&&Number.isFinite(w.end)&&w.end>w.start);if(!words.length){state.captions=[];renderCaptionEditor();return}const s=state.style,lim=speedValues(s.caption_speed),maxLineChars=previewLineLimit(),result=[];let current=[];const flush=()=>{if(!current.length)return;result.push({start:current[0].start,end:current[current.length-1].end,text:current.map(w=>w.word.trim()).join(' ').replace(/\s+([,.!?;:])/g,'$1'),words:[...current]});current=[]};for(let i=0;i<words.length;i++){const w=words[i];if(current.length){const proposed=current.concat(w),duration=w.end-current[0].start;if(current.length>=s.max_words||duration>lim.maxDuration||!labelsFit(proposed.map(x=>x.word.trim()),maxLineChars,s.max_lines))flush()}current.push(w);const next=words[i+1],gap=next?Math.max(0,next.start-w.end):999,duration=current[current.length-1].end-current[0].start;if(hardBreak.test(w.word)||gap>=lim.pause||current.length>=s.max_words||(duration>=lim.targetDuration&&current.length>=Math.min(3,s.max_words))||(softBreak.test(w.word)&&current.length>=Math.min(3,s.max_words))||!next)flush()}state.captions=result;renderCaptionEditor();$('#captionCountBadge').textContent=`${result.length} captions`;updateExportButtons();}
 function splitLines(text,maxLines){const words=(text||'').trim().split(/\s+/).filter(Boolean);if(maxLines===1||words.length<=2)return [words.join(' ')];const maxChars=previewLineLimit();if(words.join(' ').length<=maxChars)return [words.join(' ')];let best=1,score=Infinity;for(let i=1;i<words.length;i++){const a=words.slice(0,i).join(' ').length,b=words.slice(i).join(' ').length,v=Math.max(0,a-maxChars)*1000+Math.max(0,b-maxChars)*1000+Math.max(a,b)*10+Math.abs(a-b);if(v<score){score=v;best=i}}return[words.slice(0,best).join(' '),words.slice(best).join(' ')]}
 
-function updateCaptionOverlay(){const overlay=$('#captionOverlay');const index=state.captions.findIndex(c=>video.currentTime>=c.start&&video.currentTime<=c.end);if(index<0){overlay.innerHTML='';state.currentCaptionKey='';return}const seg=state.captions[index],s=state.style,stage=$('#videoStage');const stageW=stage.clientWidth||576;const fontPx=Math.max(14,Math.min(120,s.font_size*(stageW/576)*(s.scale/100)));overlay.style.left=`${s.horizontal_position}%`;overlay.style.top=`${s.vertical_position}%`;overlay.style.width=`${s.caption_width}%`;overlay.style.textAlign=s.horizontal_align;overlay.style.fontFamily=`${s.font_family}, sans-serif`;overlay.style.fontSize=`${fontPx}px`;overlay.style.fontWeight=s.bold?'900':'500';overlay.style.fontStyle=s.italic?'italic':'normal';overlay.style.letterSpacing=`${s.letter_spacing*(stageW/576)}px`;overlay.style.color=s.text_color;overlay.style.opacity=String(s.text_opacity/100);overlay.style.transform=`translate(-50%,-50%) rotate(${s.rotation}deg)`;overlay.style.webkitTextStroke=`${Math.max(0,s.outline_width*(stageW/576))}px ${s.outline_color}`;overlay.style.textShadow=s.shadow?`0 ${Math.max(1,s.shadow)}px ${Math.max(2,s.shadow*2)}px rgba(0,0,0,.75)`:'none';const lines=splitLines(captionCase(seg.text),s.max_lines);let html='';if(s.word_highlight&&seg.words?.length){const wordHtml=seg.words.map(w=>{const active=video.currentTime>=w.start&&video.currentTime<=w.end;return `<span class="word" style="color:${active?s.highlight_color:s.text_color}">${escapeHtml(captionCase(w.word))}</span>`}).join('');html=s.background==='box'?`<span class="caption-box" style="background:${hexAlpha(s.background_color,s.background_opacity)}">${wordHtml}</span>`:wordHtml}else{html=lines.map(line=>s.background==='box'?`<span class="caption-box" style="background:${hexAlpha(s.background_color,s.background_opacity)}">${escapeHtml(line)}</span>`:escapeHtml(line)).join('<br>')}overlay.innerHTML=html;const key=`${index}:${s.animation}`;if(key!==state.currentCaptionKey){state.currentCaptionKey=key;overlay.animate?.(animationKeyframes(s.animation,s.animation_strength),{duration:s.animation==='fade'?Math.max(80,s.fade_in_ms):180,easing:'cubic-bezier(.2,.75,.2,1)'}).catch?.(()=>{})}}
+function captionMetricsForWidth(width){
+  const s=state.style,ratio=Math.max(.1,width/576);
+  const font=Math.max(14,s.font_size*ratio*(s.scale/100));
+  const paddingScale=Math.max(0,s.box_padding)/8;
+  return{
+    ratio,
+    font,
+    outline:Math.max(0,s.outline_width*ratio),
+    letterSpacing:s.letter_spacing*ratio,
+    lineHeight:font*1.08,
+    padX:font*.28*paddingScale,
+    padY:font*.12*paddingScale,
+    radius:font*.18,
+    wordGap:font*.18,
+    shadowY:s.shadow?Math.max(1,s.shadow*ratio):0,
+    shadowBlur:s.shadow?Math.max(2,s.shadow*2*ratio):0,
+  };
+}
+function updateCaptionOverlay(){
+  const overlay=$('#captionOverlay');
+  const index=state.captions.findIndex(c=>video.currentTime>=c.start&&video.currentTime<=c.end);
+  if(index<0){overlay.innerHTML='';state.currentCaptionKey='';return}
+  const seg=state.captions[index],s=state.style,stage=$('#videoStage'),stageW=stage.clientWidth||576,m=captionMetricsForWidth(stageW);
+  overlay.style.left=`${s.horizontal_position}%`;
+  overlay.style.top=`${s.vertical_position}%`;
+  overlay.style.width=`${s.caption_width}%`;
+  overlay.style.textAlign=s.horizontal_align;
+  overlay.style.fontFamily=`${s.font_family}, sans-serif`;
+  overlay.style.fontSize=`${m.font}px`;
+  overlay.style.fontWeight=s.bold?'900':'500';
+  overlay.style.fontStyle=s.italic?'italic':'normal';
+  overlay.style.letterSpacing=`${m.letterSpacing}px`;
+  overlay.style.lineHeight='1.08';
+  overlay.style.color=s.text_color;
+  overlay.style.opacity=String(s.text_opacity/100);
+  overlay.style.transform=`translate(-50%,-50%) rotate(${s.rotation}deg)`;
+  overlay.style.webkitTextStroke=`${m.outline}px ${s.outline_color}`;
+  overlay.style.textShadow=s.shadow?`0 ${m.shadowY}px ${m.shadowBlur}px rgba(0,0,0,.75)`:'none';
+  const boxStyle=`background:${hexAlpha(s.background_color,s.background_opacity)};padding:${m.padY}px ${m.padX}px;border-radius:${m.radius}px`;
+  const lines=splitLines(captionCase(seg.text),s.max_lines);
+  let html='';
+  if(s.word_highlight&&seg.words?.length){
+    const wordHtml=seg.words.map(w=>{const active=video.currentTime>=w.start&&video.currentTime<=w.end;return `<span class="word" style="color:${active?s.highlight_color:s.text_color}">${escapeHtml(captionCase(w.word))}</span>`}).join('');
+    html=s.background==='box'?`<span class="caption-box" style="${boxStyle}">${wordHtml}</span>`:wordHtml;
+  }else{
+    html=lines.map(line=>s.background==='box'?`<span class="caption-box" style="${boxStyle}">${escapeHtml(line)}</span>`:escapeHtml(line)).join('<br>');
+  }
+  overlay.innerHTML=html;
+  const key=`${index}:${s.animation}`;
+  if(key!==state.currentCaptionKey){
+    state.currentCaptionKey=key;
+    overlay.animate?.(animationKeyframes(s.animation,s.animation_strength),{duration:s.animation==='fade'?Math.max(80,s.fade_in_ms):180,easing:'cubic-bezier(.2,.75,.2,1)'}).catch?.(()=>{});
+  }
+}
 function animationKeyframes(type,strength){if(type==='fade')return[{opacity:0},{opacity:1}];if(type==='pop'){const scale=.88+(100-strength)/100*.08;return[{opacity:.2,transform:`translate(-50%,-50%) scale(${scale}) rotate(${state.style.rotation}deg)`},{opacity:1,transform:`translate(-50%,-50%) scale(1) rotate(${state.style.rotation}deg)`}]}return[{opacity:1},{opacity:1}]}
 function hexAlpha(hex,pct){const h=String(hex).replace('#','');if(h.length!==6)return `rgba(0,0,0,${pct/100})`;const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return `rgba(${r},${g},${b},${pct/100})`}
 
@@ -390,8 +443,102 @@ async function exportVideo(){
     const outMime=rec.mimeType||format.mime;downloadBlob(new Blob(blobs,{type:outMime}),`${baseName()}.${format.ext}`);
   }catch(e){alert((isGreekUI()?'Το video export απέτυχε: ':'Video export failed: ')+(e?.message||String(e)))}finally{try{await ac?.close()}catch{}state.exporting=false;updateExportButtons();setTimeout(()=>$('#exportProgress').classList.add('hidden'),900)}
 }
-function drawCanvasCaption(ctx,w,h,t){const seg=state.captions.find(c=>t>=c.start&&t<=c.end);if(!seg)return;const s=state.style,text=captionCase(seg.text),font=Math.max(18,Math.round(s.font_size*(w/576)*(s.scale/100)));ctx.save();ctx.font=`${s.italic?'italic ':''}${s.bold?'900':'500'} ${font}px ${s.font_family}, sans-serif`;ctx.textAlign=s.horizontal_align;ctx.textBaseline='middle';ctx.fillStyle=s.text_color;ctx.strokeStyle=s.outline_color;ctx.lineWidth=Math.max(0,s.outline_width*(w/576));ctx.lineJoin='round';const x=w*s.horizontal_position/100,y=h*s.vertical_position/100,maxW=w*s.caption_width/100,lines=wrapCanvas(ctx,text,maxW,s.max_lines),lineH=font*1.12;if(s.background==='box'){ctx.fillStyle=hexAlpha(s.background_color,s.background_opacity);const widest=Math.max(...lines.map(l=>ctx.measureText(l).width));ctx.fillRect(x-widest/2-font*.2,y-lineH*.55,widest+font*.4,lineH*lines.length+font*.12);ctx.fillStyle=s.text_color}lines.forEach((line,i)=>{const yy=y+(i-(lines.length-1)/2)*lineH;if(ctx.lineWidth>0)ctx.strokeText(line,x,yy,maxW);ctx.fillText(line,x,yy,maxW)});ctx.restore()}
-function wrapCanvas(ctx,text,maxWidth,maxLines){const words=text.split(/\s+/),lines=[];let line='';for(const word of words){const test=line?`${line} ${word}`:word;if(ctx.measureText(test).width<=maxWidth||!line)line=test;else{lines.push(line);line=word;if(lines.length>=maxLines-1)break}}if(line)lines.push(line);return lines.slice(0,maxLines)}
+function canvasFontSpec(s,font){
+  const family=/\s/.test(s.font_family)?`"${s.font_family}"`:s.font_family;
+  return `${s.italic?'italic ':''}${s.bold?'900':'500'} ${font}px ${family}, sans-serif`;
+}
+function canvasTextWidth(ctx,text,letterSpacing=0){
+  const chars=Array.from(String(text||''));
+  return ctx.measureText(chars.join('')).width+Math.max(0,chars.length-1)*letterSpacing;
+}
+function canvasRoundRect(ctx,x,y,w,h,r){
+  if(w<=0||h<=0)return;
+  const rr=Math.max(0,Math.min(r,w/2,h/2));
+  ctx.beginPath();
+  if(typeof ctx.roundRect==='function')ctx.roundRect(x,y,w,h,rr);
+  else{
+    ctx.moveTo(x+rr,y);ctx.lineTo(x+w-rr,y);ctx.quadraticCurveTo(x+w,y,x+w,y+rr);ctx.lineTo(x+w,y+h-rr);ctx.quadraticCurveTo(x+w,y+h,x+w-rr,y+h);ctx.lineTo(x+rr,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-rr);ctx.lineTo(x,y+rr);ctx.quadraticCurveTo(x,y,x+rr,y);ctx.closePath();
+  }
+}
+function canvasLineStart(align,maxW,lineW){
+  if(align==='left')return-maxW/2;
+  if(align==='right')return maxW/2-lineW;
+  return-lineW/2;
+}
+function drawCanvasSpacedText(ctx,text,startX,y,letterSpacing,{stroke=true,fill=true}={}){
+  const chars=Array.from(String(text||''));
+  let x=startX;
+  for(const ch of chars){
+    if(stroke&&ctx.lineWidth>0)ctx.strokeText(ch,x,y);
+    if(fill)ctx.fillText(ch,x,y);
+    x+=ctx.measureText(ch).width+letterSpacing;
+  }
+}
+function captionAnimationAt(seg,s,t){
+  const elapsed=Math.max(0,(t-seg.start)*1000);
+  if(s.animation==='fade')return{alpha:Math.min(1,elapsed/Math.max(80,s.fade_in_ms)),scale:1};
+  if(s.animation==='pop'){
+    const p=Math.min(1,elapsed/180),start=.88+(100-s.animation_strength)/100*.08;
+    return{alpha:.2+.8*p,scale:start+(1-start)*p};
+  }
+  return{alpha:1,scale:1};
+}
+function layoutCanvasWords(ctx,words,maxW,maxLines,m){
+  const lines=[];let line=[],lineW=0;
+  for(const word of words){
+    const text=captionCase(word.word),ww=canvasTextWidth(ctx,text,m.letterSpacing),gap=line.length?m.wordGap:0;
+    if(line.length&&lineW+gap+ww>maxW&&lines.length<maxLines-1){lines.push({items:line,width:lineW});line=[];lineW=0}
+    const nextGap=line.length?m.wordGap:0;
+    line.push({word,text,width:ww,gap:nextGap});lineW+=nextGap+ww;
+  }
+  if(line.length)lines.push({items:line,width:lineW});
+  return lines.slice(0,maxLines);
+}
+function drawCanvasCaption(ctx,w,h,t){
+  const seg=state.captions.find(c=>t>=c.start&&t<=c.end);if(!seg)return;
+  const s=state.style,m=captionMetricsForWidth(w),x=w*s.horizontal_position/100,y=h*s.vertical_position/100,maxW=w*s.caption_width/100,anim=captionAnimationAt(seg,s,t);
+  ctx.save();
+  ctx.translate(x,y);ctx.rotate(s.rotation*Math.PI/180);ctx.scale(anim.scale,anim.scale);
+  ctx.globalAlpha=Math.max(0,Math.min(1,s.text_opacity/100))*anim.alpha;
+  ctx.font=canvasFontSpec(s,m.font);ctx.textAlign='left';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineCap='round';ctx.lineWidth=m.outline;ctx.strokeStyle=s.outline_color;
+  const lineData=[];
+  if(s.word_highlight&&seg.words?.length){
+    layoutCanvasWords(ctx,seg.words,maxW,s.max_lines,m).forEach(l=>lineData.push({type:'words',...l}));
+  }else{
+    splitLines(captionCase(seg.text),s.max_lines).forEach(text=>lineData.push({type:'text',text,width:canvasTextWidth(ctx,text,m.letterSpacing)}));
+  }
+  if(!lineData.length){ctx.restore();return}
+  const totalH=(lineData.length-1)*m.lineHeight+m.font;
+  // Background is drawn per visual line, matching CSS box-decoration-break behavior.
+  if(s.background==='box'){
+    ctx.fillStyle=hexAlpha(s.background_color,s.background_opacity);
+    lineData.forEach((line,i)=>{
+      const yy=(i-(lineData.length-1)/2)*m.lineHeight;
+      const start=canvasLineStart(s.horizontal_align,maxW,line.width);
+      canvasRoundRect(ctx,start-m.padX,yy-m.font*.5-m.padY,line.width+m.padX*2,m.font+m.padY*2,m.radius);
+      ctx.fill();
+    });
+  }
+  // Text shadow applies only to glyphs, just like the live CSS overlay.
+  if(s.shadow){ctx.shadowOffsetX=0;ctx.shadowOffsetY=m.shadowY;ctx.shadowBlur=m.shadowBlur;ctx.shadowColor='rgba(0,0,0,.75)'}
+  lineData.forEach((line,i)=>{
+    const yy=(i-(lineData.length-1)/2)*m.lineHeight,start=canvasLineStart(s.horizontal_align,maxW,line.width);
+    if(line.type==='text'){
+      ctx.fillStyle=s.text_color;
+      drawCanvasSpacedText(ctx,line.text,start,yy,m.letterSpacing);
+      return;
+    }
+    let cursor=start;
+    line.items.forEach(item=>{
+      cursor+=item.gap;
+      const active=t>=item.word.start&&t<=item.word.end;
+      ctx.fillStyle=active?s.highlight_color:s.text_color;
+      drawCanvasSpacedText(ctx,item.text,cursor,yy,m.letterSpacing);
+      cursor+=item.width;
+    });
+  });
+  ctx.restore();
+}
 
 // Browser capability status
 $('#systemAi').textContent='Whisper Small · WASM';$('#systemAudio').textContent=('AudioDecoder' in window)?'WebCodecs + Mediabunny':'Mediabunny + Web Audio';$('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
