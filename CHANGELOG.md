@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.9
+- Replaced the simple Support roadmap block with a dedicated Product Roadmap view.
+- Added Now, Next, Later and Exploring roadmap lanes with creator-focused feature directions.
+- Added clear wording that roadmap items are direction, not promised delivery dates.
+- Added optional support context explaining what community support helps fund.
+- Added a branded Kaptiono boot splash with no artificial minimum delay.
+- Kept PWA background/theme colors aligned with the app splash.
+- Preserved the permanent full product README unchanged.
+
 Release-specific changes belong here. The main `README.md` is the permanent product README and must not be replaced by release notes.
 
 ## 0.5.8

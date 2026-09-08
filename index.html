@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.8" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.9" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -121,11 +121,19 @@
   </script>
 </head>
 <body>
+  <div id="appSplash" class="app-splash" role="status" aria-label="Kaptiono loading">
+    <div class="app-splash-lockup">
+      <img src="./assets/icons/icon-192.png" alt="" />
+      <strong>Kaptiono</strong>
+      <span>LOCAL AI SUBTITLES</span>
+    </div>
+  </div>
+
   <div class="app-shell">
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.8</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.9</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -176,20 +184,132 @@
             <details><summary data-i18n="faqDiffQ">Τι κάνει το Kaptiono διαφορετικό;</summary><p data-i18n="faqDiffA">Εστιάζει σε local AI subtitles, privacy-first επεξεργασία, no-watermark output και καθαρό editor.</p></details>
           </div>
         </section>
-<section class="support-roadmap card">
-          <div class="support-section-head"><span class="eyebrow">ROADMAP</span><h2 data-i18n="supportRoadmapTitle">Τι θέλουμε να ακολουθήσει</h2><p data-i18n="supportRoadmapText">Οι παρακάτω κατευθύνσεις είναι στόχοι ανάπτυξης και θα προχωρούν μόνο όταν είναι αρκετά σταθερές.</p></div>
-          <div class="roadmap-grid">
-            <div><span>01</span><b data-i18n="roadmapAi">Καλύτερη και ταχύτερη local AI απομαγνητοφώνηση</b></div>
-            <div><span>02</span><b data-i18n="roadmapExport">Πιο αξιόπιστο MP4 export απευθείας στον browser</b></div>
-            <div><span>03</span><b data-i18n="roadmapMobile">Καλύτερη PWA εμπειρία σε Android και iPhone</b></div>
-            <div><span>04</span><b data-i18n="roadmapStudio">Περισσότερα caption styles, editing εργαλεία και creator workflows</b></div>
+<section class="support-roadmap-cta card">
+          <div class="support-roadmap-icon">↗</div>
+          <div class="support-roadmap-copy">
+            <span class="eyebrow">PRODUCT ROADMAP</span>
+            <h2 data-i18n="roadmapCtaTitle">Δες τι χτίζουμε μετά</h2>
+            <p data-i18n="roadmapCtaText">Δες το πραγματικό roadmap του Kaptiono, τι είναι προτεραιότητα τώρα και ποιες ιδέες μπορούν να προχωρήσουν με τη στήριξη της κοινότητας.</p>
           </div>
+          <button id="roadmapOpenBtn" class="roadmap-open-btn" type="button">
+            <span data-i18n="roadmapCtaButton">Άνοιγμα Roadmap</span><b>→</b>
+          </button>
         </section>
 
         <section class="support-donate card">
           <div class="donate-mark">♡</div>
           <div class="donate-copy"><span class="eyebrow">OPTIONAL SUPPORT</span><h2 data-i18n="donateTitle">Θέλεις να βοηθήσεις την ανάπτυξη;</h2><p data-i18n="donateText">Η δωρεά είναι απολύτως προαιρετική. Βοηθά να συνεχιστεί η ανάπτυξη, οι δοκιμές σε περισσότερες συσκευές και η προσθήκη νέων features.</p></div>
           <a class="donate-btn" href="https://www.paypal.com/paypalme/DimitrisGalatsanos" target="_blank" rel="noopener"><span data-i18n="donateButton">Donate μέσω PayPal</span><b>↗</b></a>
+        </section>
+      </section>
+
+      <section id="roadmapPage" class="roadmap-page hidden">
+        <section class="roadmap-hero card">
+          <button id="roadmapBackBtn" class="support-back" type="button"><span>←</span><b data-i18n="roadmapBack">Πίσω στο Support</b></button>
+          <div class="roadmap-hero-grid">
+            <div>
+              <span class="eyebrow">KAPTIONO PRODUCT ROADMAP</span>
+              <h1 data-i18n="roadmapTitle">Το επόμενο Kaptiono χτίζεται εδώ.</h1>
+              <p data-i18n="roadmapIntro">Αυτό είναι το πραγματικό product roadmap. Δείχνει πού εστιάζουμε τώρα, τι θέλουμε να ακολουθήσει και ποιες μεγαλύτερες ιδέες εξετάζουμε για το μέλλον.</p>
+            </div>
+            <div class="roadmap-support-note">
+              <span class="roadmap-support-mark">♡</span>
+              <div>
+                <b data-i18n="roadmapSupportTitle">Η στήριξή σου βοηθά την ανάπτυξη</b>
+                <p data-i18n="roadmapSupportText">Οι δωρεές είναι προαιρετικές και βοηθούν σε χρόνο ανάπτυξης, δοκιμές σε περισσότερες συσκευές και έρευνα νέων local AI δυνατοτήτων. Το roadmap είναι κατεύθυνση, όχι υπόσχεση ημερομηνιών.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="roadmap-legend" aria-label="Roadmap status">
+          <span><i class="status-now"></i><b data-i18n="roadmapStatusNow">Τώρα</b></span>
+          <span><i class="status-next"></i><b data-i18n="roadmapStatusNext">Επόμενα</b></span>
+          <span><i class="status-later"></i><b data-i18n="roadmapStatusLater">Αργότερα</b></span>
+          <span><i class="status-explore"></i><b data-i18n="roadmapStatusExplore">Διερεύνηση</b></span>
+        </div>
+
+        <div class="roadmap-board">
+          <section class="roadmap-lane card lane-now">
+            <header>
+              <div><span class="roadmap-lane-index">01</span><span class="eyebrow">NOW</span></div>
+              <h2 data-i18n="roadmapNowTitle">Τρέχουσα προτεραιότητα</h2>
+              <p data-i18n="roadmapNowText">Πράγματα που μπορούν να κάνουν το Kaptiono πιο αξιόπιστο και χρήσιμο στην καθημερινή δουλειά ενός creator.</p>
+            </header>
+            <div class="roadmap-items">
+              <article>
+                <span class="roadmap-item-icon">▣</span>
+                <div><b data-i18n="roadmapProjectSaveTitle">Recent Projects & local project save</b><p data-i18n="roadmapProjectSaveText">Αποθήκευση captions, timings και styles τοπικά ώστε να συνεχίζεις ένα project χωρίς νέα απομαγνητοφώνηση.</p></div>
+              </article>
+              <article>
+                <span class="roadmap-item-icon">◉</span>
+                <div><b data-i18n="roadmapPwaTitle">PWA reliability & offline foundation</b><p data-i18n="roadmapPwaText">Σταθερό install/update flow, καλύτερο local caching και βάση για πραγματική offline χρήση.</p></div>
+              </article>
+              <article>
+                <span class="roadmap-item-icon">⌁</span>
+                <div><b data-i18n="roadmapMobileTitle">Mobile & Safari reliability</b><p data-i18n="roadmapMobileText">Καλύτερη συμπεριφορά σε Android, iPhone και iPad με μεγάλα video και local AI models.</p></div>
+              </article>
+              <article>
+                <span class="roadmap-item-icon">◎</span>
+                <div><b data-i18n="roadmapExportParityTitle">Preview / export parity</b><p data-i18n="roadmapExportParityText">Το τελικό video να παραμένει όσο γίνεται πιστό σε αυτό που βλέπεις μέσα στο Caption Studio.</p></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="roadmap-lane card lane-next">
+            <header>
+              <div><span class="roadmap-lane-index">02</span><span class="eyebrow">NEXT</span></div>
+              <h2 data-i18n="roadmapNextTitle">Τα επόμενα creator εργαλεία</h2>
+              <p data-i18n="roadmapNextText">Features με άμεση αξία στο editing και στην ποιότητα των captions.</p>
+            </header>
+            <div class="roadmap-items">
+              <article><span class="roadmap-item-icon">≋</span><div><b data-i18n="roadmapTimelineTitle">Caption Timeline Editor</b><p data-i18n="roadmapTimelineText">Split, merge, drag και timing adjustments σε πραγματική timeline κάτω από το video.</p></div></article>
+              <article><span class="roadmap-item-icon">✦</span><div><b data-i18n="roadmapCleanupTitle">Smart Caption Cleanup</b><p data-i18n="roadmapCleanupText">Καλύτερη στίξη, φυσικότερα breaks, λιγότερες διπλές λέξεις και πιο καθαρό transcript.</p></div></article>
+              <article><span class="roadmap-item-icon">⌗</span><div><b data-i18n="roadmapSafeZonesTitle">Social Safe Zones</b><p data-i18n="roadmapSafeZonesText">TikTok, Reels, Shorts και Story overlays ώστε τα captions να μην κρύβονται πίσω από το UI της πλατφόρμας.</p></div></article>
+              <article><span class="roadmap-item-icon">⚙</span><div><b data-i18n="roadmapAutoModelTitle">Automatic model selection</b><p data-i18n="roadmapAutoModelText">Το Kaptiono να προτείνει Tiny, Base ή Small ανάλογα με τη συσκευή και τη διαθέσιμη ισχύ.</p></div></article>
+              <article><span class="roadmap-item-icon">Aa</span><div><b data-i18n="roadmapDictionaryTitle">Custom Dictionary</b><p data-i18n="roadmapDictionaryText">Προσωπικό λεξικό για brands, ονόματα και όρους που το Whisper συχνά γράφει λάθος.</p></div></article>
+            </div>
+          </section>
+
+          <section class="roadmap-lane card lane-later">
+            <header>
+              <div><span class="roadmap-lane-index">03</span><span class="eyebrow">LATER</span></div>
+              <h2 data-i18n="roadmapLaterTitle">Μεγαλύτερα workflows</h2>
+              <p data-i18n="roadmapLaterText">Ιδέες που μπορούν να μετατρέψουν το Kaptiono σε πιο ολοκληρωμένο καθημερινό εργαλείο.</p>
+            </header>
+            <div class="roadmap-items">
+              <article><span class="roadmap-item-icon">◌</span><div><b data-i18n="roadmapSpeakerTitle">Speaker Detection</b><p data-i18n="roadmapSpeakerText">Αναγνώριση διαφορετικών ομιλητών για interviews και podcasts με ξεχωριστή παρουσίαση.</p></div></article>
+              <article><span class="roadmap-item-icon">↕</span><div><b data-i18n="roadmapAutoPositionTitle">Auto Caption Position</b><p data-i18n="roadmapAutoPositionText">Έξυπνη μετακίνηση captions ώστε να αποφεύγουν πρόσωπα και σημαντικά σημεία του frame.</p></div></article>
+              <article><span class="roadmap-item-icon">☷</span><div><b data-i18n="roadmapBatchTitle">Batch Processing Queue</b><p data-i18n="roadmapBatchText">Πολλά videos σε σειρά για creators που ετοιμάζουν συχνά Shorts, Reels ή clips.</p></div></article>
+              <article><span class="roadmap-item-icon">◇</span><div><b data-i18n="roadmapPresetTitle">Creator preset profiles & sharing</b><p data-i18n="roadmapPresetText">Αποθήκευση προσωπικών styles και δυνατότητα export/import preset μεταξύ συσκευών.</p></div></article>
+              <article><span class="roadmap-item-icon">⌂</span><div><b data-i18n="roadmapOfflineTitle">Full Offline Mode</b><p data-i18n="roadmapOfflineText">Εγκατάσταση μία φορά και δημιουργία captions χωρίς σύνδεση όταν app και AI model είναι ήδη διαθέσιμα τοπικά.</p></div></article>
+            </div>
+          </section>
+
+          <section class="roadmap-lane card lane-explore">
+            <header>
+              <div><span class="roadmap-lane-index">04</span><span class="eyebrow">EXPLORING</span></div>
+              <h2 data-i18n="roadmapExploreTitle">Ιδέες που εξερευνούμε</h2>
+              <p data-i18n="roadmapExploreText">Δεν είναι δεσμεύσεις. Είναι κατευθύνσεις που αξίζει να δοκιμαστούν αν μπορούν να παραμείνουν γρήγορες, local και creator-first.</p>
+            </header>
+            <div class="roadmap-items">
+              <article><span class="roadmap-item-icon">文</span><div><b data-i18n="roadmapTranslationTitle">Local caption translation</b><p data-i18n="roadmapTranslationText">Μετάφραση captions χωρίς να χαλάει η privacy-first λογική του βασικού workflow.</p></div></article>
+              <article><span class="roadmap-item-icon">◍</span><div><b data-i18n="roadmapDiarizationTitle">Advanced local diarization</b><p data-i18n="roadmapDiarizationText">Πιο ακριβής διαχωρισμός ομιλητών με local μοντέλα όταν το hardware το επιτρέπει.</p></div></article>
+              <article><span class="roadmap-item-icon">✣</span><div><b data-i18n="roadmapCommunityTitle">Community preset gallery</b><p data-i18n="roadmapCommunityText">Creator-made caption styles που μπορούν να μοιράζονται χωρίς να αλλάζει το δωρεάν core.</p></div></article>
+              <article><span class="roadmap-item-icon">＋</span><div><b data-i18n="roadmapAdvancedTitle">Advanced creator workflows</b><p data-i18n="roadmapAdvancedText">Νέα local-first εργαλεία μόνο όταν προσθέτουν πραγματική αξία χωρίς να μετατρέπουν το Kaptiono σε βαρύ video editor.</p></div></article>
+            </div>
+          </section>
+        </div>
+
+        <section class="roadmap-support card">
+          <div>
+            <span class="eyebrow">SUPPORT THE ROAD AHEAD</span>
+            <h2 data-i18n="roadmapBottomTitle">Βοήθησε το Kaptiono να δοκιμάσει περισσότερα.</h2>
+            <p data-i18n="roadmapBottomText">Το Kaptiono παραμένει δωρεάν για creators. Η προαιρετική στήριξη βοηθά σε ανάπτυξη, testing σε περισσότερα devices και πειραματισμό με νέα local AI features.</p>
+          </div>
+          <a class="donate-btn" href="https://www.paypal.com/paypalme/DimitrisGalatsanos" target="_blank" rel="noopener">
+            <span data-i18n="roadmapBottomButton">Support μέσω PayPal</span><b>↗</b>
+          </a>
         </section>
       </section>
 
@@ -385,8 +505,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.8</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.9</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.8"></script>
+  <script type="module" src="./app.js?v=0.5.9"></script>
 </body>
 </html>
