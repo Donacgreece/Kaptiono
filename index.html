@@ -42,7 +42,18 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.3" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.4" />
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-YFEYPK43QF', {
+      anonymize_ip: true,
+      send_page_view: true
+    });
+  </script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -114,7 +125,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.3</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.4</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -369,8 +380,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.3</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.4</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.3"></script>
+  <script type="module" src="./app.js?v=0.5.4"></script>
 </body>
 </html>

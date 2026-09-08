@@ -1,4 +1,4 @@
-# Kaptiono Web Lab v0.5.3
+# Kaptiono Web Lab v0.5.4
 
 ## What changed
 - PWA update lifecycle rebuilt so installed copies check for a new release on launch, when returning to the app, when connectivity returns, and every minute while open.
@@ -12,4 +12,8 @@
 - Support is again a clean standalone in-app view instead of appearing below homepage discovery sections.
 
 ## Update note
-Once v0.5.3 is loaded at least once in an existing installed PWA, future releases can use the new automatic update flow.
+Once v0.5.4 is loaded at least once in an existing installed PWA, future releases can use the new automatic update flow.
+
+## Analytics
+Google Analytics 4 is configured with Measurement ID `G-YFEYPK43QF`.
+The app tracks page views and basic product events only. Video files, filenames, caption text and transcript content are not sent to Analytics.
