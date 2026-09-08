@@ -4,20 +4,117 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f8f4" />
+  <meta name="color-scheme" content="light" />
+  <meta name="format-detection" content="telephone=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="description" content="Kaptiono Web Lab — private local captions in your browser." />
-  <title>Kaptiono Web Lab</title>
+  <meta name="apple-mobile-web-app-title" content="Kaptiono" />
+  <meta name="application-name" content="Kaptiono" />
+  <meta name="author" content="Kaptiono" />
+  <meta name="description" content="Kaptiono is a local AI subtitle generator for creators. Add captions to videos directly in your browser with no upload, no watermark and privacy-first processing." />
+  <meta name="keywords" content="Kaptiono, AI subtitles, subtitle generator, video captions, local AI, browser captions, caption editor, no upload subtitles, no watermark captions, Whisper subtitles" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <link rel="canonical" href="https://kaptiono.com/" />
+  <link rel="alternate" hreflang="el" href="https://kaptiono.com/" />
+  <link rel="alternate" hreflang="en" href="https://kaptiono.com/en" />
+  <link rel="alternate" hreflang="x-default" href="https://kaptiono.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kaptiono" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="el_GR" />
+  <meta property="og:title" content="Kaptiono · Local AI subtitles for creators" />
+  <meta property="og:description" content="Create captions directly in your browser with no upload, private processing and clean social-ready exports." />
+  <meta property="og:url" content="https://kaptiono.com/" />
+  <meta property="og:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
+  <meta property="og:image:secure_url" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Kaptiono social preview card showing the brand icon and the message Local AI subtitles for creators." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Kaptiono · Local AI subtitles for creators" />
+  <meta name="twitter:description" content="Create captions directly in your browser with no upload, private processing and clean social-ready exports." />
+  <meta name="twitter:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
+  <meta name="twitter:image:alt" content="Kaptiono social preview card with brand icon and product message." />
+  <title>Kaptiono · Local AI subtitles for creators</title>
   <link rel="icon" href="./favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.4.2" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.0" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "name": "Kaptiono",
+        "url": "https://kaptiono.com/",
+        "description": "Local AI subtitle generator for creators.",
+        "inLanguage": ["en", "el"]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Kaptiono",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web Browser, Android, iOS, Windows, macOS",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "image": "https://kaptiono.com/assets/share/kaptiono-og-1200x630.png",
+        "url": "https://kaptiono.com/",
+        "description": "Kaptiono helps creators generate subtitles locally in the browser with AI, without uploading their videos to a server.",
+        "inLanguage": ["en", "el"],
+        "featureList": [
+          "Local AI subtitle generation",
+          "Browser-based caption editing",
+          "No upload video processing",
+          "No watermark exports",
+          "Desktop and mobile friendly workflow"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does Kaptiono upload my video to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Kaptiono is designed so the video stays on the device and the subtitle workflow runs locally in the browser whenever the browser supports it."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is Kaptiono for?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Kaptiono is built for creators who want AI subtitles, quick editing and clean exports for social and long-form video workflows."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which devices can use Kaptiono?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Kaptiono is designed to work in modern desktop and mobile browsers, and it can also be packaged as a desktop or app-like experience."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.4.2</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.0</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -41,6 +138,62 @@
           <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.m4v,.webm" hidden />
         </button>
         <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</small></div></div>
+      </section>
+
+      <section class="home-seo-grid" aria-label="Kaptiono overview">
+        <article class="seo-card card">
+          <span class="eyebrow">WHY KAPTIONO</span>
+          <h2>Local AI captions with privacy first.</h2>
+          <p>Kaptiono is made for creators who want browser-based subtitle generation without sending private video files to a cloud processing server.</p>
+        </article>
+        <article class="seo-card card">
+          <span class="eyebrow">WHAT IT DOES</span>
+          <h2>Transcribe, style and export.</h2>
+          <p>Upload a video locally, generate subtitles with Whisper, adjust the caption look and export clean results for short-form or long-form content.</p>
+        </article>
+        <article class="seo-card card">
+          <span class="eyebrow">WHO IT IS FOR</span>
+          <h2>Built for creators and editors.</h2>
+          <p>Kaptiono fits TikTok, Reels, Shorts, YouTube and creator workflows that need fast captions, a simple editor and no watermark output.</p>
+        </article>
+      </section>
+
+      <section class="how-it-works card" aria-labelledby="howItWorksTitle">
+        <div class="section-copy">
+          <span class="eyebrow">HOW IT WORKS</span>
+          <h2 id="howItWorksTitle">A simple subtitle workflow in the browser.</h2>
+          <p>Choose a video, run local AI transcription, fine-tune the style and export the result. The experience is designed to feel lightweight, direct and app-like on desktop and mobile.</p>
+        </div>
+        <div class="how-grid">
+          <article><b>01</b><h3>Choose video</h3><p>Open an MP4, MOV or WebM clip directly from your device.</p></article>
+          <article><b>02</b><h3>Generate captions</h3><p>Use Whisper models for high quality subtitle generation in the browser.</p></article>
+          <article><b>03</b><h3>Style and export</h3><p>Edit the caption look, preview the result and export clean creator-ready outputs.</p></article>
+        </div>
+      </section>
+
+      <section class="faq-card card" aria-labelledby="faqTitle">
+        <div class="section-copy">
+          <span class="eyebrow">FAQ</span>
+          <h2 id="faqTitle">Questions people usually ask.</h2>
+        </div>
+        <div class="faq-grid">
+          <details open>
+            <summary>Does Kaptiono upload the video?</summary>
+            <p>No. Kaptiono is designed around local processing so the video can stay on the user device.</p>
+          </details>
+          <details>
+            <summary>Can Kaptiono create subtitles for social media?</summary>
+            <p>Yes. The app is made for creator workflows such as TikTok, Instagram Reels, YouTube Shorts and other video formats.</p>
+          </details>
+          <details>
+            <summary>Is Kaptiono only for desktop?</summary>
+            <p>No. The web app is intended to be mobile friendly too, while the desktop edition can provide a stronger editing workflow.</p>
+          </details>
+          <details>
+            <summary>What makes Kaptiono different?</summary>
+            <p>It focuses on local AI subtitles, privacy-first handling, no watermark output and a clean editor experience.</p>
+          </details>
+        </div>
       </section>
 
       <section id="supportPage" class="support-page hidden">
@@ -231,8 +384,8 @@
       </section>
     </main>
 
-    <footer><span>Kaptiono Web Lab 0.4.2</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.0</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.4.2"></script>
+  <script type="module" src="./app.js?v=0.5.0"></script>
 </body>
 </html>

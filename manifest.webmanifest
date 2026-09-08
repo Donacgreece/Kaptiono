@@ -1,14 +1,16 @@
 {
-  "name":"Kaptiono Web Lab",
-  "short_name":"Kaptiono",
-  "description":"Private local creator captions in your browser.",
-  "start_url":"./",
-  "scope":"./",
-  "display":"standalone",
-  "background_color":"#f4f6f1",
-  "theme_color":"#f7f8f4",
-  "icons":[
-    {"src":"./assets/icons/icon-192.png","sizes":"192x192","type":"image/png"},
-    {"src":"./assets/icons/icon-512.png","sizes":"512x512","type":"image/png"}
+  "name": "Kaptiono",
+  "short_name": "Kaptiono",
+  "description": "Local AI subtitles for creators. Private browser-based caption generation with no upload and no watermark.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6f1",
+  "theme_color": "#f7f8f4",
+  "categories": ["video", "productivity", "utilities"],
+  "icons": [
+    {"src": "./assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "./assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "./assets/icons/apple-touch-icon.png", "sizes": "180x180", "type": "image/png"}
   ]
 }

@@ -199,4 +199,4 @@ function wrapCanvas(ctx,text,maxWidth,maxLines){const words=text.split(/\s+/),li
 // Browser capability status
 $('#systemAi').textContent='Whisper Small · WASM';$('#systemAudio').textContent=('AudioDecoder' in window)?'WebCodecs + Mediabunny':'Mediabunny + Web Audio';$('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
 
-if('serviceWorker' in navigator){window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./sw.js?v=0.4.2',{scope:'./'});reg.update?.()}catch(e){console.warn('Service worker',e)}})}
+if('serviceWorker' in navigator){window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./sw.js?v=0.5.0',{scope:'./'});reg.update?.()}catch(e){console.warn('Service worker',e)}})}
