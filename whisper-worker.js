@@ -9,7 +9,14 @@ async function loadTransformers(){
   pipelineFn = mod.pipeline;
   envRef = mod.env;
   envRef.allowLocalModels = false;
-  envRef.useBrowserCache = true;
+  // CacheStorage is only guaranteed in secure contexts (HTTPS / localhost).
+  // Never force browser caching when it is unavailable, otherwise
+  // Transformers.js aborts before loading Whisper.
+  const browserCacheAvailable =
+    typeof caches !== 'undefined' &&
+    (typeof self.isSecureContext === 'undefined' || self.isSecureContext === true);
+  envRef.useBrowserCache = browserCacheAvailable;
+  postMessage({type:'cache-status',enabled:browserCacheAvailable});
 }
 
 async function getTranscriber(model){
