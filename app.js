@@ -200,7 +200,7 @@ function wrapCanvas(ctx,text,maxWidth,maxLines){const words=text.split(/\s+/),li
 $('#systemAi').textContent='Whisper Small · WASM';$('#systemAudio').textContent=('AudioDecoder' in window)?'WebCodecs + Mediabunny':'Mediabunny + Web Audio';$('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
 
 // PWA install and update lifecycle
-const APP_VERSION='0.5.1';
+const APP_VERSION='0.5.2';
 const isAndroid=/Android/i.test(navigator.userAgent);
 const isStandalone=()=>window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true;
 let deferredInstallPrompt=null;

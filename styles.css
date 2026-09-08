@@ -119,25 +119,6 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(max-width:620px){select,textarea,input[type=text],input[type=number],input[type=email],input[type=search],input[type=tel],input[type=url]{font-size:16px!important}.support-page{gap:14px}.support-hero{padding:22px 18px}.support-back{margin-bottom:18px}.support-hero h1{font-size:clamp(34px,10.5vw,46px)}.support-hero p{font-size:14px}.support-principles{gap:12px}.support-tile{padding:18px}.support-index{margin-bottom:18px}.support-roadmap{padding:20px}.roadmap-grid{grid-template-columns:1fr}.support-donate{padding:16px;gap:12px}.donate-copy h2{font-size:18px}.donate-btn{min-width:0}}
 
 /* v0.5.0 SEO, sharing and discovery sections */
-.home-seo-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:18px}
-.seo-card{padding:22px;min-height:220px;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start}
-.seo-card h2{font-size:28px;line-height:1.08;letter-spacing:-.04em;margin:10px 0 12px;max-width:20ch}
-.seo-card p{margin:0;color:var(--muted);line-height:1.7;font-size:14px}
-.how-it-works,.faq-card{margin-top:18px;padding:26px}
-.section-copy h2{font-size:32px;line-height:1.08;letter-spacing:-.04em;margin:8px 0 12px}
-.section-copy p{margin:0;color:var(--muted);font-size:14px;line-height:1.7;max-width:72ch}
-.how-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
-.how-grid article{border:1px solid var(--line);border-radius:18px;background:#fbfcfa;padding:18px;min-height:168px}
-.how-grid b{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#eef4dc;color:#617c14;font-size:11px;margin-bottom:18px}
-.how-grid h3{margin:0 0 10px;font-size:18px;letter-spacing:-.02em}
-.how-grid p{margin:0;color:var(--muted);font-size:13px;line-height:1.65}
-.faq-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:20px}
-.faq-grid details{border:1px solid var(--line);border-radius:18px;background:#fbfcfa;padding:16px 18px}
-.faq-grid summary{cursor:pointer;list-style:none;font-weight:800;line-height:1.5}
-.faq-grid summary::-webkit-details-marker{display:none}
-.faq-grid p{margin:10px 0 0;color:var(--muted);font-size:13px;line-height:1.65}
-@media(max-width:980px){.home-seo-grid,.how-grid,.faq-grid{grid-template-columns:1fr}.seo-card{min-height:auto}.how-it-works,.faq-card{padding:22px}}
-@media(max-width:620px){.home-seo-grid{gap:12px;margin-top:14px}.seo-card{padding:18px}.seo-card h2{font-size:24px}.how-it-works,.faq-card{margin-top:14px;padding:18px}.section-copy h2{font-size:28px}.faq-grid,.how-grid{gap:12px}}
 
 /* v0.5.1 support discovery, mobile install prompt and PWA updates */
 .support-discovery{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
