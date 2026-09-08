@@ -1,20 +1,9 @@
-# Kaptiono Web Lab 0.4.1
+# Kaptiono Web Lab 0.4.2
 
-Browser-only Kaptiono build. Video and audio processing stay on the user's device.
+Browser-only captioning lab for Kaptiono. Local video processing, creator caption studio, app-like mobile behavior and a dedicated Support page.
 
-## What changed in 0.4.1
-
-- The Kaptiono logo now really returns to the home screen instead of only scrolling to the top while the home card stays hidden.
-- The home hero is rebuilt as a balanced 50/50 desktop grid.
-- The copy panel and upload panel now use matching heights and spacing.
-- Home feature badges use a symmetric 2x2 grid.
-- The privacy note is centered under both columns.
-- Responsive behavior keeps the same visual balance on tablet and mobile.
-- Service-worker and asset versions were bumped to avoid stale cached UI.
-
-## Existing 0.4 behavior
-
-- Whisper Small is the default AI model.
-- Clear local video download with burned-in captions.
-- MP4 when supported by MediaRecorder, otherwise WebM.
-- SRT and TXT export remain available.
+## 0.4.2
+- Mobile pinch/double-tap zoom disabled for an app-like PWA experience.
+- iOS form controls avoid focus zoom.
+- Support now opens an in-app About/Support page instead of PayPal directly.
+- Support page includes the project purpose, principles, roadmap directions and an optional PayPal donation CTA.

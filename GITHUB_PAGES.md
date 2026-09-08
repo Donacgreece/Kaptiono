@@ -1,5 +1,5 @@
-# Deploy Kaptiono Web Lab 0.4
+# GitHub Pages
 
-Replace the existing repository files with this build, commit and push to `main`. GitHub Pages deploys automatically through the included workflow.
+Deploy the repository with **Settings → Pages → Source: GitHub Actions**.
 
-After deployment, close old PWA/browser tabs once so the 0.4 service worker and UI replace the cached 0.3 build.
+Version 0.4.2 bumps the service-worker cache, so after deployment close/reopen the PWA or browser tab once on mobile.

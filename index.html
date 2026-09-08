@@ -2,7 +2,7 @@
 <html lang="el">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#f7f8f4" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -10,19 +10,19 @@
   <title>Kaptiono Web Lab</title>
   <link rel="icon" href="./favicon.ico" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.4.1" />
+  <link rel="stylesheet" href="./styles.css?v=0.4.2" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.4.1</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.4.2</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
         <div class="lang-switch" aria-label="Language"><button type="button" data-lang="el" class="active">EL</button><button type="button" data-lang="en">EN</button></div>
-        <a class="support-btn" href="https://www.paypal.com/paypalme/DimitrisGalatsanos" target="_blank" rel="noopener"><span>♡</span><b>Support</b></a>
+        <button class="support-btn" id="supportNav" type="button"><span>♡</span><b>Support</b></button>
       </div>
     </header>
 
@@ -41,6 +41,37 @@
           <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.m4v,.webm" hidden />
         </button>
         <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</small></div></div>
+      </section>
+
+      <section id="supportPage" class="support-page hidden">
+        <div class="support-hero card">
+          <button id="supportBackBtn" class="support-back" type="button"><span>←</span><b data-i18n="supportBack">Πίσω στο Kaptiono</b></button>
+          <span class="eyebrow">SUPPORT KAPTIONO</span>
+          <h1 data-i18n="supportTitle">Γιατί υπάρχει το Kaptiono</h1>
+          <p data-i18n="supportIntro">Το Kaptiono δημιουργήθηκε για creators που θέλουν γρήγορους, καθαρούς υπότιτλους χωρίς upload των video τους, λογαριασμούς, credits ή watermark.</p>
+        </div>
+
+        <div class="support-principles">
+          <article class="support-tile card"><span class="support-index">01</span><h2 data-i18n="supportPrivateTitle">Ιδιωτικό από σχεδιασμό</h2><p data-i18n="supportPrivateText">Η επεξεργασία γίνεται τοπικά στη συσκευή. Στόχος είναι το video σου να μην χρειάζεται να ανέβει σε processing server.</p></article>
+          <article class="support-tile card"><span class="support-index">02</span><h2 data-i18n="supportFreeTitle">Δωρεάν για creators</h2><p data-i18n="supportFreeText">Το Kaptiono χτίζεται χωρίς credits, watermark και υποχρεωτική συνδρομή για τις βασικές λειτουργίες δημιουργίας captions.</p></article>
+          <article class="support-tile card"><span class="support-index">03</span><h2 data-i18n="supportBuiltTitle">Χτίζεται σαν πραγματικό εργαλείο</h2><p data-i18n="supportBuiltText">Desktop, web και mobile σχεδιάζονται με κοινή λογική ώστε το workflow να παραμένει απλό, γρήγορο και οικείο.</p></article>
+        </div>
+
+        <section class="support-roadmap card">
+          <div class="support-section-head"><span class="eyebrow">ROADMAP</span><h2 data-i18n="supportRoadmapTitle">Τι θέλουμε να ακολουθήσει</h2><p data-i18n="supportRoadmapText">Οι παρακάτω κατευθύνσεις είναι στόχοι ανάπτυξης και θα προχωρούν μόνο όταν είναι αρκετά σταθερές.</p></div>
+          <div class="roadmap-grid">
+            <div><span>01</span><b data-i18n="roadmapAi">Καλύτερη και ταχύτερη local AI απομαγνητοφώνηση</b></div>
+            <div><span>02</span><b data-i18n="roadmapExport">Πιο αξιόπιστο MP4 export απευθείας στον browser</b></div>
+            <div><span>03</span><b data-i18n="roadmapMobile">Καλύτερη PWA εμπειρία σε Android και iPhone</b></div>
+            <div><span>04</span><b data-i18n="roadmapStudio">Περισσότερα caption styles, editing εργαλεία και creator workflows</b></div>
+          </div>
+        </section>
+
+        <section class="support-donate card">
+          <div class="donate-mark">♡</div>
+          <div class="donate-copy"><span class="eyebrow">OPTIONAL SUPPORT</span><h2 data-i18n="donateTitle">Θέλεις να βοηθήσεις την ανάπτυξη;</h2><p data-i18n="donateText">Η δωρεά είναι απολύτως προαιρετική. Βοηθά να συνεχιστεί η ανάπτυξη, οι δοκιμές σε περισσότερες συσκευές και η προσθήκη νέων features.</p></div>
+          <a class="donate-btn" href="https://www.paypal.com/paypalme/DimitrisGalatsanos" target="_blank" rel="noopener"><span data-i18n="donateButton">Donate μέσω PayPal</span><b>↗</b></a>
+        </section>
       </section>
 
       <section id="workspace" class="workspace hidden">
@@ -200,8 +231,8 @@
       </section>
     </main>
 
-    <footer><span>Kaptiono Web Lab 0.4</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.4.2</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.4.1"></script>
+  <script type="module" src="./app.js?v=0.4.2"></script>
 </body>
 </html>
