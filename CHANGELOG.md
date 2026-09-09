@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.13
+- Reworked Home sizing around the actual device viewport instead of fixed mobile heights.
+- The full Home card now targets the visible phone viewport using small viewport units, including browsers with dynamic address bars.
+- The footer is intentionally placed below the first Home screen, so the landing card itself should not require scrolling.
+- Added compact scaling for short phones without shrinking the Caption Studio/editor.
+- Added a dedicated mobile-landscape layout that uses two columns instead of stacking oversized blocks.
+- Reduced Home-only spacing, typography, upload-area sizing, badge sizing, and privacy-note height responsively.
+- Shortened the Home privacy note while keeping the detailed privacy wording in Support.
+- No transcription, export, AI model, AdSense, roadmap, or editor logic was changed.
+- Preserved the permanent full product README unchanged.
+
 ## 0.5.12
 - Temporarily disabled Whisper Large v3 Turbo after real-world browser testing showed unreliable loading and long idle failures.
 - Kept Large v3 Turbo visible in the model selector as High Accuracy · Coming Soon.
