@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.21
+- Refined the mobile footer only.
+- Moved Support, Roadmap, Contact and GitHub to the first mobile footer row.
+- Centered the mobile footer and increased link tap areas.
+- Replaced the long mobile metadata line with a compact "Kaptiono · Free · Local · Private" label and a separate version line.
+- Added a subtle divider above the footer.
+- Reduced the mobile gap between the main content and footer.
+- Desktop footer layout remains unchanged.
+- No captioning, transcription, Voice Boost, export, AI, PWA, analytics, AdSense or licensing behavior was changed.
+- Preserved the permanent full product README byte-for-byte.
+
 ## 0.5.20
 - Added Automatic Voice Boost Retry for Whisper results dominated by explicit music markers.
 - Voice Boost activates only after the first Whisper pass indicates that the result is primarily music/non-speech.
