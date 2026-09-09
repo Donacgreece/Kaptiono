@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.23
+- Enabled Whisper Large v3 Turbo as a selectable **Cloud High Accuracy** model instead of a Coming Soon local model.
+- Added direct browser integration with the Kaptiono Cloudflare transcription Worker at `kaptiono-transcribe.donacgreece.workers.dev`.
+- Cloud mode keeps the original video on-device, extracts 16 kHz mono audio locally, converts it to WAV, and sends only that audio for transcription.
+- Added multilingual Cloud language mapping for Greek, English, Spanish, French, German and Italian, plus Auto Detect.
+- Cloud mode uses one full-audio request with no client-side chunking or retry splitting.
+- Added Cloud-specific progress, engine status, timeout/error handling and analytics events for real-world testing.
+- Updated privacy-facing Home, Support, FAQ and README copy so the optional cloud audio path is explicit.
+- Local Whisper Small remains the default Recommended model. Base and Tiny remain local.
+- Enhanced remains Coming Soon and disabled.
+- Export, caption styling, word highlight, Voice Boost for local models, PWA behavior, licensing and AdSense behavior remain unchanged.
+
 ## 0.5.21
 - Refined the mobile footer only.
 - Moved Support, Roadmap, Contact and GitHub to the first mobile footer row.

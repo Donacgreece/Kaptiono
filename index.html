@@ -11,7 +11,7 @@
   <meta name="apple-mobile-web-app-title" content="Kaptiono" />
   <meta name="application-name" content="Kaptiono" />
   <meta name="author" content="Kaptiono" />
-  <meta name="description" content="Kaptiono is a local AI subtitle generator for creators. Add captions to videos directly in your browser with no upload, no watermark and privacy-first processing." />
+  <meta name="description" content="Kaptiono is an AI subtitle generator for creators with local processing and an optional Cloud High Accuracy mode. The original video stays on your device, with no watermark exports." />
   <meta name="keywords" content="Kaptiono, AI subtitles, subtitle generator, video captions, local AI, browser captions, caption editor, no upload subtitles, no watermark captions, Whisper subtitles" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <link rel="canonical" href="https://kaptiono.com/" />
@@ -22,8 +22,8 @@
   <meta property="og:site_name" content="Kaptiono" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="el_GR" />
-  <meta property="og:title" content="Kaptiono · Local AI subtitles for creators" />
-  <meta property="og:description" content="Create captions directly in your browser with no upload, private processing and clean social-ready exports." />
+  <meta property="og:title" content="Kaptiono · AI subtitles for creators" />
+  <meta property="og:description" content="Create captions with local AI or optional Cloud High Accuracy while keeping the original video on your device." />
   <meta property="og:url" content="https://kaptiono.com/" />
   <meta property="og:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
   <meta property="og:image:secure_url" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
@@ -32,17 +32,17 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Kaptiono social preview card showing the brand icon and the message Local AI subtitles for creators." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Kaptiono · Local AI subtitles for creators" />
-  <meta name="twitter:description" content="Create captions directly in your browser with no upload, private processing and clean social-ready exports." />
+  <meta name="twitter:title" content="Kaptiono · AI subtitles for creators" />
+  <meta name="twitter:description" content="Create captions with local AI or optional Cloud High Accuracy while keeping the original video on your device." />
   <meta name="twitter:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
   <meta name="twitter:image:alt" content="Kaptiono social preview card with brand icon and product message." />
-  <title>Kaptiono · Local AI subtitles for creators</title>
+  <title>Kaptiono · AI subtitles for creators</title>
   <link rel="icon" href="./favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.21" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.23" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -62,7 +62,7 @@
         "@type": "WebSite",
         "name": "Kaptiono",
         "url": "https://kaptiono.com/",
-        "description": "Local AI subtitle generator for creators.",
+        "description": "AI subtitle generator for creators with local and optional cloud transcription.",
         "inLanguage": ["en", "el"]
       },
       {
@@ -77,10 +77,11 @@
         },
         "image": "https://kaptiono.com/assets/share/kaptiono-og-1200x630.png",
         "url": "https://kaptiono.com/",
-        "description": "Kaptiono helps creators generate subtitles locally in the browser with AI, without uploading their videos to a server.",
+        "description": "Kaptiono helps creators generate subtitles with local AI or optional cloud transcription while keeping the original video on the device.",
         "inLanguage": ["en", "el"],
         "featureList": [
           "Local AI subtitle generation",
+          "Optional Cloud High Accuracy transcription",
           "Browser-based caption editing",
           "No upload video processing",
           "No watermark exports",
@@ -95,7 +96,7 @@
             "name": "Does Kaptiono upload my video to a server?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. Kaptiono is designed so the video stays on the device and the subtitle workflow runs locally in the browser whenever the browser supports it."
+              "text": "The original video stays on the device. Local models process audio on-device. If Cloud High Accuracy is selected, only extracted audio is sent for transcription."
             }
           },
           {
@@ -127,7 +128,7 @@
     <div class="app-splash-lockup">
       <img src="./assets/icons/icon-192.png" alt="" />
       <strong>Kaptiono</strong>
-      <span>LOCAL AI SUBTITLES</span>
+      <span>AI SUBTITLES</span>
     </div>
   </div>
 
@@ -135,10 +136,10 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.21</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.23</small></span>
       </button>
       <div class="top-actions">
-        <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
+        <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Privacy-first</span></span>
         <div class="lang-switch" aria-label="Language"><button type="button" data-lang="el" class="active">EL</button><button type="button" data-lang="en">EN</button></div>
         <button class="support-btn" id="supportNav" type="button"><span>♡</span><b>Support</b></button>
       </div>
@@ -147,10 +148,10 @@
     <main>
       <section id="startCard" class="start-card card">
         <div class="hero-copy home-panel">
-          <span class="eyebrow">LOCAL AI · NO UPLOAD</span>
-          <h1 data-i18n="heroTitle">Υπότιτλοι μέσα στον browser. Χωρίς upload.</h1>
-          <p data-i18n="heroText">Διάλεξε ένα video. Η απομαγνητοφώνηση γίνεται στη συσκευή σου και το αρχείο δεν ανεβαίνει σε server.</p>
-          <div class="hero-badges"><span>Whisper</span><span>WebGPU / WASM</span><span>iPhone fallback</span><span>No watermark</span></div>
+          <span class="eyebrow">LOCAL + CLOUD AI</span>
+          <h1 data-i18n="heroTitle">Υπότιτλοι μέσα στον browser. Local ή Cloud AI.</h1>
+          <p data-i18n="heroText">Διάλεξε ένα video. Το video μένει στη συσκευή σου. Τα Local models δουλεύουν τοπικά, ενώ το Cloud High Accuracy στέλνει μόνο το audio για απομαγνητοφώνηση.</p>
+          <div class="hero-badges"><span>Whisper</span><span>Local + Cloud AI</span><span>WASM</span><span>No watermark</span></div>
         </div>
         <button id="dropzone" class="dropzone home-panel" type="button">
           <span class="upload-icon">＋</span>
@@ -158,7 +159,7 @@
           <small data-i18n="dropHint">ή σύρε MP4 / MOV / WebM εδώ</small>
           <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.m4v,.webm" hidden />
         </button>
-        <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Το video, το audio και τα captions μένουν στη συσκευή σου.</small></div></div>
+        <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Στα Local models όλα μένουν τοπικά. Στο Cloud High Accuracy αποστέλλεται μόνο το audio για transcription.</small></div></div>
       </section>
 
       <section id="supportPage" class="support-page hidden">
@@ -166,11 +167,11 @@
           <button id="supportBackBtn" class="support-back" type="button"><span>←</span><b data-i18n="supportBack">Πίσω στο Kaptiono</b></button>
           <span class="eyebrow">SUPPORT KAPTIONO</span>
           <h1 data-i18n="supportTitle">Γιατί υπάρχει το Kaptiono</h1>
-          <p data-i18n="supportIntro">Το Kaptiono δημιουργήθηκε για creators που θέλουν γρήγορους, καθαρούς υπότιτλους χωρίς upload των video τους, λογαριασμούς, credits ή watermark.</p>
+          <p data-i18n="supportIntro">Το Kaptiono δημιουργήθηκε για creators που θέλουν γρήγορους, καθαρούς υπότιτλους, local-first workflow, προαιρετικό Cloud High Accuracy, χωρίς credits ή watermark.</p>
         </div>
 
         <div class="support-principles">
-          <article class="support-tile card"><span class="support-index">01</span><h2 data-i18n="supportPrivateTitle">Ιδιωτικό από σχεδιασμό</h2><p data-i18n="supportPrivateText">Η επεξεργασία γίνεται τοπικά στη συσκευή. Στόχος είναι το video σου να μην χρειάζεται να ανέβει σε processing server.</p></article>
+          <article class="support-tile card"><span class="support-index">01</span><h2 data-i18n="supportPrivateTitle">Ιδιωτικό από σχεδιασμό</h2><p data-i18n="supportPrivateText">Το original video και το editing μένουν στη συσκευή. Τα Local models δουλεύουν τοπικά. Αν επιλέξεις Cloud High Accuracy, αποστέλλεται μόνο το extracted audio για transcription.</p></article>
           <article class="support-tile card"><span class="support-index">02</span><h2 data-i18n="supportFreeTitle">Δωρεάν για creators</h2><p data-i18n="supportFreeText">Το Kaptiono χτίζεται χωρίς credits, watermark και υποχρεωτική συνδρομή για τις βασικές λειτουργίες δημιουργίας captions.</p></article>
           <article class="support-tile card"><span class="support-index">03</span><h2 data-i18n="supportBuiltTitle">Χτίζεται σαν πραγματικό εργαλείο</h2><p data-i18n="supportBuiltText">Desktop, web και mobile σχεδιάζονται με κοινή λογική ώστε το workflow να παραμένει απλό, γρήγορο και οικείο.</p></article>
         </div>
@@ -180,10 +181,10 @@
             <h2 id="faqTitle" data-i18n="faqTitle">Συχνές ερωτήσεις.</h2>
           </div>
           <div class="support-faq-list">
-            <details open><summary data-i18n="faqUploadQ">Ανεβάζει το Kaptiono το video σε server;</summary><p data-i18n="faqUploadA">Όχι. Το Kaptiono έχει σχεδιαστεί γύρω από local processing ώστε το video να μένει στη συσκευή.</p></details>
+            <details open><summary data-i18n="faqUploadQ">Ανεβάζει το Kaptiono το video σε server;</summary><p data-i18n="faqUploadA">Όχι. Το original video μένει στη συσκευή. Αν επιλέξεις Cloud High Accuracy, αποστέλλεται μόνο το extracted audio για transcription.</p></details>
             <details><summary data-i18n="faqSocialQ">Μπορεί να φτιάξει υπότιτλους για social media;</summary><p data-i18n="faqSocialA">Ναι. Το workflow είναι σχεδιασμένο για TikTok, Instagram Reels, YouTube Shorts και άλλα video formats.</p></details>
             <details><summary data-i18n="faqDesktopQ">Είναι μόνο για desktop;</summary><p data-i18n="faqDesktopA">Όχι. Η web εφαρμογή έχει σχεδιαστεί και για mobile, ενώ η desktop έκδοση μπορεί να προσφέρει ισχυρότερο editing workflow.</p></details>
-            <details><summary data-i18n="faqDiffQ">Τι κάνει το Kaptiono διαφορετικό;</summary><p data-i18n="faqDiffA">Εστιάζει σε local AI subtitles, privacy-first επεξεργασία, no-watermark output και καθαρό editor.</p></details>
+            <details><summary data-i18n="faqDiffQ">Τι κάνει το Kaptiono διαφορετικό;</summary><p data-i18n="faqDiffA">Εστιάζει σε privacy-first captions, local AI, προαιρετικό Cloud High Accuracy, no-watermark output και καθαρό editor.</p></details>
           </div>
         </section>
 <section class="support-roadmap-cta card">
@@ -316,7 +317,7 @@
 
       <section id="workspace" class="workspace hidden">
         <div class="workspace-head">
-          <div><span class="eyebrow">EDITOR</span><h1>Caption Studio</h1><p id="projectMeta">—</p></div>
+          <div><span class="eyebrow">EDITOR</span><h1>Caption Studio</h1><p id="projectMeta">·</p></div>
           <div class="workspace-status"><span id="saveState"><i></i><b data-i18n="liveChanges">LIVE PREVIEW</b></span><button id="changeVideoBtn" type="button" class="ghost-btn" data-i18n="changeVideo">Άλλο video</button></div>
         </div>
 
@@ -324,7 +325,7 @@
           <section class="preview-card card">
             <div class="preview-head">
               <div><span class="status-dot"></span><div><strong data-i18n="livePreview">Ζωντανή προεπισκόπηση</strong><small data-i18n="previewHint">Οι αλλαγές εφαρμόζονται αμέσως.</small></div></div>
-              <div class="preview-meta"><span id="videoResolution">—</span><span id="captionCountBadge">0 captions</span></div>
+              <div class="preview-meta"><span id="videoResolution">·</span><span id="captionCountBadge">0 captions</span></div>
             </div>
             <div class="video-shell" id="videoShell">
               <div id="videoStage" class="video-stage">
@@ -348,10 +349,10 @@
               <div id="quickExportProgress" class="quick-export-progress hidden" aria-live="polite">
                 <div class="quick-export-progress-head">
                   <span id="quickExportStage">LOCAL EXPORT</span>
-                  <strong id="quickExportProgressValue">—</strong>
+                  <strong id="quickExportProgressValue">·</strong>
                 </div>
                 <div id="quickExportTrack" class="progress-track export-progress-track"><i id="quickExportBar"></i></div>
-                <small id="quickExportProgressText">—</small>
+                <small id="quickExportProgressText">·</small>
               </div>
             </div>
             <div id="compatNote" class="compat-note hidden"></div>
@@ -365,14 +366,14 @@
             </div>
 
             <div class="main-panel active" data-main-panel="captions">
-              <div class="panel-title"><div><span class="eyebrow">LOCAL AI</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Για ποιότητα κοντά στο desktop χρησιμοποίησε Small και δήλωσε Ελληνικά.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
+              <div class="panel-title"><div><span class="eyebrow">AI CAPTIONS</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Χρησιμοποίησε Small για local processing ή Cloud High Accuracy για δοκιμές με Whisper Large v3 Turbo.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
               <div class="field-grid two">
                 <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
                   <option value="onnx-community/whisper-small_timestamped" selected>Whisper Small · High quality · Recommended</option>
-                  <option value="onnx-community/whisper-large-v3-turbo" disabled>Whisper Large v3 Turbo · High Accuracy · COMING SOON</option>
+                  <option value="cloudflare/whisper-large-v3-turbo">Whisper Large v3 Turbo · CLOUD · High Accuracy</option>
                   <option value="onnx-community/whisper-base_timestamped">Whisper Base · Stable</option>
                   <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
-                </select><small id="modelHint">—</small></label>
+                </select><small id="modelHint">·</small></label>
                 <label class="setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect">
                   <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
                 </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></label>
@@ -397,7 +398,7 @@
                 <div class="progress-stage-row"><span id="progressStep" class="progress-step">Βήμα 1 από 4</span><span id="elapsed">0:00</span></div>
                 <div class="progress-message"><strong id="progressTitle">Προετοιμασία video</strong><span id="progressDetail">Διαβάζουμε το audio τοπικά.</span></div>
                 <div class="progress-track"><i id="progressBar"></i></div>
-                <div class="progress-footer"><span id="progressPercent">0%</span><span class="progress-local">LOCAL PROCESSING</span></div>
+                <div class="progress-footer"><span id="progressPercent">0%</span><span id="processingModeLabel" class="progress-local">LOCAL PROCESSING</span></div>
               </div>
               <div id="emptyCaptions" class="empty-state"><strong data-i18n="noCaptions">Δεν υπάρχουν captions ακόμη.</strong><span data-i18n="noCaptionsHint">Πάτησε «Δημιουργία captions» για να ξεκινήσεις.</span></div>
               <div id="captionEditor" class="caption-editor hidden"></div>
@@ -487,12 +488,12 @@
             <div class="main-panel" data-main-panel="export">
               <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2><p data-i18n="exportHint">Το αρχείο δημιουργείται τοπικά στον browser.</p></div></div>
               <button id="videoDownloadBtn" class="video-download-cta" type="button" disabled>
-                <span><small id="videoExportEyebrow" data-i18n="burnedCaptions">BURNED-IN CAPTIONS</small><strong id="videoDownloadLabel" data-i18n="downloadVideo">Λήψη video με υπότιτλους</strong><em id="videoExportFormat">—</em></span><b id="videoDownloadIcon">↓</b>
+                <span><small id="videoExportEyebrow" data-i18n="burnedCaptions">BURNED-IN CAPTIONS</small><strong id="videoDownloadLabel" data-i18n="downloadVideo">Λήψη video με υπότιτλους</strong><em id="videoExportFormat">·</em></span><b id="videoDownloadIcon">↓</b>
               </button>
               <div id="exportProgress" class="progress-box export-progress-box hidden" aria-live="polite">
                 <div class="export-progress-stage">
                   <span id="exportStageLabel">LOCAL EXPORT</span>
-                  <strong id="exportDetail">—</strong>
+                  <strong id="exportDetail">·</strong>
                 </div>
                 <div class="export-progress-copy">
                   <strong id="exportProgressTitle">Προετοιμασία video</strong>
@@ -507,7 +508,7 @@
           </section>
         </div>
 
-        <section class="system-card card"><div><span class="eyebrow">BROWSER CHECK</span><h2 data-i18n="systemTitle">Μηχανή επεξεργασίας</h2></div><div class="system-grid"><div><span>AI</span><strong id="systemAi">Checking…</strong></div><div><span>Audio</span><strong id="systemAudio">Mediabunny</strong></div><div><span>Device</span><strong id="systemDevice">—</strong></div><div><span data-i18n="fileStatus">Αρχείο</span><strong id="systemFile">—</strong></div></div></section>
+        <section class="system-card card"><div><span class="eyebrow">BROWSER CHECK</span><h2 data-i18n="systemTitle">Μηχανή επεξεργασίας</h2></div><div class="system-grid"><div><span>AI</span><strong id="systemAi">Checking…</strong></div><div><span>Audio</span><strong id="systemAudio">Mediabunny</strong></div><div><span>Device</span><strong id="systemDevice">·</strong></div><div><span data-i18n="fileStatus">Αρχείο</span><strong id="systemFile">·</strong></div></div></section>
       </section>
     </main>
 
@@ -543,8 +544,8 @@
 
     <footer class="site-footer">
       <div class="footer-meta footer-meta-desktop">
-        <span>Kaptiono Web Lab 0.5.21</span>
-        <span>Free · Local · Private · No watermark</span>
+        <span>Kaptiono Web Lab 0.5.23</span>
+        <span>Free · Local + Cloud AI · Original video stays local · No watermark</span>
       </div>
       <nav class="footer-links" aria-label="Footer">
         <button id="footerSupportBtn" type="button">Support</button>
@@ -553,11 +554,11 @@
         <a href="https://github.com/Donacgreece/Kaptiono" target="_blank" rel="noopener">GitHub</a>
       </nav>
       <div class="footer-meta footer-meta-mobile" aria-label="Kaptiono version">
-        <span>Kaptiono · Free · Local · Private</span>
-        <small>v0.5.21</small>
+        <span>Kaptiono · Free · Local + Cloud AI</span>
+        <small>v0.5.23</small>
       </div>
     </footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.21"></script>
+  <script type="module" src="./app.js?v=0.5.23"></script>
 </body>
 </html>

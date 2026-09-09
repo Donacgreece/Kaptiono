@@ -1,6 +1,7 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.21';
+const APP_VERSION='0.5.23';
+const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -20,8 +21,8 @@ if(coarsePointer){
 }
 
 const i18n = {
-  el:{localPrivate:'Τοπικό & ιδιωτικό',heroTitle:'Υπότιτλοι μέσα στον browser. Χωρίς upload.',heroText:'Διάλεξε ένα video. Η απομαγνητοφώνηση γίνεται στη συσκευή σου και το αρχείο δεν ανεβαίνει σε server.',chooseVideo:'Διάλεξε video',dropHint:'ή σύρε MP4 / MOV / WebM εδώ',privacyTitle:'Το video μένει στη συσκευή σου.',privacyText:'Το video, το audio και τα captions μένουν στη συσκευή σου.',liveChanges:'LIVE PREVIEW',changeVideo:'Άλλο video',livePreview:'Ζωντανή προεπισκόπηση',previewHint:'Οι αλλαγές εφαρμόζονται αμέσως.',loadingVideo:'Φόρτωση video…',tabCaptions:'Κείμενο',tabDesign:'Σχεδίαση',tabExport:'Export',generateTitle:'Δημιουργία captions',qualityHint:'Για ποιότητα κοντά στο desktop χρησιμοποίησε Small και δήλωσε Ελληνικά.',aiModel:'AI model',speechLanguage:'Γλώσσα ομιλίας',autoDetect:'Αυτόματη ανίχνευση',languageHint:'Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.',generateButton:'Δημιουργία captions',noCaptions:'Δεν υπάρχουν captions ακόμη.',noCaptionsHint:'Πάτησε «Δημιουργία captions» για να ξεκινήσεις.',styleTitle:'Στυλ υποτίτλων',designHint:'Ίδια λογική ρυθμίσεων με το desktop Caption Studio.',typography:'Τυπογραφία',typographySub:'Γραμματοσειρά, μέγεθος και έμφαση',colorContrast:'Χρώμα & αντίθεση',colorSub:'Κείμενο, highlight και outline',positionFrame:'Θέση & κάδρο',positionSub:'Τοποθέτηση, πλάτος και στοίχιση',flow:'Ροή',flowSub:'Λέξεις ανά caption και ταχύτητα',motion:'Κίνηση & έμφαση',motionSub:'Animation και ενεργή λέξη',effects:'Εφέ & φόντο',effectsSub:'Σκιά, box και padding',fontFamily:'Γραμματοσειρά',fontSize:'Μέγεθος',letterSpacing:'Απόσταση γραμμάτων',scale:'Κλίμακα',text:'Κείμενο',background:'Φόντο',textOpacity:'Αδιαφάνεια κειμένου',quickPosition:'Γρήγορη θέση',horizontal:'Οριζόντια',vertical:'Κάθετα',captionWidth:'Πλάτος caption',rotation:'Περιστροφή',alignment:'Στοίχιση',left:'Αριστερά',center:'Κέντρο',right:'Δεξιά',maxWords:'Λέξεις ανά caption',maxLines:'Μέγιστες γραμμές',captionSpeed:'Ταχύτητα',fast:'Γρήγορη',balanced:'Ισορροπημένη',relaxed:'Χαλαρή',none:'Χωρίς',animationStrength:'Ένταση animation',wordHighlight:'Highlight ανά λέξη',shadow:'Σκιά',boxOpacity:'Αδιαφάνεια box',boxPadding:'Padding box',exportTitle:'Αποθήκευση αποτελέσματος',exportHint:'Το αρχείο δημιουργείται τοπικά στον browser.',downloadVideo:'Λήψη video με υπότιτλους',downloadVideoHint:'Δημιουργείται τοπικά στη συσκευή σου.',burnedCaptions:'BURNED-IN CAPTIONS',videoExportLocal:'Το video δημιουργείται τοπικά.',videoExportLocalHint:'Η διαθέσιμη μορφή εξαρτάται από τον browser σου.',srtHint:'Υπότιτλοι με timestamps',txtHint:'Καθαρό transcript',webmHint:'Burned captions, Chromium',exporting:'Local export…',mp4Next:'MP4 export βρίσκεται ακόμη σε ανάπτυξη.',mp4NextHint:'Πρώτα σταθεροποιούμε transcription και iPhone compatibility.',supportBack:'Πίσω στο Kaptiono',supportTitle:'Γιατί υπάρχει το Kaptiono',supportIntro:'Το Kaptiono δημιουργήθηκε για creators που θέλουν γρήγορους, καθαρούς υπότιτλους χωρίς upload των video τους, λογαριασμούς, credits ή watermark.',supportPrivateTitle:'Ιδιωτικό από σχεδιασμό',supportPrivateText:'Η επεξεργασία του video και των captions γίνεται τοπικά στη συσκευή. Το Kaptiono χρησιμοποιεί Google Analytics για βασική μέτρηση χρήσης και Google AdSense για διαφημίσεις. Το περιεχόμενο του video και των captions δεν χρησιμοποιείται από αυτές τις λειτουργίες της εφαρμογής.',supportFreeTitle:'Δωρεάν για creators',supportFreeText:'Το Kaptiono χτίζεται χωρίς credits, watermark και υποχρεωτική συνδρομή για τις βασικές λειτουργίες δημιουργίας captions.',supportBuiltTitle:'Χτίζεται σαν πραγματικό εργαλείο',supportBuiltText:'Desktop, web και mobile σχεδιάζονται με κοινή λογική ώστε το workflow να παραμένει απλό, γρήγορο και οικείο.',roadmapCtaTitle:'Δες τι χτίζουμε μετά',roadmapCtaText:'Δες το πραγματικό roadmap του Kaptiono, τι είναι προτεραιότητα τώρα και ποιες ιδέες μπορούν να προχωρήσουν με τη στήριξη της κοινότητας.',roadmapCtaButton:'Άνοιγμα Roadmap',roadmapBack:'Πίσω στο Support',roadmapTitle:'Το επόμενο Kaptiono χτίζεται εδώ.',roadmapIntro:'Αυτό είναι το πραγματικό product roadmap. Δείχνει πού εστιάζουμε τώρα, τι θέλουμε να ακολουθήσει και ποιες μεγαλύτερες ιδέες εξετάζουμε για το μέλλον.',roadmapSupportTitle:'Η στήριξή σου βοηθά την ανάπτυξη',roadmapSupportText:'Οι δωρεές είναι προαιρετικές και βοηθούν σε χρόνο ανάπτυξης, δοκιμές σε περισσότερες συσκευές και έρευνα νέων local AI δυνατοτήτων. Το roadmap είναι κατεύθυνση, όχι υπόσχεση ημερομηνιών.',roadmapStatusNow:'Τώρα',roadmapStatusNext:'Επόμενα',roadmapStatusLater:'Αργότερα',roadmapStatusExplore:'Διερεύνηση',roadmapNowTitle:'Τρέχουσα προτεραιότητα',roadmapNowText:'Πράγματα που μπορούν να κάνουν το Kaptiono πιο αξιόπιστο και χρήσιμο στην καθημερινή δουλειά ενός creator.',roadmapProjectSaveTitle:'Recent Projects & local project save',roadmapProjectSaveText:'Αποθήκευση captions, timings και styles τοπικά ώστε να συνεχίζεις ένα project χωρίς νέα απομαγνητοφώνηση.',roadmapPwaTitle:'PWA reliability & offline foundation',roadmapPwaText:'Σταθερό install/update flow, καλύτερο local caching και βάση για πραγματική offline χρήση.',roadmapMobileTitle:'Mobile & Safari reliability',roadmapMobileText:'Καλύτερη συμπεριφορά σε Android, iPhone και iPad με μεγάλα video και local AI models.',roadmapExportParityTitle:'Preview / export parity',roadmapExportParityText:'Το τελικό video να παραμένει όσο γίνεται πιστό σε αυτό που βλέπεις μέσα στο Caption Studio.',roadmapNextTitle:'Τα επόμενα creator εργαλεία',roadmapNextText:'Features με άμεση αξία στο editing και στην ποιότητα των captions.',roadmapTimelineTitle:'Caption Timeline Editor',roadmapTimelineText:'Split, merge, drag και timing adjustments σε πραγματική timeline κάτω από το video.',roadmapCleanupTitle:'Smart Caption Cleanup',roadmapCleanupText:'Καλύτερη στίξη, φυσικότερα breaks, λιγότερες διπλές λέξεις και πιο καθαρό transcript.',roadmapSafeZonesTitle:'Social Safe Zones',roadmapSafeZonesText:'TikTok, Reels, Shorts και Story overlays ώστε τα captions να μην κρύβονται πίσω από το UI της πλατφόρμας.',roadmapAutoModelTitle:'Automatic model selection',roadmapAutoModelText:'Το Kaptiono να προτείνει Tiny, Base ή Small ανάλογα με τη συσκευή και τη διαθέσιμη ισχύ.',roadmapDictionaryTitle:'Custom Dictionary',roadmapDictionaryText:'Προσωπικό λεξικό για brands, ονόματα και όρους που το Whisper συχνά γράφει λάθος.',roadmapLaterTitle:'Μεγαλύτερα workflows',roadmapLaterText:'Ιδέες που μπορούν να μετατρέψουν το Kaptiono σε πιο ολοκληρωμένο καθημερινό εργαλείο.',roadmapSpeakerTitle:'Speaker Detection',roadmapSpeakerText:'Αναγνώριση διαφορετικών ομιλητών για interviews και podcasts με ξεχωριστή παρουσίαση.',roadmapAutoPositionTitle:'Auto Caption Position',roadmapAutoPositionText:'Έξυπνη μετακίνηση captions ώστε να αποφεύγουν πρόσωπα και σημαντικά σημεία του frame.',roadmapBatchTitle:'Batch Processing Queue',roadmapBatchText:'Πολλά videos σε σειρά για creators που ετοιμάζουν συχνά Shorts, Reels ή clips.',roadmapPresetTitle:'Creator preset profiles & sharing',roadmapPresetText:'Αποθήκευση προσωπικών styles και δυνατότητα export/import preset μεταξύ συσκευών.',roadmapOfflineTitle:'Full Offline Mode',roadmapOfflineText:'Εγκατάσταση μία φορά και δημιουργία captions χωρίς σύνδεση όταν app και AI model είναι ήδη διαθέσιμα τοπικά.',roadmapExploreTitle:'Ιδέες που εξερευνούμε',roadmapExploreText:'Δεν είναι δεσμεύσεις. Είναι κατευθύνσεις που αξίζει να δοκιμαστούν αν μπορούν να παραμείνουν γρήγορες, local και creator-first.',roadmapTranslationTitle:'Local caption translation',roadmapTranslationText:'Μετάφραση captions χωρίς να χαλάει η privacy-first λογική του βασικού workflow.',roadmapDiarizationTitle:'Advanced local diarization',roadmapDiarizationText:'Πιο ακριβής διαχωρισμός ομιλητών με local μοντέλα όταν το hardware το επιτρέπει.',roadmapCommunityTitle:'Community preset gallery',roadmapCommunityText:'Creator-made caption styles που μπορούν να μοιράζονται χωρίς να αλλάζει το δωρεάν core.',roadmapAdvancedTitle:'Advanced creator workflows',roadmapAdvancedText:'Νέα local-first εργαλεία μόνο όταν προσθέτουν πραγματική αξία χωρίς να μετατρέπουν το Kaptiono σε βαρύ video editor.',roadmapBottomTitle:'Βοήθησε το Kaptiono να δοκιμάσει περισσότερα.',roadmapBottomText:'Το Kaptiono παραμένει δωρεάν για creators. Η προαιρετική στήριξη βοηθά σε ανάπτυξη, testing σε περισσότερα devices και πειραματισμό με νέα local AI features.',roadmapBottomButton:'Support μέσω PayPal',contactTitle:'Θέλεις να επικοινωνήσεις με το Kaptiono;',contactText:'Για feedback, bugs, συνεργασίες ή commercial licensing μπορείς να επικοινωνήσεις απευθείας μαζί μας.',donateTitle:'Θέλεις να βοηθήσεις την ανάπτυξη;',donateText:'Η δωρεά είναι απολύτως προαιρετική. Βοηθά να συνεχιστεί η ανάπτυξη, οι δοκιμές σε περισσότερες συσκευές και η προσθήκη νέων features.',donateButton:'Donate μέσω PayPal',seoWhyTitle:'Local AI captions με privacy first.',seoWhyText:'Το Kaptiono είναι για creators που θέλουν δημιουργία υποτίτλων μέσα στον browser χωρίς να στέλνουν τα video τους σε cloud processing server.',seoWhatTitle:'Απομαγνητοφώνηση, σχεδίαση και export.',seoWhatText:'Διάλεξε τοπικά ένα video, δημιούργησε captions με Whisper, ρύθμισε το στυλ και κάνε export για short-form ή long-form περιεχόμενο.',seoWhoTitle:'Για creators και editors.',seoWhoText:'Το Kaptiono ταιριάζει σε TikTok, Reels, Shorts, YouTube και creator workflows που χρειάζονται γρήγορους υπότιτλους, καθαρό editor και export χωρίς watermark.',howTitle:'Απλό workflow υποτίτλων μέσα στον browser.',howText:'Διάλεξε video, τρέξε local AI transcription, ρύθμισε το στυλ και κάνε export. Η εμπειρία έχει σχεδιαστεί ώστε να είναι γρήγορη και app-like σε desktop και mobile.',howStep1Title:'Διάλεξε video',howStep1Text:'Άνοιξε MP4, MOV ή WebM απευθείας από τη συσκευή σου.',howStep2Title:'Δημιούργησε captions',howStep2Text:'Χρησιμοποίησε Whisper για υψηλής ποιότητας subtitle generation στον browser.',howStep3Title:'Σχεδίασε και κάνε export',howStep3Text:'Ρύθμισε το look, δες live preview και εξήγαγε καθαρό creator-ready αποτέλεσμα.',faqTitle:'Συχνές ερωτήσεις.',faqUploadQ:'Ανεβάζει το Kaptiono το video σε server;',faqUploadA:'Όχι. Το Kaptiono έχει σχεδιαστεί γύρω από local processing ώστε το video να μένει στη συσκευή.',faqSocialQ:'Μπορεί να φτιάξει υπότιτλους για social media;',faqSocialA:'Ναι. Το workflow είναι σχεδιασμένο για TikTok, Instagram Reels, YouTube Shorts και άλλα video formats.',faqDesktopQ:'Είναι μόνο για desktop;',faqDesktopA:'Όχι. Η web εφαρμογή έχει σχεδιαστεί και για mobile, ενώ η desktop έκδοση μπορεί να προσφέρει ισχυρότερο editing workflow.',faqDiffQ:'Τι κάνει το Kaptiono διαφορετικό;',faqDiffA:'Εστιάζει σε local AI subtitles, privacy-first επεξεργασία, no-watermark output και καθαρό editor.',installTitle:'Εγκατάσταση Kaptiono',installText:'Χρησιμοποίησέ το σαν κανονική εφαρμογή στο κινητό σου.',installAction:'Download',iosInstallTitle:'Βάλε το Kaptiono στην Αρχική οθόνη',iosStep1Title:'Άνοιξε το Share',iosStep1Text:'Στο Safari πάτησε το εικονίδιο Κοινοποίησης.',iosStep2Title:'Add to Home Screen',iosStep2Text:'Διάλεξε «Προσθήκη στην οθόνη Αφετηρίας».',iosStep3Title:'Πάτησε Add',iosStep3Text:'Το Kaptiono θα εμφανιστεί σαν εφαρμογή.',iosDone:'Έγινε',updateTitle:'Νέα έκδοση διαθέσιμη',updateText:'Το Kaptiono μπορεί να ενημερωθεί τώρα.',updateAction:'Ενημέρωση',systemTitle:'Μηχανή επεξεργασίας',fileStatus:'Αρχείο'},
-  en:{localPrivate:'Local & private',heroTitle:'Captions in your browser. No upload.',heroText:'Choose a video. Speech recognition runs on your device and your file is never uploaded to a processing server.',chooseVideo:'Choose video',dropHint:'or drop MP4 / MOV / WebM here',privacyTitle:'Your video stays on your device.',privacyText:'Your video, audio and captions stay on your device.',liveChanges:'LIVE PREVIEW',changeVideo:'Change video',livePreview:'Live preview',previewHint:'Changes are applied immediately.',loadingVideo:'Loading video…',tabCaptions:'Text',tabDesign:'Design',tabExport:'Export',generateTitle:'Generate captions',qualityHint:'For desktop-like quality use Small and set the spoken language explicitly.',aiModel:'AI model',speechLanguage:'Speech language',autoDetect:'Auto detect',languageHint:'Explicit language selection significantly improves short clips.',generateButton:'Generate captions',noCaptions:'No captions yet.',noCaptionsHint:'Press “Generate captions” to start.',styleTitle:'Caption style',designHint:'The same control logic as the desktop Caption Studio.',typography:'Typography',typographySub:'Font, size and emphasis',colorContrast:'Color & contrast',colorSub:'Text, highlight and outline',positionFrame:'Position & frame',positionSub:'Placement, width and alignment',flow:'Timing & flow',flowSub:'Words per caption and pacing',motion:'Motion & emphasis',motionSub:'Animation and active word',effects:'Effects & background',effectsSub:'Shadow, box and padding',fontFamily:'Font family',fontSize:'Font size',letterSpacing:'Letter spacing',scale:'Scale',text:'Text',background:'Background',textOpacity:'Text opacity',quickPosition:'Quick position',horizontal:'Horizontal',vertical:'Vertical',captionWidth:'Caption width',rotation:'Rotation',alignment:'Alignment',left:'Left',center:'Center',right:'Right',maxWords:'Words per caption',maxLines:'Maximum lines',captionSpeed:'Caption speed',fast:'Fast',balanced:'Balanced',relaxed:'Relaxed',none:'None',animationStrength:'Animation strength',wordHighlight:'Word-by-word highlight',shadow:'Shadow',boxOpacity:'Box opacity',boxPadding:'Box padding',exportTitle:'Save result',exportHint:'The file is created locally in your browser.',downloadVideo:'Download video with captions',downloadVideoHint:'Created locally on your device.',burnedCaptions:'BURNED-IN CAPTIONS',videoExportLocal:'The video is created locally.',videoExportLocalHint:'Available format depends on your browser.',srtHint:'Captions with timestamps',txtHint:'Plain transcript',webmHint:'Burned captions, Chromium',exporting:'Local export…',mp4Next:'MP4 export is still in development.',mp4NextHint:'We are stabilizing transcription and iPhone compatibility first.',supportBack:'Back to Kaptiono',supportTitle:'Why Kaptiono exists',supportIntro:'Kaptiono was created for creators who want fast, clean captions without uploading their videos, creating accounts, buying credits, or adding a watermark.',supportPrivateTitle:'Private by design',supportPrivateText:'Video and caption processing runs locally on the device. Kaptiono uses Google Analytics for basic usage measurement and Google AdSense for advertising. Video and caption content is not used by those application features.',supportFreeTitle:'Free for creators',supportFreeText:'Kaptiono is being built without credits, watermarks, or a mandatory subscription for the core caption-creation workflow.',supportBuiltTitle:'Built as a real creator tool',supportBuiltText:'Desktop, web, and mobile are designed around the same workflow so the product stays simple, fast, and familiar.',roadmapCtaTitle:'See what we are building next',roadmapCtaText:'Open the real Kaptiono roadmap to see what is being prioritized now and which ideas can move forward with community support.',roadmapCtaButton:'View Roadmap',roadmapBack:'Back to Support',roadmapTitle:'The next Kaptiono is being built here.',roadmapIntro:'This is the real product roadmap. It shows what we are focusing on now, what we want to build next, and which larger ideas we are exploring for the future.',roadmapSupportTitle:'Your support helps development',roadmapSupportText:'Donations are optional and help fund development time, testing on more devices, and research into new local AI capabilities. The roadmap is direction, not a promise of dates.',roadmapStatusNow:'Now',roadmapStatusNext:'Next',roadmapStatusLater:'Later',roadmapStatusExplore:'Exploring',roadmapNowTitle:'Current priority',roadmapNowText:'Work that can make Kaptiono more reliable and more useful in a creator’s everyday workflow.',roadmapProjectSaveTitle:'Recent Projects & local project save',roadmapProjectSaveText:'Save captions, timings and styles locally so a project can be continued without transcribing it again.',roadmapPwaTitle:'PWA reliability & offline foundation',roadmapPwaText:'A stable install/update flow, stronger local caching and the foundation for real offline use.',roadmapMobileTitle:'Mobile & Safari reliability',roadmapMobileText:'Better behavior on Android, iPhone and iPad with larger videos and local AI models.',roadmapExportParityTitle:'Preview / export parity',roadmapExportParityText:'Keep the downloaded video as close as possible to what is shown inside Caption Studio.',roadmapNextTitle:'The next creator tools',roadmapNextText:'Features with immediate value for editing speed and caption quality.',roadmapTimelineTitle:'Caption Timeline Editor',roadmapTimelineText:'Split, merge, drag and timing adjustments on a real timeline under the video.',roadmapCleanupTitle:'Smart Caption Cleanup',roadmapCleanupText:'Better punctuation, more natural breaks, fewer duplicate words and a cleaner transcript.',roadmapSafeZonesTitle:'Social Safe Zones',roadmapSafeZonesText:'TikTok, Reels, Shorts and Story overlays so captions do not sit behind platform UI.',roadmapAutoModelTitle:'Automatic model selection',roadmapAutoModelText:'Let Kaptiono recommend Tiny, Base or Small based on the device and available performance.',roadmapDictionaryTitle:'Custom Dictionary',roadmapDictionaryText:'A personal dictionary for brands, names and terms that Whisper often writes incorrectly.',roadmapLaterTitle:'Larger workflows',roadmapLaterText:'Ideas that can turn Kaptiono into a more complete everyday creator tool.',roadmapSpeakerTitle:'Speaker Detection',roadmapSpeakerText:'Detect different speakers in interviews and podcasts and present them clearly.',roadmapAutoPositionTitle:'Auto Caption Position',roadmapAutoPositionText:'Move captions intelligently so they avoid faces and important areas of the frame.',roadmapBatchTitle:'Batch Processing Queue',roadmapBatchText:'Queue multiple videos for creators producing Shorts, Reels or clips regularly.',roadmapPresetTitle:'Creator preset profiles & sharing',roadmapPresetText:'Save personal styles and export/import presets between devices.',roadmapOfflineTitle:'Full Offline Mode',roadmapOfflineText:'Install once and create captions without internet when the app and AI model are already available locally.',roadmapExploreTitle:'Ideas we are exploring',roadmapExploreText:'These are not commitments. They are directions worth testing if they can stay fast, local and creator-first.',roadmapTranslationTitle:'Local caption translation',roadmapTranslationText:'Translate captions without breaking the privacy-first philosophy of the core workflow.',roadmapDiarizationTitle:'Advanced local diarization',roadmapDiarizationText:'More accurate local speaker separation when the device hardware can support it.',roadmapCommunityTitle:'Community preset gallery',roadmapCommunityText:'Creator-made caption styles that can be shared without changing the free core.',roadmapAdvancedTitle:'Advanced creator workflows',roadmapAdvancedText:'New local-first tools only when they add real value without turning Kaptiono into a heavy video editor.',roadmapBottomTitle:'Help Kaptiono test what comes next.',roadmapBottomText:'Kaptiono remains free for creators. Optional support helps fund development, testing on more devices, and experiments with new local AI features.',roadmapBottomButton:'Support via PayPal',contactTitle:'Want to contact Kaptiono?',contactText:'For feedback, bugs, partnerships or commercial licensing, you can contact us directly.',donateTitle:'Want to support development?',donateText:'Donations are completely optional. They help fund continued development, testing on more devices, and new features.',donateButton:'Donate via PayPal',seoWhyTitle:'Local AI captions with privacy first.',seoWhyText:'Kaptiono is for creators who want browser-based subtitle generation without sending private video files to a cloud processing server.',seoWhatTitle:'Transcribe, style and export.',seoWhatText:'Choose a video locally, generate captions with Whisper, adjust the style and export results for short-form or long-form content.',seoWhoTitle:'Built for creators and editors.',seoWhoText:'Kaptiono fits TikTok, Reels, Shorts, YouTube and creator workflows that need fast captions, a clean editor and no-watermark output.',howTitle:'A simple subtitle workflow in the browser.',howText:'Choose a video, run local AI transcription, fine-tune the style and export the result. The experience is designed to feel fast and app-like on desktop and mobile.',howStep1Title:'Choose video',howStep1Text:'Open an MP4, MOV or WebM directly from your device.',howStep2Title:'Generate captions',howStep2Text:'Use Whisper for high-quality subtitle generation in the browser.',howStep3Title:'Style and export',howStep3Text:'Adjust the look, preview the result and export clean creator-ready output.',faqTitle:'Frequently asked questions.',faqUploadQ:'Does Kaptiono upload the video to a server?',faqUploadA:'No. Kaptiono is designed around local processing so the video can stay on the device.',faqSocialQ:'Can Kaptiono create subtitles for social media?',faqSocialA:'Yes. The workflow is designed for TikTok, Instagram Reels, YouTube Shorts and other video formats.',faqDesktopQ:'Is Kaptiono only for desktop?',faqDesktopA:'No. The web app is designed for mobile too, while the desktop edition can provide a stronger editing workflow.',faqDiffQ:'What makes Kaptiono different?',faqDiffA:'It focuses on local AI subtitles, privacy-first processing, no-watermark output and a clean editor.',installTitle:'Install Kaptiono',installText:'Use Kaptiono like a normal app on your phone.',installAction:'Download',iosInstallTitle:'Add Kaptiono to your Home Screen',iosStep1Title:'Open Share',iosStep1Text:'In Safari, tap the Share icon.',iosStep2Title:'Add to Home Screen',iosStep2Text:'Choose “Add to Home Screen”.',iosStep3Title:'Tap Add',iosStep3Text:'Kaptiono will appear like a normal app.',iosDone:'Done',updateTitle:'New version available',updateText:'Kaptiono can update now.',updateAction:'Update',systemTitle:'Processing engine',fileStatus:'File'}
+  el:{localPrivate:'Privacy-first',heroTitle:'Υπότιτλοι μέσα στον browser. Local ή Cloud AI.',heroText:'Διάλεξε ένα video. Το video μένει στη συσκευή σου. Τα Local models δουλεύουν τοπικά, ενώ το Cloud High Accuracy στέλνει μόνο το audio για απομαγνητοφώνηση.',chooseVideo:'Διάλεξε video',dropHint:'ή σύρε MP4 / MOV / WebM εδώ',privacyTitle:'Το video μένει στη συσκευή σου.',privacyText:'Στα Local models όλα μένουν τοπικά. Στο Cloud High Accuracy αποστέλλεται μόνο το audio για transcription.',liveChanges:'LIVE PREVIEW',changeVideo:'Άλλο video',livePreview:'Ζωντανή προεπισκόπηση',previewHint:'Οι αλλαγές εφαρμόζονται αμέσως.',loadingVideo:'Φόρτωση video…',tabCaptions:'Κείμενο',tabDesign:'Σχεδίαση',tabExport:'Export',generateTitle:'Δημιουργία captions',qualityHint:'Χρησιμοποίησε Small για local processing ή Cloud High Accuracy για δοκιμές με Whisper Large v3 Turbo.',aiModel:'AI model',speechLanguage:'Γλώσσα ομιλίας',autoDetect:'Αυτόματη ανίχνευση',languageHint:'Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.',generateButton:'Δημιουργία captions',noCaptions:'Δεν υπάρχουν captions ακόμη.',noCaptionsHint:'Πάτησε «Δημιουργία captions» για να ξεκινήσεις.',styleTitle:'Στυλ υποτίτλων',designHint:'Ίδια λογική ρυθμίσεων με το desktop Caption Studio.',typography:'Τυπογραφία',typographySub:'Γραμματοσειρά, μέγεθος και έμφαση',colorContrast:'Χρώμα & αντίθεση',colorSub:'Κείμενο, highlight και outline',positionFrame:'Θέση & κάδρο',positionSub:'Τοποθέτηση, πλάτος και στοίχιση',flow:'Ροή',flowSub:'Λέξεις ανά caption και ταχύτητα',motion:'Κίνηση & έμφαση',motionSub:'Animation και ενεργή λέξη',effects:'Εφέ & φόντο',effectsSub:'Σκιά, box και padding',fontFamily:'Γραμματοσειρά',fontSize:'Μέγεθος',letterSpacing:'Απόσταση γραμμάτων',scale:'Κλίμακα',text:'Κείμενο',background:'Φόντο',textOpacity:'Αδιαφάνεια κειμένου',quickPosition:'Γρήγορη θέση',horizontal:'Οριζόντια',vertical:'Κάθετα',captionWidth:'Πλάτος caption',rotation:'Περιστροφή',alignment:'Στοίχιση',left:'Αριστερά',center:'Κέντρο',right:'Δεξιά',maxWords:'Λέξεις ανά caption',maxLines:'Μέγιστες γραμμές',captionSpeed:'Ταχύτητα',fast:'Γρήγορη',balanced:'Ισορροπημένη',relaxed:'Χαλαρή',none:'Χωρίς',animationStrength:'Ένταση animation',wordHighlight:'Highlight ανά λέξη',shadow:'Σκιά',boxOpacity:'Αδιαφάνεια box',boxPadding:'Padding box',exportTitle:'Αποθήκευση αποτελέσματος',exportHint:'Το αρχείο δημιουργείται τοπικά στον browser.',downloadVideo:'Λήψη video με υπότιτλους',downloadVideoHint:'Δημιουργείται τοπικά στη συσκευή σου.',burnedCaptions:'BURNED-IN CAPTIONS',videoExportLocal:'Το video δημιουργείται τοπικά.',videoExportLocalHint:'Η διαθέσιμη μορφή εξαρτάται από τον browser σου.',srtHint:'Υπότιτλοι με timestamps',txtHint:'Καθαρό transcript',webmHint:'Burned captions, Chromium',exporting:'Local export…',mp4Next:'MP4 export βρίσκεται ακόμη σε ανάπτυξη.',mp4NextHint:'Πρώτα σταθεροποιούμε transcription και iPhone compatibility.',supportBack:'Πίσω στο Kaptiono',supportTitle:'Γιατί υπάρχει το Kaptiono',supportIntro:'Το Kaptiono δημιουργήθηκε για creators που θέλουν γρήγορους, καθαρούς υπότιτλους, local-first workflow, προαιρετικό Cloud High Accuracy, χωρίς credits ή watermark.',supportPrivateTitle:'Ιδιωτικό από σχεδιασμό',supportPrivateText:'Το original video, το editing και το export μένουν στη συσκευή. Τα Local models επεξεργάζονται το audio τοπικά. Αν επιλεγεί Cloud High Accuracy, μόνο το extracted audio αποστέλλεται στο Kaptiono transcription service. Google Analytics και Google AdSense παραμένουν ξεχωριστά από το περιεχόμενο του video και των captions.',supportFreeTitle:'Δωρεάν για creators',supportFreeText:'Το Kaptiono χτίζεται χωρίς credits, watermark και υποχρεωτική συνδρομή για τις βασικές λειτουργίες δημιουργίας captions.',supportBuiltTitle:'Χτίζεται σαν πραγματικό εργαλείο',supportBuiltText:'Desktop, web και mobile σχεδιάζονται με κοινή λογική ώστε το workflow να παραμένει απλό, γρήγορο και οικείο.',roadmapCtaTitle:'Δες τι χτίζουμε μετά',roadmapCtaText:'Δες το πραγματικό roadmap του Kaptiono, τι είναι προτεραιότητα τώρα και ποιες ιδέες μπορούν να προχωρήσουν με τη στήριξη της κοινότητας.',roadmapCtaButton:'Άνοιγμα Roadmap',roadmapBack:'Πίσω στο Support',roadmapTitle:'Το επόμενο Kaptiono χτίζεται εδώ.',roadmapIntro:'Αυτό είναι το πραγματικό product roadmap. Δείχνει πού εστιάζουμε τώρα, τι θέλουμε να ακολουθήσει και ποιες μεγαλύτερες ιδέες εξετάζουμε για το μέλλον.',roadmapSupportTitle:'Η στήριξή σου βοηθά την ανάπτυξη',roadmapSupportText:'Οι δωρεές είναι προαιρετικές και βοηθούν σε χρόνο ανάπτυξης, δοκιμές σε περισσότερες συσκευές και έρευνα νέων local AI δυνατοτήτων. Το roadmap είναι κατεύθυνση, όχι υπόσχεση ημερομηνιών.',roadmapStatusNow:'Τώρα',roadmapStatusNext:'Επόμενα',roadmapStatusLater:'Αργότερα',roadmapStatusExplore:'Διερεύνηση',roadmapNowTitle:'Τρέχουσα προτεραιότητα',roadmapNowText:'Πράγματα που μπορούν να κάνουν το Kaptiono πιο αξιόπιστο και χρήσιμο στην καθημερινή δουλειά ενός creator.',roadmapProjectSaveTitle:'Recent Projects & local project save',roadmapProjectSaveText:'Αποθήκευση captions, timings και styles τοπικά ώστε να συνεχίζεις ένα project χωρίς νέα απομαγνητοφώνηση.',roadmapPwaTitle:'PWA reliability & offline foundation',roadmapPwaText:'Σταθερό install/update flow, καλύτερο local caching και βάση για πραγματική offline χρήση.',roadmapMobileTitle:'Mobile & Safari reliability',roadmapMobileText:'Καλύτερη συμπεριφορά σε Android, iPhone και iPad με μεγάλα video και local AI models.',roadmapExportParityTitle:'Preview / export parity',roadmapExportParityText:'Το τελικό video να παραμένει όσο γίνεται πιστό σε αυτό που βλέπεις μέσα στο Caption Studio.',roadmapNextTitle:'Τα επόμενα creator εργαλεία',roadmapNextText:'Features με άμεση αξία στο editing και στην ποιότητα των captions.',roadmapTimelineTitle:'Caption Timeline Editor',roadmapTimelineText:'Split, merge, drag και timing adjustments σε πραγματική timeline κάτω από το video.',roadmapCleanupTitle:'Smart Caption Cleanup',roadmapCleanupText:'Καλύτερη στίξη, φυσικότερα breaks, λιγότερες διπλές λέξεις και πιο καθαρό transcript.',roadmapSafeZonesTitle:'Social Safe Zones',roadmapSafeZonesText:'TikTok, Reels, Shorts και Story overlays ώστε τα captions να μην κρύβονται πίσω από το UI της πλατφόρμας.',roadmapAutoModelTitle:'Automatic model selection',roadmapAutoModelText:'Το Kaptiono να προτείνει Tiny, Base ή Small ανάλογα με τη συσκευή και τη διαθέσιμη ισχύ.',roadmapDictionaryTitle:'Custom Dictionary',roadmapDictionaryText:'Προσωπικό λεξικό για brands, ονόματα και όρους που το Whisper συχνά γράφει λάθος.',roadmapLaterTitle:'Μεγαλύτερα workflows',roadmapLaterText:'Ιδέες που μπορούν να μετατρέψουν το Kaptiono σε πιο ολοκληρωμένο καθημερινό εργαλείο.',roadmapSpeakerTitle:'Speaker Detection',roadmapSpeakerText:'Αναγνώριση διαφορετικών ομιλητών για interviews και podcasts με ξεχωριστή παρουσίαση.',roadmapAutoPositionTitle:'Auto Caption Position',roadmapAutoPositionText:'Έξυπνη μετακίνηση captions ώστε να αποφεύγουν πρόσωπα και σημαντικά σημεία του frame.',roadmapBatchTitle:'Batch Processing Queue',roadmapBatchText:'Πολλά videos σε σειρά για creators που ετοιμάζουν συχνά Shorts, Reels ή clips.',roadmapPresetTitle:'Creator preset profiles & sharing',roadmapPresetText:'Αποθήκευση προσωπικών styles και δυνατότητα export/import preset μεταξύ συσκευών.',roadmapOfflineTitle:'Full Offline Mode',roadmapOfflineText:'Εγκατάσταση μία φορά και δημιουργία captions χωρίς σύνδεση όταν app και AI model είναι ήδη διαθέσιμα τοπικά.',roadmapExploreTitle:'Ιδέες που εξερευνούμε',roadmapExploreText:'Δεν είναι δεσμεύσεις. Είναι κατευθύνσεις που αξίζει να δοκιμαστούν αν μπορούν να παραμείνουν γρήγορες, local και creator-first.',roadmapTranslationTitle:'Local caption translation',roadmapTranslationText:'Μετάφραση captions χωρίς να χαλάει η privacy-first λογική του βασικού workflow.',roadmapDiarizationTitle:'Advanced local diarization',roadmapDiarizationText:'Πιο ακριβής διαχωρισμός ομιλητών με local μοντέλα όταν το hardware το επιτρέπει.',roadmapCommunityTitle:'Community preset gallery',roadmapCommunityText:'Creator-made caption styles που μπορούν να μοιράζονται χωρίς να αλλάζει το δωρεάν core.',roadmapAdvancedTitle:'Advanced creator workflows',roadmapAdvancedText:'Νέα local-first εργαλεία μόνο όταν προσθέτουν πραγματική αξία χωρίς να μετατρέπουν το Kaptiono σε βαρύ video editor.',roadmapBottomTitle:'Βοήθησε το Kaptiono να δοκιμάσει περισσότερα.',roadmapBottomText:'Το Kaptiono παραμένει δωρεάν για creators. Η προαιρετική στήριξη βοηθά σε ανάπτυξη, testing σε περισσότερα devices και πειραματισμό με νέα local AI features.',roadmapBottomButton:'Support μέσω PayPal',contactTitle:'Θέλεις να επικοινωνήσεις με το Kaptiono;',contactText:'Για feedback, bugs, συνεργασίες ή commercial licensing μπορείς να επικοινωνήσεις απευθείας μαζί μας.',donateTitle:'Θέλεις να βοηθήσεις την ανάπτυξη;',donateText:'Η δωρεά είναι απολύτως προαιρετική. Βοηθά να συνεχιστεί η ανάπτυξη, οι δοκιμές σε περισσότερες συσκευές και η προσθήκη νέων features.',donateButton:'Donate μέσω PayPal',seoWhyTitle:'AI captions με privacy first.',seoWhyText:'Το Kaptiono είναι για creators που θέλουν δημιουργία υποτίτλων μέσα στον browser χωρίς να στέλνουν τα video τους σε cloud processing server.',seoWhatTitle:'Απομαγνητοφώνηση, σχεδίαση και export.',seoWhatText:'Διάλεξε τοπικά ένα video, δημιούργησε captions με Whisper, ρύθμισε το στυλ και κάνε export για short-form ή long-form περιεχόμενο.',seoWhoTitle:'Για creators και editors.',seoWhoText:'Το Kaptiono ταιριάζει σε TikTok, Reels, Shorts, YouTube και creator workflows που χρειάζονται γρήγορους υπότιτλους, καθαρό editor και export χωρίς watermark.',howTitle:'Απλό workflow υποτίτλων μέσα στον browser.',howText:'Διάλεξε video, τρέξε local AI transcription, ρύθμισε το στυλ και κάνε export. Η εμπειρία έχει σχεδιαστεί ώστε να είναι γρήγορη και app-like σε desktop και mobile.',howStep1Title:'Διάλεξε video',howStep1Text:'Άνοιξε MP4, MOV ή WebM απευθείας από τη συσκευή σου.',howStep2Title:'Δημιούργησε captions',howStep2Text:'Χρησιμοποίησε Whisper για υψηλής ποιότητας subtitle generation στον browser.',howStep3Title:'Σχεδίασε και κάνε export',howStep3Text:'Ρύθμισε το look, δες live preview και εξήγαγε καθαρό creator-ready αποτέλεσμα.',faqTitle:'Συχνές ερωτήσεις.',faqUploadQ:'Ανεβάζει το Kaptiono το video σε server;',faqUploadA:'Όχι. Το original video μένει στη συσκευή. Με Local models το audio μένει επίσης τοπικά. Αν επιλέξεις Cloud High Accuracy, αποστέλλεται μόνο το extracted audio για transcription.',faqSocialQ:'Μπορεί να φτιάξει υπότιτλους για social media;',faqSocialA:'Ναι. Το workflow είναι σχεδιασμένο για TikTok, Instagram Reels, YouTube Shorts και άλλα video formats.',faqDesktopQ:'Είναι μόνο για desktop;',faqDesktopA:'Όχι. Η web εφαρμογή έχει σχεδιαστεί και για mobile, ενώ η desktop έκδοση μπορεί να προσφέρει ισχυρότερο editing workflow.',faqDiffQ:'Τι κάνει το Kaptiono διαφορετικό;',faqDiffA:'Εστιάζει σε privacy-first captions, local AI, προαιρετικό Cloud High Accuracy, no-watermark output και καθαρό editor.',installTitle:'Εγκατάσταση Kaptiono',installText:'Χρησιμοποίησέ το σαν κανονική εφαρμογή στο κινητό σου.',installAction:'Download',iosInstallTitle:'Βάλε το Kaptiono στην Αρχική οθόνη',iosStep1Title:'Άνοιξε το Share',iosStep1Text:'Στο Safari πάτησε το εικονίδιο Κοινοποίησης.',iosStep2Title:'Add to Home Screen',iosStep2Text:'Διάλεξε «Προσθήκη στην οθόνη Αφετηρίας».',iosStep3Title:'Πάτησε Add',iosStep3Text:'Το Kaptiono θα εμφανιστεί σαν εφαρμογή.',iosDone:'Έγινε',updateTitle:'Νέα έκδοση διαθέσιμη',updateText:'Το Kaptiono μπορεί να ενημερωθεί τώρα.',updateAction:'Ενημέρωση',systemTitle:'Μηχανή επεξεργασίας',fileStatus:'Αρχείο'},
+  en:{localPrivate:'Privacy-first',heroTitle:'Captions in your browser. Local or Cloud AI.',heroText:'Choose a video. The video stays on your device. Local models run on-device, while Cloud High Accuracy sends only extracted audio for transcription.',chooseVideo:'Choose video',dropHint:'or drop MP4 / MOV / WebM here',privacyTitle:'Your video stays on your device.',privacyText:'Local models keep everything on-device. Cloud High Accuracy sends only extracted audio for transcription.',liveChanges:'LIVE PREVIEW',changeVideo:'Change video',livePreview:'Live preview',previewHint:'Changes are applied immediately.',loadingVideo:'Loading video…',tabCaptions:'Text',tabDesign:'Design',tabExport:'Export',generateTitle:'Generate captions',qualityHint:'Use Small for local processing or Cloud High Accuracy to test Whisper Large v3 Turbo.',aiModel:'AI model',speechLanguage:'Speech language',autoDetect:'Auto detect',languageHint:'Explicit language selection significantly improves short clips.',generateButton:'Generate captions',noCaptions:'No captions yet.',noCaptionsHint:'Press “Generate captions” to start.',styleTitle:'Caption style',designHint:'The same control logic as the desktop Caption Studio.',typography:'Typography',typographySub:'Font, size and emphasis',colorContrast:'Color & contrast',colorSub:'Text, highlight and outline',positionFrame:'Position & frame',positionSub:'Placement, width and alignment',flow:'Timing & flow',flowSub:'Words per caption and pacing',motion:'Motion & emphasis',motionSub:'Animation and active word',effects:'Effects & background',effectsSub:'Shadow, box and padding',fontFamily:'Font family',fontSize:'Font size',letterSpacing:'Letter spacing',scale:'Scale',text:'Text',background:'Background',textOpacity:'Text opacity',quickPosition:'Quick position',horizontal:'Horizontal',vertical:'Vertical',captionWidth:'Caption width',rotation:'Rotation',alignment:'Alignment',left:'Left',center:'Center',right:'Right',maxWords:'Words per caption',maxLines:'Maximum lines',captionSpeed:'Caption speed',fast:'Fast',balanced:'Balanced',relaxed:'Relaxed',none:'None',animationStrength:'Animation strength',wordHighlight:'Word-by-word highlight',shadow:'Shadow',boxOpacity:'Box opacity',boxPadding:'Box padding',exportTitle:'Save result',exportHint:'The file is created locally in your browser.',downloadVideo:'Download video with captions',downloadVideoHint:'Created locally on your device.',burnedCaptions:'BURNED-IN CAPTIONS',videoExportLocal:'The video is created locally.',videoExportLocalHint:'Available format depends on your browser.',srtHint:'Captions with timestamps',txtHint:'Plain transcript',webmHint:'Burned captions, Chromium',exporting:'Local export…',mp4Next:'MP4 export is still in development.',mp4NextHint:'We are stabilizing transcription and iPhone compatibility first.',supportBack:'Back to Kaptiono',supportTitle:'Why Kaptiono exists',supportIntro:'Kaptiono was created for creators who want fast, clean captions, a local-first workflow, optional Cloud High Accuracy, no credits, and no watermark.',supportPrivateTitle:'Private by design',supportPrivateText:'The original video, editing and export stay on the device. Local models process audio on-device. If Cloud High Accuracy is selected, only extracted audio is sent to the Kaptiono transcription service. Google Analytics and Google AdSense remain separate from video and caption content.',supportFreeTitle:'Free for creators',supportFreeText:'Kaptiono is being built without credits, watermarks, or a mandatory subscription for the core caption-creation workflow.',supportBuiltTitle:'Built as a real creator tool',supportBuiltText:'Desktop, web, and mobile are designed around the same workflow so the product stays simple, fast, and familiar.',roadmapCtaTitle:'See what we are building next',roadmapCtaText:'Open the real Kaptiono roadmap to see what is being prioritized now and which ideas can move forward with community support.',roadmapCtaButton:'View Roadmap',roadmapBack:'Back to Support',roadmapTitle:'The next Kaptiono is being built here.',roadmapIntro:'This is the real product roadmap. It shows what we are focusing on now, what we want to build next, and which larger ideas we are exploring for the future.',roadmapSupportTitle:'Your support helps development',roadmapSupportText:'Donations are optional and help fund development time, testing on more devices, and research into new local AI capabilities. The roadmap is direction, not a promise of dates.',roadmapStatusNow:'Now',roadmapStatusNext:'Next',roadmapStatusLater:'Later',roadmapStatusExplore:'Exploring',roadmapNowTitle:'Current priority',roadmapNowText:'Work that can make Kaptiono more reliable and more useful in a creator’s everyday workflow.',roadmapProjectSaveTitle:'Recent Projects & local project save',roadmapProjectSaveText:'Save captions, timings and styles locally so a project can be continued without transcribing it again.',roadmapPwaTitle:'PWA reliability & offline foundation',roadmapPwaText:'A stable install/update flow, stronger local caching and the foundation for real offline use.',roadmapMobileTitle:'Mobile & Safari reliability',roadmapMobileText:'Better behavior on Android, iPhone and iPad with larger videos and local AI models.',roadmapExportParityTitle:'Preview / export parity',roadmapExportParityText:'Keep the downloaded video as close as possible to what is shown inside Caption Studio.',roadmapNextTitle:'The next creator tools',roadmapNextText:'Features with immediate value for editing speed and caption quality.',roadmapTimelineTitle:'Caption Timeline Editor',roadmapTimelineText:'Split, merge, drag and timing adjustments on a real timeline under the video.',roadmapCleanupTitle:'Smart Caption Cleanup',roadmapCleanupText:'Better punctuation, more natural breaks, fewer duplicate words and a cleaner transcript.',roadmapSafeZonesTitle:'Social Safe Zones',roadmapSafeZonesText:'TikTok, Reels, Shorts and Story overlays so captions do not sit behind platform UI.',roadmapAutoModelTitle:'Automatic model selection',roadmapAutoModelText:'Let Kaptiono recommend Tiny, Base or Small based on the device and available performance.',roadmapDictionaryTitle:'Custom Dictionary',roadmapDictionaryText:'A personal dictionary for brands, names and terms that Whisper often writes incorrectly.',roadmapLaterTitle:'Larger workflows',roadmapLaterText:'Ideas that can turn Kaptiono into a more complete everyday creator tool.',roadmapSpeakerTitle:'Speaker Detection',roadmapSpeakerText:'Detect different speakers in interviews and podcasts and present them clearly.',roadmapAutoPositionTitle:'Auto Caption Position',roadmapAutoPositionText:'Move captions intelligently so they avoid faces and important areas of the frame.',roadmapBatchTitle:'Batch Processing Queue',roadmapBatchText:'Queue multiple videos for creators producing Shorts, Reels or clips regularly.',roadmapPresetTitle:'Creator preset profiles & sharing',roadmapPresetText:'Save personal styles and export/import presets between devices.',roadmapOfflineTitle:'Full Offline Mode',roadmapOfflineText:'Install once and create captions without internet when the app and AI model are already available locally.',roadmapExploreTitle:'Ideas we are exploring',roadmapExploreText:'These are not commitments. They are directions worth testing if they can stay fast, local and creator-first.',roadmapTranslationTitle:'Local caption translation',roadmapTranslationText:'Translate captions without breaking the privacy-first philosophy of the core workflow.',roadmapDiarizationTitle:'Advanced local diarization',roadmapDiarizationText:'More accurate local speaker separation when the device hardware can support it.',roadmapCommunityTitle:'Community preset gallery',roadmapCommunityText:'Creator-made caption styles that can be shared without changing the free core.',roadmapAdvancedTitle:'Advanced creator workflows',roadmapAdvancedText:'New local-first tools only when they add real value without turning Kaptiono into a heavy video editor.',roadmapBottomTitle:'Help Kaptiono test what comes next.',roadmapBottomText:'Kaptiono remains free for creators. Optional support helps fund development, testing on more devices, and experiments with new local AI features.',roadmapBottomButton:'Support via PayPal',contactTitle:'Want to contact Kaptiono?',contactText:'For feedback, bugs, partnerships or commercial licensing, you can contact us directly.',donateTitle:'Want to support development?',donateText:'Donations are completely optional. They help fund continued development, testing on more devices, and new features.',donateButton:'Donate via PayPal',seoWhyTitle:'AI captions with privacy first.',seoWhyText:'Kaptiono is for creators who want browser-based subtitle generation with local AI and an optional cloud accuracy mode while keeping the original video on-device.',seoWhatTitle:'Transcribe, style and export.',seoWhatText:'Choose a video locally, generate captions with Whisper, adjust the style and export results for short-form or long-form content.',seoWhoTitle:'Built for creators and editors.',seoWhoText:'Kaptiono fits TikTok, Reels, Shorts, YouTube and creator workflows that need fast captions, a clean editor and no-watermark output.',howTitle:'A simple subtitle workflow in the browser.',howText:'Choose a video, run local AI or optional Cloud High Accuracy transcription, fine-tune the style and export the result. The experience is designed to feel fast and app-like on desktop and mobile.',howStep1Title:'Choose video',howStep1Text:'Open an MP4, MOV or WebM directly from your device.',howStep2Title:'Generate captions',howStep2Text:'Use local Whisper or optional Cloud High Accuracy for high-quality subtitle generation.',howStep3Title:'Style and export',howStep3Text:'Adjust the look, preview the result and export clean creator-ready output.',faqTitle:'Frequently asked questions.',faqUploadQ:'Does Kaptiono upload the video to a server?',faqUploadA:'No. The original video stays on the device. Local models also keep audio on-device. If Cloud High Accuracy is selected, only extracted audio is sent for transcription.',faqSocialQ:'Can Kaptiono create subtitles for social media?',faqSocialA:'Yes. The workflow is designed for TikTok, Instagram Reels, YouTube Shorts and other video formats.',faqDesktopQ:'Is Kaptiono only for desktop?',faqDesktopA:'No. The web app is designed for mobile too, while the desktop edition can provide a stronger editing workflow.',faqDiffQ:'What makes Kaptiono different?',faqDiffA:'It focuses on privacy-first captions, local AI, optional Cloud High Accuracy, no-watermark output and a clean editor.',installTitle:'Install Kaptiono',installText:'Use Kaptiono like a normal app on your phone.',installAction:'Download',iosInstallTitle:'Add Kaptiono to your Home Screen',iosStep1Title:'Open Share',iosStep1Text:'In Safari, tap the Share icon.',iosStep2Title:'Add to Home Screen',iosStep2Text:'Choose “Add to Home Screen”.',iosStep3Title:'Tap Add',iosStep3Text:'Kaptiono will appear like a normal app.',iosDone:'Done',updateTitle:'New version available',updateText:'Kaptiono can update now.',updateAction:'Update',systemTitle:'Processing engine',fileStatus:'File'}
 };
 
 const fonts=['Arial','Arial Black','Bahnschrift','Calibri','Cambria','Candara','Century Gothic','Comic Sans MS','Consolas','Corbel','Courier New','Franklin Gothic Medium','Garamond','Georgia','Impact','Lucida Sans Unicode','Palatino Linotype','Segoe UI','Tahoma','Times New Roman','Trebuchet MS','Verdana'];
@@ -37,14 +38,14 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null};
 const video=$('#video');
 
-function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);}
+function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();}
 $$('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(state.uiLang);
 
 function formatTime(sec){sec=Math.max(0,Number(sec)||0);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=Math.floor(sec%60).toString().padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${s}`:`${m}:${s}`}
-function bytes(n){if(!Number.isFinite(n))return '—';if(n<1024*1024)return `${(n/1024).toFixed(0)} KB`;return `${(n/1024/1024).toFixed(1)} MB`}
+function bytes(n){if(!Number.isFinite(n))return '·';if(n<1024*1024)return `${(n/1024).toFixed(0)} KB`;return `${(n/1024/1024).toFixed(1)} MB`}
 function greekUppercaseNoTonos(value){return (value||'').normalize('NFD').toLocaleUpperCase('el-GR').replace(/[\u0300\u0301\u0342]/g,'').normalize('NFC')}
 function captionCase(value){return state.style.uppercase?greekUppercaseNoTonos(value):value}
 function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
@@ -435,32 +436,42 @@ function retimeEditedCaptionWords(baseWords,text,start,end){
 
 function renderCaptionEditor(){const editor=$('#captionEditor');editor.innerHTML='';$('#emptyCaptions').classList.toggle('hidden',state.captions.length>0);editor.classList.toggle('hidden',!state.captions.length);state.captions.forEach((c,i)=>{if(!c.originalWords)c.originalWords=(c.words||[]).map(w=>({...w}));const row=document.createElement('div');row.className='caption-row';row.innerHTML=`<span class="caption-time">${formatTime(c.start)}<br>${formatTime(c.end)}</span><textarea rows="2"></textarea>`;const ta=row.querySelector('textarea');ta.value=c.text;ta.addEventListener('input',()=>{c.text=ta.value;c.words=retimeEditedCaptionWords(c.originalWords,c.text,c.start,c.end);updateCaptionOverlay()});editor.appendChild(row)})}
 
-// High-quality browser transcription
-$('#modelSelect').addEventListener('change',()=>{updateModelHint();updateCompatibilityNote()});
+// Local + Cloud transcription
+$('#modelSelect').addEventListener('change',()=>{updateModelHint();updateCompatibilityNote();updateProcessingModeLabel()});
+
+function isCloudModelSelected(){
+  return String($('#modelSelect')?.value||'').startsWith('cloudflare/');
+}
 
 function enforceComingSoonModels(){
-  const model=$('#modelSelect');
-  if(model?.value?.includes('large-v3-turbo')){
-    model.value='onnx-community/whisper-small_timestamped';
-  }
+  // Enhanced remains unavailable. Cloud Large v3 Turbo is intentionally enabled
+  // as a separate online test mode and never loads as a local browser model.
   state.enhanced=false;
+}
+
+function updateProcessingModeLabel(){
+  const cloud=isCloudModelSelected();
+  const label=$('#processingModeLabel');
+  if(label)label.textContent=cloud?'CLOUD AI':'LOCAL PROCESSING';
+  const badge=$('#engineBadge');
+  if(badge&&!$('#generateBtn')?.disabled)badge.textContent=cloud?'CLOUD':'LOCAL';
 }
 
 function updateModelHint(){
   const v=$('#modelSelect').value;
   const hint=$('#modelHint');
-  if(v.includes('large-v3-turbo'))hint.textContent=isGreekUI()
-    ?'Coming Soon. Το High Accuracy mode παραμένει προσωρινά μη διαθέσιμο μέχρι να σταθεροποιηθεί.'
-    :'Coming Soon. High Accuracy remains temporarily unavailable until it is stable.';
+  if(isCloudModelSelected())hint.textContent=isGreekUI()
+    ?'Cloud High Accuracy. Χρειάζεται internet και στέλνει μόνο το extracted audio για transcription. Το original video μένει στη συσκευή. Υποστηρίζει όλες τις διαθέσιμες γλώσσες του selector.'
+    :'Cloud High Accuracy. Requires internet and sends only extracted audio for transcription. The original video stays on your device. It supports every language available in the selector.';
   else if(v.includes('small'))hint.textContent=isGreekUI()
-    ?'Προεπιλεγμένο High Quality. Δίνει πολύ καλή ποιότητα captions με λογικότερο κόστος από το Large.'
-    :'Default High Quality. Strong caption quality with a more practical footprint than Large.';
+    ?'Προεπιλεγμένο High Quality. Το Whisper Small τρέχει τοπικά στη συσκευή σου.'
+    :'Default High Quality. Whisper Small runs locally on your device.';
   else if(v.includes('base'))hint.textContent=isGreekUI()
-    ?'Stable mode. Καλή ποιότητα με πολύ μικρότερο download από το Small.'
-    :'Stable mode. Good quality with a much smaller download than Small.';
+    ?'Stable local mode. Καλή ποιότητα με πολύ μικρότερο download από το Small.'
+    :'Stable local mode. Good quality with a much smaller download than Small.';
   else hint.textContent=isGreekUI()
-    ?'Γρήγορη επιλογή για έλεγχο ότι η συσκευή ολοκληρώνει κανονικά το local AI.'
-    :'Fast option to verify that local AI completes correctly on this device.';
+    ?'Γρήγορη local επιλογή για έλεγχο ότι η συσκευή ολοκληρώνει κανονικά το AI.'
+    :'Fast local option to verify that AI completes correctly on this device.';
 }
 function updateEnhancedUi(){
   state.enhanced=false;
@@ -480,31 +491,26 @@ function updateEnhancedUi(){
 }
 function updateCompatibilityNote(){
   const note=$('#compatNote');
-  const large=$('#modelSelect')?.value?.includes('large-v3-turbo');
-  if(!window.isSecureContext){
+  const cloud=isCloudModelSelected();
+  if(cloud){
     note.classList.remove('hidden');
     note.textContent=isGreekUI()
-      ?'Το HTTPS δεν έχει ενεργοποιηθεί ακόμη. Το Kaptiono χρησιμοποιεί WASM χωρίς persistent AI cache. Τα μεγάλα AI models θα χρειάζεται να ξαναφορτώνονται συχνότερα.'
-      :'HTTPS is not active yet. Kaptiono is using WASM without persistent AI cache. Large AI models may need to be downloaded again more often.';
-  }else if(isIOS&&large){
+      ?'Cloud High Accuracy: χρειάζεται σύνδεση internet. Το Kaptiono εξάγει το audio τοπικά και στέλνει μόνο το audio στο cloud transcription service. Το original video δεν ανεβαίνει.'
+      :'Cloud High Accuracy: internet is required. Kaptiono extracts audio locally and sends only the audio to the cloud transcription service. The original video is not uploaded.';
+  }else if(!window.isSecureContext){
     note.classList.remove('hidden');
     note.textContent=isGreekUI()
-      ?'Το Large v3 Turbo είναι Coming Soon και δεν είναι ακόμη διαθέσιμο. Για mobile χρησιμοποίησε Small ή Base.'
-      :'Large v3 Turbo is Coming Soon and is not available yet. Use Small or Base on mobile.';
+      ?'Το HTTPS δεν έχει ενεργοποιηθεί ακόμη. Το Kaptiono χρησιμοποιεί WASM χωρίς persistent AI cache. Τα μεγάλα local AI models θα χρειάζεται να ξαναφορτώνονται συχνότερα.'
+      :'HTTPS is not active yet. Kaptiono is using WASM without persistent AI cache. Large local AI models may need to be downloaded again more often.';
   }else if(isIOS){
     note.classList.remove('hidden');
     note.textContent=isGreekUI()
-      ?'iPhone: χρησιμοποιούμε WebCodecs/Mediabunny για το audio. Αν το Small είναι βαρύ, επίλεξε Base.'
-      :'iPhone: audio is extracted through WebCodecs/Mediabunny. If Small is too heavy, choose Base.';
-  }else if(large){
-    note.classList.remove('hidden');
-    note.textContent=isGreekUI()
-      ?'High Accuracy mode: το Large v3 Turbo είναι Coming Soon και δεν είναι ακόμη διαθέσιμο.'
-      :'High Accuracy mode: Large v3 Turbo is Coming Soon and is not available yet.';
+      ?'iPhone: χρησιμοποιούμε WebCodecs/Mediabunny για το audio. Αν το Small είναι βαρύ, επίλεξε Base ή δοκίμασε Cloud High Accuracy.'
+      :'iPhone: audio is extracted through WebCodecs/Mediabunny. If Small is too heavy, choose Base or try Cloud High Accuracy.';
   }else note.classList.add('hidden');
   $('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
 }
-enforceComingSoonModels();updateCompatibilityNote();updateModelHint();updateEnhancedUi();
+enforceComingSoonModels();updateCompatibilityNote();updateModelHint();updateEnhancedUi();updateProcessingModeLabel();
 
 function destroyWorker(){if(state.watchdog){clearInterval(state.watchdog);state.watchdog=null}if(state.worker){state.worker.terminate();state.worker=null}}
 function touchWorker(){state.lastWorkerActivity=Date.now()}
@@ -522,6 +528,10 @@ function selectedModelFriendlyName(){
 function modelReadyStorageKey(){
   return `kaptiono:model-ready:${$('#modelSelect')?.value||'default'}`;
 }
+function cloudLanguageCode(value){
+  return ({greek:'el',english:'en',spanish:'es',french:'fr',german:'de',italian:'it'})[value]||'';
+}
+
 function clearProgressMotion(){
   if(state.progressTicker){clearInterval(state.progressTicker);state.progressTicker=null}
   if(state.progressRaf){cancelAnimationFrame(state.progressRaf);state.progressRaf=0}
@@ -567,11 +577,14 @@ function stopProgressDrift(){
   if(state.progressTicker){clearInterval(state.progressTicker);state.progressTicker=null}
 }
 function progressCopy(stage){
-  const el=isGreekUI(),model=selectedModelFriendlyName(),steps=state.enhanced?5:4;
+  const el=isGreekUI(),model=selectedModelFriendlyName(),steps=state.enhanced?5:4,cloud=isCloudModelSelected();
   if(stage==='audio')return el
-    ?{step:`Βήμα 1 από ${steps}`,title:'Προετοιμασία video',detail:'Διαβάζουμε και προετοιμάζουμε το audio τοπικά. Το video δεν ανεβαίνει πουθενά.'}
-    :{step:`Step 1 of ${steps}`,title:'Preparing video',detail:'We read and prepare the audio locally. Your video is not uploaded anywhere.'};
+    ?{step:`Βήμα 1 από ${steps}`,title:'Προετοιμασία video',detail:cloud?'Εξάγουμε το audio τοπικά. Το original video μένει στη συσκευή σου και μόνο το audio θα σταλεί στο Cloud High Accuracy.':'Διαβάζουμε και προετοιμάζουμε το audio τοπικά. Το video δεν ανεβαίνει πουθενά.'}
+    :{step:`Step 1 of ${steps}`,title:'Preparing video',detail:cloud?'We extract audio locally. The original video stays on your device and only audio will be sent to Cloud High Accuracy.':'We read and prepare the audio locally. Your video is not uploaded anywhere.'};
   if(stage==='model'){
+    if(cloud)return el
+      ?{step:`Βήμα 2 από ${steps}`,title:'Σύνδεση Cloud AI',detail:'Ετοιμάζουμε το Whisper Large v3 Turbo στο Kaptiono cloud transcription service.'}
+      :{step:`Step 2 of ${steps}`,title:'Connecting to Cloud AI',detail:'Preparing Whisper Large v3 Turbo on the Kaptiono cloud transcription service.'};
     if(state.modelFirstRun){
       if(!window.isSecureContext)return el
         ?{step:`Βήμα 2 από ${steps}`,title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή για αυτή τη χρήση. Με HTTPS θα μπορεί να αποθηκεύεται τοπικά για τις επόμενες φορές.`}
@@ -585,8 +598,8 @@ function progressCopy(stage){
       :{step:`Step 2 of ${steps}`,title:'Loading Local AI',detail:`Preparing ${model} on your device for transcription.`};
   }
   if(stage==='transcribe')return el
-    ?{step:`Βήμα 3 από ${steps}`,title:'Απομαγνητοφώνηση',detail:'Το Local AI ακούει το video και δημιουργεί το κείμενο μαζί με τα timestamps.'}
-    :{step:`Step 3 of ${steps}`,title:'Transcribing',detail:'Local AI is listening to the video and generating text with timestamps.'};
+    ?{step:`Βήμα 3 από ${steps}`,title:'Απομαγνητοφώνηση',detail:cloud?'Το Cloud AI μεταγράφει το extracted audio και επιστρέφει λέξεις μαζί με timestamps.':'Το Local AI ακούει το video και δημιουργεί το κείμενο μαζί με τα timestamps.'}
+    :{step:`Step 3 of ${steps}`,title:'Transcribing',detail:cloud?'Cloud AI is transcribing the extracted audio and returning words with timestamps.':'Local AI is listening to the video and generating text with timestamps.'};
   if(stage==='enhance')return el
     ?{step:'Βήμα 4 από 5',title:'Enhanced correction',detail:'Δεύτερο multilingual local AI pass ελέγχει το transcript και προσπαθεί να διορθώσει λανθασμένα αναγνωρισμένες λέξεις από τα συμφραζόμενα.'}
     :{step:'Step 4 of 5',title:'Enhanced correction',detail:'A second multilingual local AI pass checks the transcript and tries to correct misrecognized words from context.'};
@@ -605,12 +618,14 @@ $('#generateBtn').addEventListener('click',generateCaptions);
 async function generateCaptions(){
   enforceComingSoonModels();
   if(!state.file)return;
-  trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value,enhanced:state.enhanced});
+  const cloud=isCloudModelSelected();
+  updateProcessingModeLabel();
+  trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value,engine:cloud?'cloud':'local',enhanced:state.enhanced});
   $('#generateBtn').disabled=true;
   state.voiceRetry=false;
   state.voiceRetryImproved=false;
   state.startedAt=performance.now();
-  state.modelFirstRun=localStorage.getItem(modelReadyStorageKey())!=='1';
+  state.modelFirstRun=cloud?false:localStorage.getItem(modelReadyStorageKey())!=='1';
   resetProgressFlow();
   showProgress('audio',2);
   startProgressDrift(10,.18,600);
@@ -619,6 +634,15 @@ async function generateCaptions(){
       showProgress('audio',Math.min(14,2+p*.12));
     });
     stopProgressDrift();
+
+    if(cloud){
+      showProgress('model',52);
+      $('#engineBadge').textContent='CLOUD';
+      $('#systemAi').textContent='Cloud + Whisper Large v3 Turbo';
+      await transcribeCloudAudio(audio,video.duration);
+      return;
+    }
+
     showProgress('model',16);
     startProgressDrift(54,.22,650);
     $('#engineBadge').textContent='WASM';
@@ -629,8 +653,129 @@ async function generateCaptions(){
   }catch(e){
     stopProgressDrift();
     destroyWorker();
+    cancelCloudRequest();
     failProgress(friendlyError(e));
     $('#generateBtn').disabled=false;
+  }
+}
+
+function cancelCloudRequest(){
+  if(state.cloudAbortController){
+    try{state.cloudAbortController.abort()}catch{}
+    state.cloudAbortController=null;
+  }
+}
+
+function writeAscii(view,offset,text){
+  for(let i=0;i<text.length;i++)view.setUint8(offset+i,text.charCodeAt(i));
+}
+
+function float32ToWavBlob(samples,sampleRate=16000){
+  const dataSize=samples.length*2;
+  const buffer=new ArrayBuffer(44+dataSize);
+  const view=new DataView(buffer);
+  writeAscii(view,0,'RIFF');
+  view.setUint32(4,36+dataSize,true);
+  writeAscii(view,8,'WAVE');
+  writeAscii(view,12,'fmt ');
+  view.setUint32(16,16,true);
+  view.setUint16(20,1,true);
+  view.setUint16(22,1,true);
+  view.setUint32(24,sampleRate,true);
+  view.setUint32(28,sampleRate*2,true);
+  view.setUint16(32,2,true);
+  view.setUint16(34,16,true);
+  writeAscii(view,36,'data');
+  view.setUint32(40,dataSize,true);
+  let offset=44;
+  for(let i=0;i<samples.length;i++,offset+=2){
+    const v=Math.max(-1,Math.min(1,Number(samples[i])||0));
+    view.setInt16(offset,v<0?v*0x8000:v*0x7fff,true);
+  }
+  return new Blob([buffer],{type:'audio/wav'});
+}
+
+function normalizeCloudWords(result,audioDuration){
+  const words=[];
+  const segments=Array.isArray(result?.segments)?result.segments:[];
+  for(const segment of segments){
+    const segmentWords=Array.isArray(segment?.words)?segment.words:[];
+    if(segmentWords.length){
+      for(const item of segmentWords){
+        const word=String(item?.word||'').trim();
+        if(!word)continue;
+        let start=Number(item?.start),end=Number(item?.end);
+        if(!Number.isFinite(start))start=Number(segment?.start)||0;
+        if(!Number.isFinite(end)||end<=start)end=start+.20;
+        words.push({word,start:Math.max(0,start),end:Math.max(start+.02,end)});
+      }
+      continue;
+    }
+    const text=String(segment?.text||'').trim();
+    if(!text)continue;
+    const tokens=text.split(/\s+/).filter(Boolean);
+    let start=Number(segment?.start),end=Number(segment?.end);
+    if(!Number.isFinite(start))start=0;
+    if(!Number.isFinite(end)||end<=start)end=start+Math.max(.25,tokens.length*.2);
+    const step=(end-start)/Math.max(1,tokens.length);
+    tokens.forEach((word,i)=>words.push({word,start:start+i*step,end:start+(i+1)*step}));
+  }
+  if(words.length)return words;
+  const text=String(result?.text||'').trim();
+  if(!text)return [];
+  const tokens=text.split(/\s+/).filter(Boolean);
+  const step=Math.max(.08,Number(audioDuration)||0)/Math.max(1,tokens.length);
+  return tokens.map((word,i)=>({word,start:i*step,end:(i+1)*step}));
+}
+
+async function transcribeCloudAudio(audio,audioDuration){
+  cancelCloudRequest();
+  const controller=new AbortController();
+  state.cloudAbortController=controller;
+  const timeout=setTimeout(()=>controller.abort('timeout'),180000);
+  const language=cloudLanguageCode($('#languageSelect').value);
+  const wav=float32ToWavBlob(audio,16000);
+  if(wav.size>25*1024*1024)throw new Error('CLOUD_AUDIO_TOO_LARGE');
+
+  showProgress('model',58);
+  stopProgressDrift();
+  showProgress('transcribe',62);
+  startProgressDrift(92,.30,700);
+  trackEvent('cloud_transcription_started',{language:language||'auto',audio_seconds:Math.round(Number(audioDuration)||0)});
+
+  try{
+    const headers={'Content-Type':'audio/wav'};
+    if(language)headers['X-Kaptiono-Language']=language;
+    const response=await fetch(CLOUD_TRANSCRIBE_URL,{
+      method:'POST',
+      headers,
+      body:wav,
+      signal:controller.signal,
+      cache:'no-store',
+    });
+    const raw=await response.text();
+    let result=null;
+    try{result=raw?JSON.parse(raw):null}catch{throw new Error('CLOUD_INVALID_RESPONSE')}
+    if(!response.ok){
+      throw new Error(result?.message||result?.error||`CLOUD_HTTP_${response.status}`);
+    }
+    const words=normalizeCloudWords(result,audioDuration);
+    stopProgressDrift();
+    showProgress('transcribe',95);
+    $('#systemAi').textContent=`Cloud + Whisper Large v3 Turbo${result?.transcription_info?.language?` · ${String(result.transcription_info.language).toUpperCase()}`:''}`;
+    trackEvent('cloud_transcription_completed',{
+      language:result?.transcription_info?.language||language||'auto',
+      word_count:words.length,
+      neurons:Math.round(Number(result?.usage?.neurons)||0)
+    });
+    finalizeCaptionWords(words,{enhancedApplied:false,enhancedFallback:false});
+  }catch(error){
+    trackEvent('cloud_transcription_failed',{reason:String(error?.name==='AbortError'?'timeout':error?.message||error).slice(0,120)});
+    if(error?.name==='AbortError')throw new Error('CLOUD_TRANSCRIPTION_TIMEOUT');
+    throw error;
+  }finally{
+    clearTimeout(timeout);
+    if(state.cloudAbortController===controller)state.cloudAbortController=null;
   }
 }
 
@@ -647,7 +792,7 @@ async function extractAudio16k(file,onProgress=()=>{}){
 function mixToMono(buffer){const n=buffer.length,out=new Float32Array(n),chs=buffer.numberOfChannels||1;for(let c=0;c<chs;c++){const data=buffer.getChannelData(c);for(let i=0;i<n;i++)out[i]+=data[i]/chs}return out}
 function resampleLinear(input,fromRate,toRate){if(fromRate===toRate)return input.slice();const ratio=fromRate/toRate,len=Math.max(1,Math.round(input.length/ratio)),out=new Float32Array(len);for(let i=0;i<len;i++){const pos=i*ratio,a=Math.floor(pos),b=Math.min(input.length-1,a+1),f=pos-a;out[i]=(input[a]||0)*(1-f)+(input[b]||0)*f}return out}
 function concatFloat32(parts,total){const out=new Float32Array(total);let pos=0;for(const p of parts){out.set(p,pos);pos+=p.length}return out}
-function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
+function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('CLOUD_TRANSCRIPTION_TIMEOUT'))return isGreekUI()?'Το Cloud High Accuracy άργησε υπερβολικά να απαντήσει. Δοκίμασε ξανά ή χρησιμοποίησε Local Small.':'Cloud High Accuracy took too long to respond. Try again or use Local Small.';if(msg.includes('CLOUD_AUDIO_TOO_LARGE'))return isGreekUI()?'Το extracted audio είναι πολύ μεγάλο για το Cloud High Accuracy. Χρησιμοποίησε Local Small ή μικρότερο clip.':'The extracted audio is too large for Cloud High Accuracy. Use Local Small or a shorter clip.';if(msg.includes('Failed to fetch')||msg.includes('CLOUD_HTTP_')||msg.includes('CLOUD_INVALID_RESPONSE'))return isGreekUI()?'Δεν ήταν δυνατή η σύνδεση με το Cloud High Accuracy. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.':'Could not connect to Cloud High Accuracy. Check your connection and try again.';if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
 
 
 function enhanceReadyStorageKey(){
@@ -704,7 +849,9 @@ function finalizeCaptionWords(words,{enhancedApplied=false,enhancedFallback=fals
     enhanced_applied:enhancedApplied,
     enhanced_fallback:enhancedFallback,
     voice_boost_retry:state.voiceRetry,
-    voice_boost_improved:state.voiceRetryImproved
+    voice_boost_improved:state.voiceRetryImproved,
+    transcription_engine:isCloudModelSelected()?'cloud':'local',
+    model:$('#modelSelect').value.split('/').pop()
   });
   setTimeout(()=>{
     showProgress('done',100);

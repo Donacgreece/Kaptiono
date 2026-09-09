@@ -5,8 +5,8 @@
 <h1 align="center">Kaptiono</h1>
 
 <p align="center">
-  <strong>Local AI subtitles for creators.</strong><br>
-  Generate, style and export captions directly in your browser without uploading your video to a processing server.
+  <strong>AI subtitles for creators. Local by default, Cloud High Accuracy when you want it.</strong><br>
+  Generate, style and export captions in your browser while keeping the original video on your device.
 </p>
 
 <p align="center">
@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/Website-kaptiono.com-B7FF32?style=for-the-badge&logo=googlechrome&logoColor=111111" alt="Kaptiono website">
   </a>
   <img src="https://img.shields.io/badge/AI-Whisper-111111?style=for-the-badge" alt="Whisper AI">
-  <img src="https://img.shields.io/badge/Processing-Local-111111?style=for-the-badge" alt="Local processing">
+  <img src="https://img.shields.io/badge/Processing-Local_%2B_Optional_Cloud-111111?style=for-the-badge" alt="Local plus optional cloud processing">
   <img src="https://img.shields.io/badge/Watermark-None-111111?style=for-the-badge" alt="No watermark">
   <a href="LICENSE">
     <img src="https://img.shields.io/badge/License-PolyForm_Noncommercial_1.0.0-111111?style=for-the-badge" alt="PolyForm Noncommercial License 1.0.0">
@@ -35,9 +35,9 @@
 
 ## What is Kaptiono?
 
-**Kaptiono** is a privacy-first captioning tool built for creators, editors and anyone who wants fast subtitles without sending the original video to a cloud transcription service.
+**Kaptiono** is a privacy-first captioning tool built for creators, editors and anyone who wants fast subtitles while keeping the original video on their own device.
 
-The web app runs the main processing workflow on the user's own device. A video is selected locally, audio is extracted in the browser, Whisper generates the transcript, captions can be styled in the Caption Studio, and the result can be exported from the same device.
+The web app is local-first. A video is selected locally and audio is extracted in the browser. Local Whisper models can transcribe entirely on-device. An optional **Cloud High Accuracy** mode uses Whisper Large v3 Turbo through the Kaptiono Cloudflare Worker and sends only the extracted audio for transcription. Caption editing and export remain local.
 
 Kaptiono is designed around a simple idea:
 
@@ -55,6 +55,7 @@ Most online subtitle tools are built around uploading a video to somebody else's
 |---|---|
 | 🎬 Video processing | Local on the user's device |
 | ☁️ Mandatory video upload | **No** |
+| ☁️ Optional cloud transcription | **Yes, audio only when selected** |
 | 🤖 Speech recognition | Whisper AI |
 | 📝 Caption editing | Built-in Caption Studio |
 | 🎨 Caption styling | Presets + manual controls |
@@ -68,20 +69,21 @@ Most online subtitle tools are built around uploading a video to somebody else's
 
 ## Core features
 
-### 🤖 Local AI transcription
+### 🤖 Local + Cloud AI transcription
 
-Kaptiono uses **Whisper** models for automatic speech recognition inside the browser.
+Kaptiono uses **Whisper** for automatic speech recognition.
 
 The current web build includes:
 
-- **Whisper Small** for higher-quality transcription
-- Whisper Base as a lighter alternative
-- Whisper Tiny for faster testing
-- Explicit language selection for better short-form results
-- Greek and English workflows
-- Word/segment timing used by the caption editor
+- **Whisper Small** as the recommended local high-quality model
+- Whisper Base as a lighter local alternative
+- Whisper Tiny for fast local testing
+- **Whisper Large v3 Turbo · Cloud · High Accuracy** as an optional online mode
+- Explicit language selection plus Auto Detect
+- Greek, English, Spanish, French, German and Italian language selections
+- Word timestamps used by the caption editor
 
-The goal is to keep inference on the local device whenever the browser environment supports it.
+Local models keep transcription on-device. Cloud High Accuracy requires internet and sends only extracted audio to the Kaptiono transcription service. The original video is not uploaded.
 
 ### 🎨 Caption Studio
 
@@ -161,8 +163,12 @@ Browser media pipeline
       ▼
 Local audio extraction
       │
+      ├── Local Whisper (Small / Base / Tiny)
+      │
+      └── Optional Cloud High Accuracy (audio only)
+      │
       ▼
-Whisper AI transcription
+Whisper transcription
       │
       ▼
 Word timestamps + caption segmentation
@@ -179,7 +185,7 @@ Caption Studio
 Local export
 ```
 
-The original video is not sent to a Kaptiono processing backend.
+The original video is not sent to a Kaptiono processing backend. If Cloud High Accuracy is selected, only the extracted audio is sent for transcription.
 
 ---
 
@@ -189,14 +195,14 @@ Privacy is one of the main reasons Kaptiono exists.
 
 ### What stays local
 
-The app is designed so that these remain on the user's device:
+These remain on the user's device:
 
 - Original video
-- Extracted audio
-- Transcript
-- Caption text
-- Caption timing
+- Caption editing state
+- Caption text and timing after transcription
 - Rendered/exported video
+
+With Local Whisper models, extracted audio and transcription also remain on-device. With **Cloud High Accuracy**, the extracted audio is sent to the Kaptiono transcription service only for the selected transcription request.
 
 ### What is downloaded from the internet
 
@@ -299,6 +305,7 @@ Current technology includes:
 - Web Workers
 - Whisper / Transformers.js
 - ONNX / WASM inference
+- Cloudflare Workers AI for optional Cloud High Accuracy transcription
 - Mediabunny
 - Web Audio / browser media APIs
 - Canvas-based caption rendering
@@ -306,7 +313,7 @@ Current technology includes:
 - GitHub Pages
 - GitHub Actions
 
-There is **no application server required for the core web captioning workflow**.
+Local captioning does not require an application server. The optional Cloud High Accuracy mode calls the Kaptiono Cloudflare Worker for audio transcription.
 
 ---
 
@@ -375,8 +382,9 @@ Areas being actively improved include:
 - Browser compatibility
 - iPhone/iPad reliability
 - Local AI performance
+- Cloud High Accuracy reliability
 - Whisper model loading
-- Better Greek transcription
+- Better multilingual transcription
 - Faster rendering
 - MP4 export compatibility
 - PWA installation and updates
