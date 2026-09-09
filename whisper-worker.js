@@ -64,6 +64,166 @@ function normalizeChunks(out,audioDuration){
   return tokens.map((word,i)=>({word,start:i*dur,end:(i+1)*dur}));
 }
 
+
+const NON_SPEECH_MARKERS = new Set([
+  'music','musical','instrumental',
+  'μουσικη','μουσική'
+]);
+
+function markerToken(value){
+  return String(value||'')
+    .toLocaleLowerCase()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g,'')
+    .replace(/[\[\](){}<>♪♫♬♩.,!?;:'"…_-]+/g,'')
+    .trim();
+}
+
+function transcriptTokens(text){
+  return String(text||'')
+    .split(/\s+/)
+    .map(markerToken)
+    .filter(Boolean);
+}
+
+function isMusicMarkerToken(token){
+  return NON_SPEECH_MARKERS.has(markerToken(token));
+}
+
+function shouldVoiceBoostRetry(text,words,duration){
+  const tokens=transcriptTokens(text);
+  const wordTokens=(Array.isArray(words)?words:[])
+    .map(w=>markerToken(w?.word))
+    .filter(Boolean);
+
+  const all=[...tokens,...wordTokens];
+  if(!all.length)return false;
+
+  const markerCount=all.filter(isMusicMarkerToken).length;
+  const markerRatio=markerCount/Math.max(1,all.length);
+  const spoken=all.filter(t=>!isMusicMarkerToken(t)).length;
+
+  // Conservative trigger: only explicit music-dominated results are retried.
+  const markerOnly=markerCount>0&&spoken===0;
+  const markerDominated=
+    Number(duration)>=6 &&
+    markerCount>=1 &&
+    markerRatio>=0.60 &&
+    spoken<=2;
+
+  return markerOnly||markerDominated;
+}
+
+function biquadCoefficients(type,frequency,q,gainDb,sampleRate){
+  const w0=2*Math.PI*frequency/sampleRate;
+  const cos=Math.cos(w0),sin=Math.sin(w0);
+  const alpha=sin/(2*q);
+  let b0,b1,b2,a0,a1,a2;
+
+  if(type==='highpass'){
+    b0=(1+cos)/2;
+    b1=-(1+cos);
+    b2=(1+cos)/2;
+    a0=1+alpha;
+    a1=-2*cos;
+    a2=1-alpha;
+  }else if(type==='peaking'){
+    const A=Math.pow(10,gainDb/40);
+    b0=1+alpha*A;
+    b1=-2*cos;
+    b2=1-alpha*A;
+    a0=1+alpha/A;
+    a1=-2*cos;
+    a2=1-alpha/A;
+  }else{
+    throw new Error('Unsupported filter type');
+  }
+
+  return{
+    b0:b0/a0,b1:b1/a0,b2:b2/a0,
+    a1:a1/a0,a2:a2/a0
+  };
+}
+
+function applyBiquad(input,c){
+  const out=new Float32Array(input.length);
+  let x1=0,x2=0,y1=0,y2=0;
+  for(let i=0;i<input.length;i++){
+    const x=input[i];
+    const y=c.b0*x+c.b1*x1+c.b2*x2-c.a1*y1-c.a2*y2;
+    out[i]=Number.isFinite(y)?y:0;
+    x2=x1;x1=x;y2=y1;y1=y;
+  }
+  return out;
+}
+
+function voiceBoost16k(input){
+  if(!(input instanceof Float32Array)||!input.length)return input;
+
+  // Remove low-frequency rumble, mildly emphasize speech intelligibility,
+  // then normalize/compress. This buffer is used only for the retry.
+  let out=applyBiquad(
+    input,
+    biquadCoefficients('highpass',110,.707,0,16000)
+  );
+
+  out=applyBiquad(
+    out,
+    biquadCoefficients('peaking',2100,.85,4.5,16000)
+  );
+
+  let sum=0;
+  for(let i=0;i<out.length;i++)sum+=out[i]*out[i];
+  const rms=Math.sqrt(sum/Math.max(1,out.length));
+  const targetRms=.16;
+  const gain=Math.min(4.0,Math.max(.85,targetRms/Math.max(.008,rms)));
+
+  const shaped=new Float32Array(out.length);
+  const drive=1.35;
+  const norm=Math.tanh(drive);
+  let peak=0;
+  for(let i=0;i<out.length;i++){
+    const boosted=out[i]*gain;
+    const value=Math.tanh(boosted*drive)/norm;
+    shaped[i]=value;
+    peak=Math.max(peak,Math.abs(value));
+  }
+
+  if(peak>.98){
+    const scale=.98/peak;
+    for(let i=0;i<shaped.length;i++)shaped[i]*=scale;
+  }
+
+  return shaped;
+}
+
+async function transcribeWithTimestampFallback(pipe,audio,opts){
+  try{
+    return await pipe(audio,opts);
+  }catch(first){
+    console.warn('Word timestamps failed, retrying segment timestamps',first);
+    const fallback={
+      task:'transcribe',
+      return_timestamps:true,
+      chunk_length_s:29,
+      stride_length_s:5
+    };
+    if(opts.language&&opts.language!=='auto')fallback.language=opts.language;
+    return await pipe(audio,fallback);
+  }
+}
+
+function transcriptionQuality(text,words){
+  const tokens=transcriptTokens(text);
+  const markers=tokens.filter(isMusicMarkerToken).length;
+  const lexical=tokens.length-markers;
+  const timed=(Array.isArray(words)?words:[]).filter(
+    w=>markerToken(w?.word)&&!isMusicMarkerToken(w?.word)
+  ).length;
+
+  return lexical*4+timed*2-markers*8;
+}
+
 self.onmessage = async ({data})=>{
   if(data.type !== 'transcribe') return;
   try{
@@ -72,6 +232,7 @@ self.onmessage = async ({data})=>{
     postMessage({type:'device',device:'wasm'});
     const pipe = await getTranscriber(data.model || 'onnx-community/whisper-base_timestamped');
     postMessage({type:'transcribe-start'});
+
     const opts = {
       task:'transcribe',
       return_timestamps:'word',
@@ -79,17 +240,53 @@ self.onmessage = async ({data})=>{
       stride_length_s:5,
     };
     if(data.language && data.language !== 'auto') opts.language = data.language;
-    let out;
-    try{
-      out = await pipe(audio, opts);
-    }catch(first){
-      console.warn('Word timestamps failed, retrying segment timestamps', first);
-      const fallback = {task:'transcribe',return_timestamps:true,chunk_length_s:29,stride_length_s:5};
-      if(data.language && data.language !== 'auto') fallback.language = data.language;
-      out = await pipe(audio, fallback);
+
+    const firstOut = await transcribeWithTimestampFallback(pipe,audio,opts);
+    const firstWords = normalizeChunks(firstOut,duration);
+    const firstText = String(firstOut?.text||'');
+
+    let finalOut=firstOut;
+    let finalWords=firstWords;
+    let voiceRetry=false;
+    let voiceRetryImproved=false;
+
+    if(shouldVoiceBoostRetry(firstText,firstWords,duration)){
+      voiceRetry=true;
+      postMessage({type:'voice-retry-start',reason:'music'});
+
+      try{
+        const boosted=voiceBoost16k(audio);
+        const retryOut=await transcribeWithTimestampFallback(pipe,boosted,opts);
+        const retryWords=normalizeChunks(retryOut,duration);
+        const retryText=String(retryOut?.text||'');
+
+        const firstScore=transcriptionQuality(firstText,firstWords);
+        const retryScore=transcriptionQuality(retryText,retryWords);
+
+        if(
+          retryScore>=firstScore+4 &&
+          !shouldVoiceBoostRetry(retryText,retryWords,duration)
+        ){
+          finalOut=retryOut;
+          finalWords=retryWords;
+          voiceRetryImproved=true;
+        }
+
+        postMessage({type:'voice-retry-result',improved:voiceRetryImproved});
+      }catch(retryError){
+        console.warn('Automatic Voice Boost retry failed; keeping first Whisper result',retryError);
+        postMessage({type:'voice-retry-result',improved:false});
+      }
     }
+
     postMessage({type:'transcribe-progress',progress:100});
-    postMessage({type:'result',words:normalizeChunks(out,duration),text:String(out?.text||'')});
+    postMessage({
+      type:'result',
+      words:finalWords,
+      text:String(finalOut?.text||''),
+      voiceRetry,
+      voiceRetryImproved,
+    });
   }catch(error){
     postMessage({type:'error',message:error?.message||String(error),stack:error?.stack||''});
   }

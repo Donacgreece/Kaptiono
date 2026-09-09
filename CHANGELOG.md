@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.20
+- Added Automatic Voice Boost Retry for Whisper results dominated by explicit music markers.
+- Voice Boost activates only after the first Whisper pass indicates that the result is primarily music/non-speech.
+- Normal successful transcriptions are not processed twice.
+- Uses the same already-loaded Whisper model, so no additional AI model is downloaded.
+- Added lightweight local DSP for the retry pass: rumble reduction, speech-band emphasis, normalization and gentle dynamic compression.
+- The original video and audio are never modified.
+- The retry result is accepted only when it clearly recovers more speech than the original result.
+- If Voice Boost fails or does not improve recognition, Kaptiono safely keeps the original Whisper transcript.
+- Added progress feedback only when Automatic Voice Boost actually triggers.
+- Added analytics flags for Voice Boost retry and successful recovery.
+- No layout, export, caption styling, AdSense, licensing, PWA, or Coming Soon AI behavior was changed.
+- Preserved the permanent full product README byte-for-byte.
+
 ## 0.5.19
 - Removed the dedicated Contact card from the Support page to keep Support cleaner and less repetitive.
 - Kept Contact in the footer with mailto:info@kaptiono.com.

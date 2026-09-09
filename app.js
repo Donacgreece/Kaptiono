@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.19';
+const APP_VERSION='0.5.20';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -37,7 +37,7 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false};
 const video=$('#video');
 
 function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);}
@@ -607,6 +607,8 @@ async function generateCaptions(){
   if(!state.file)return;
   trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value,enhanced:state.enhanced});
   $('#generateBtn').disabled=true;
+  state.voiceRetry=false;
+  state.voiceRetryImproved=false;
   state.startedAt=performance.now();
   state.modelFirstRun=localStorage.getItem(modelReadyStorageKey())!=='1';
   resetProgressFlow();
@@ -700,7 +702,9 @@ function finalizeCaptionWords(words,{enhancedApplied=false,enhancedFallback=fals
     word_count:state.sourceWords.length,
     enhanced_requested:state.enhanced,
     enhanced_applied:enhancedApplied,
-    enhanced_fallback:enhancedFallback
+    enhanced_fallback:enhancedFallback,
+    voice_boost_retry:state.voiceRetry,
+    voice_boost_improved:state.voiceRetryImproved
   });
   setTimeout(()=>{
     showProgress('done',100);
@@ -791,6 +795,26 @@ function onWorkerMessage({data}){
   if(data.type==='transcribe-progress'){
     const p=Math.max(0,Math.min(100,Number(data.progress)||0));
     showProgress('transcribe',Math.min(state.enhanced?90:94,62+p*(state.enhanced?.28:.32)));
+  }
+  if(data.type==='voice-retry-start'){
+    state.voiceRetry=true;
+    stopProgressDrift();
+    showProgress('transcribe',91,isGreekUI()
+      ?'Εντοπίστηκε κυρίως μουσική. Δοκιμάζουμε ξανά αυτόματα με Voice Boost, χρησιμοποιώντας το ίδιο Whisper model και χωρίς επιπλέον AI download.'
+      :'Mostly music was detected. Retrying automatically with Voice Boost using the same Whisper model and no additional AI download.');
+    startProgressDrift(94,.10,750);
+    trackEvent('voice_boost_retry',{reason:data.reason||'music'});
+  }
+  if(data.type==='voice-retry-result'){
+    state.voiceRetryImproved=Boolean(data.improved);
+    stopProgressDrift();
+    showProgress('transcribe',94,data.improved
+      ?(isGreekUI()
+        ?'Το Voice Boost ανέκτησε περισσότερη ομιλία. Ολοκληρώνουμε τους υπότιτλους.'
+        :'Voice Boost recovered more speech. Finishing your captions.')
+      :(isGreekUI()
+        ?'Η δεύτερη προσπάθεια δεν ήταν καλύτερη. Κρατάμε με ασφάλεια το αρχικό αποτέλεσμα του Whisper.'
+        :'The second attempt was not better. Safely keeping the original Whisper result.'));
   }
   if(data.type==='result'){
     stopProgressDrift();
