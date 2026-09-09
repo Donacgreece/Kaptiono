@@ -802,3 +802,12 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   .model-picker-button,.model-picker-option{font-size:16px}
   .model-picker-menu{position:absolute}
 }
+
+
+/* v0.5.30 stable mobile bilingual layout */
+.hero-copy h1{text-wrap:balance}
+@media(max-width:900px){
+  [data-i18n].i18n-stable{min-height:var(--i18n-stable-height)}
+  .hero-copy h1[data-i18n="heroTitle"],
+  .hero-copy p[data-i18n="heroText"]{width:100%}
+}

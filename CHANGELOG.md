@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.30
+- Updated the homepage hero copy to the new Local or Cloud AI message.
+- Added mobile bilingual layout stabilization so switching EL/EN keeps text blocks at a consistent height and avoids visible page jumping.
+
 ## 0.5.29
 - Reworked the homepage hero copy to be shorter and more direct.
 - Kept the existing Google Analytics integration unchanged.
