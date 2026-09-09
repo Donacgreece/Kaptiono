@@ -1,19 +1,5 @@
 # Changelog
 
-## 0.5.22
-- Added experimental automatic Music / Lyrics Mode for music-heavy videos.
-- Lyrics Mode activates only after the normal Whisper pass and the existing lightweight Voice Boost retry both fail to recover usable speech.
-- Added local SCNet browser vocal separation before a final Whisper transcription pass.
-- The test SCNet model is approximately 45 MB and is downloaded only when Lyrics Mode is actually needed.
-- The same already-selected Whisper model is reused after vocal isolation. No second transcription model is downloaded.
-- Added chunk-by-chunk vocal separation to reduce peak memory compared with processing the entire song through the separator at once.
-- Added safe fallback to the original Whisper result if vocal separation fails or isolated vocals still do not produce usable lyrics.
-- The original video and original audio are never modified.
-- Added Lyrics Mode progress messages and analytics events.
-- Added THIRD_PARTY_NOTICES.md for the experimental SCNet browser integration.
-- Updated the permanent README with the experimental Lyrics Mode behavior and mobile caveat.
-- No caption styling, export rendering, footer layout, AdSense, licensing or Coming Soon AI controls were changed.
-
 ## 0.5.21
 - Refined the mobile footer only.
 - Moved Support, Roadmap, Contact and GitHub to the first mobile footer row.

@@ -420,23 +420,6 @@ Kaptiono should therefore be described as **source available**, not OSI open sou
 
 ---
 
-## Experimental Music / Lyrics Mode
-
-Kaptiono includes an experimental automatic Lyrics Mode for videos where music masks the vocals.
-
-The normal workflow remains unchanged. Kaptiono first runs Whisper normally, then the lightweight Voice Boost retry. Only when both passes still return a music-dominated result does Kaptiono try local vocal separation before running the same Whisper model again.
-
-- Runs locally in the browser.
-- Does not upload the user's video or audio.
-- Downloads an additional SCNet vocal-separation model only when Lyrics Mode is needed.
-- The current test model is approximately 45 MB.
-- The original video and original audio are never modified.
-- Mobile performance depends strongly on device memory and browser capabilities.
-
-This feature is experimental and may be reverted or changed based on real-device testing.
-
----
-
 ## Contact
 
 For feedback, bug reports, partnerships, creator collaborations, or commercial licensing:
