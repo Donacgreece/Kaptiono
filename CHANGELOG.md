@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.24
+- Shortened the Home privacy note for a cleaner mobile layout.
+- Greek copy now reads: **«Το video μένει στη συσκευή σου. Μόνο το audio αποστέλλεται στο Cloud mode.»**
+- Updated the matching English privacy note.
+- No transcription, Cloud High Accuracy, Local Whisper, export, styling, analytics, AdSense, PWA, licensing or other application behavior was changed.
+
 ## 0.5.23
 - Enabled Whisper Large v3 Turbo as a selectable **Cloud High Accuracy** model instead of a Coming Soon local model.
 - Added direct browser integration with the Kaptiono Cloudflare transcription Worker at `kaptiono-transcribe.donacgreece.workers.dev`.
