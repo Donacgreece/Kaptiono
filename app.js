@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.21';
+const APP_VERSION='0.5.22';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -37,7 +37,7 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,lyricsWorker:null,lyricsAttempted:false,lyricsFallbackWords:[],lyricsModelFirstRun:false};
 const video=$('#video');
 
 function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);}
@@ -506,6 +506,148 @@ function updateCompatibilityNote(){
 }
 enforceComingSoonModels();updateCompatibilityNote();updateModelHint();updateEnhancedUi();
 
+
+function lyricsReadyStorageKey(){return 'kaptiono:model-ready:scnet-base'}
+function destroyLyricsWorker(){
+  if(state.lyricsWorker){
+    state.lyricsWorker.terminate();
+    state.lyricsWorker=null;
+  }
+}
+function looksLikeUsableLyrics(words,text=''){
+  const tokens=(Array.isArray(words)?words:[])
+    .map(w=>String(w?.word||'').trim().toLowerCase())
+    .filter(Boolean);
+  const raw=String(text||'').trim().toLowerCase();
+  const joined=(tokens.join(' ')+' '+raw)
+    .replace(/[\[\](){}<>♪♫♬♩.,!?;:'"…_-]+/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+  if(!joined)return false;
+  const parts=joined.split(' ').filter(Boolean);
+  const markers=new Set(['music','musical','instrumental','μουσικη','μουσική']);
+  const lexical=parts.filter(x=>!markers.has(x)).length;
+  const markerCount=parts.length-lexical;
+  return lexical>=2 && markerCount<Math.max(1,lexical);
+}
+function finalizeLyricsFallback(message=''){
+  destroyLyricsWorker();
+  destroyWorker();
+  stopProgressDrift();
+  if(message)console.warn('Lyrics Mode fallback:',message);
+  showProgress('finalize',96,isGreekUI()
+    ?'Το Lyrics Mode δεν κατάφερε να απομονώσει καλύτερα τη φωνή. Κρατάμε το ασφαλές αποτέλεσμα του Whisper.'
+    :'Lyrics Mode could not isolate the vocals well enough. Keeping the safe Whisper result.');
+  finalizeCaptionWords(state.lyricsFallbackWords||[],{
+    enhancedApplied:false,
+    enhancedFallback:false
+  });
+}
+function startLyricsMode(audioBuffer,fallbackWords=[]){
+  if(state.lyricsAttempted||!audioBuffer){
+    finalizeLyricsFallback('No Lyrics Mode audio available');
+    return;
+  }
+
+  state.lyricsAttempted=true;
+  state.lyricsFallbackWords=fallbackWords||[];
+  state.lyricsModelFirstRun=localStorage.getItem(lyricsReadyStorageKey())!=='1';
+
+  if(state.watchdog){
+    clearInterval(state.watchdog);
+    state.watchdog=null;
+  }
+
+  destroyLyricsWorker();
+
+  showProgress('transcribe',94,isGreekUI()
+    ?'Η μουσική καλύπτει τη φωνή. Ενεργοποιούμε αυτόματα Lyrics Mode και απομονώνουμε τα vocals τοπικά στη συσκευή.'
+    :'Music is masking the voice. Automatically starting Lyrics Mode and isolating vocals locally on your device.');
+
+  trackEvent('lyrics_mode_started',{
+    first_run:state.lyricsModelFirstRun
+  });
+
+  const worker=new Worker(`./lyrics-worker.js?v=${encodeURIComponent(APP_VERSION)}`);
+  state.lyricsWorker=worker;
+
+  worker.onmessage=({data})=>{
+    if(data.type==='lyrics-model-loading'){
+      stopProgressDrift();
+      showProgress('transcribe',94.2,isGreekUI()
+        ?`Πρώτη χρήση Lyrics Mode: γίνεται λήψη του local vocal model (~${data.modelSizeMb||45} MB). Δεν ανεβαίνει το video σου σε server.`
+        :`First Lyrics Mode use: downloading the local vocal model (~${data.modelSizeMb||45} MB). Your video is not uploaded to a server.`);
+      startProgressDrift(95,.06,850);
+    }
+
+    if(data.type==='lyrics-model-ready'){
+      stopProgressDrift();
+      try{localStorage.setItem(lyricsReadyStorageKey(),'1')}catch{}
+      state.lyricsModelFirstRun=false;
+      showProgress('transcribe',95,isGreekUI()
+        ?'Το Lyrics AI είναι έτοιμο. Απομονώνουμε τώρα τη φωνή από τη μουσική.'
+        :'Lyrics AI is ready. Isolating vocals from the music.');
+    }
+
+    if(data.type==='lyrics-preparing'){
+      showProgress('transcribe',95.1,isGreekUI()
+        ?'Προετοιμασία audio για vocal separation.'
+        :'Preparing audio for vocal separation.');
+    }
+
+    if(data.type==='lyrics-separation-progress'){
+      const p=Math.max(0,Math.min(100,Number(data.progress)||0));
+      showProgress('transcribe',Math.min(98.2,95.1+p*.031),isGreekUI()
+        ?`Lyrics Mode: απομόνωση vocals ${p}%`
+        :`Lyrics Mode: isolating vocals ${p}%`);
+    }
+
+    if(data.type==='lyrics-result'){
+      destroyLyricsWorker();
+      stopProgressDrift();
+
+      const isolated=new Float32Array(data.audio);
+      if(!isolated.length){
+        finalizeLyricsFallback('Empty isolated-vocal buffer');
+        return;
+      }
+
+      showProgress('transcribe',98.3,isGreekUI()
+        ?'Τα vocals απομονώθηκαν. Το ίδιο Whisper model ακούει τώρα μόνο τη φωνή.'
+        :'Vocals isolated. The same Whisper model is now listening to the vocal track.');
+
+      trackEvent('lyrics_vocals_isolated',{});
+      touchWorker();
+      startWatchdog();
+
+      state.worker.postMessage({
+        type:'transcribe-isolated',
+        audio:isolated.buffer,
+        duration:isolated.length/16000,
+        device:'wasm',
+        model:$('#modelSelect').value,
+        language:$('#languageSelect').value
+      },[isolated.buffer]);
+    }
+
+    if(data.type==='lyrics-error'){
+      trackEvent('lyrics_mode_failed',{
+        reason:String(data.message||'unknown').slice(0,120)
+      });
+      finalizeLyricsFallback(data.message||'Lyrics separation failed');
+    }
+  };
+
+  worker.onerror=e=>{
+    trackEvent('lyrics_mode_failed',{
+      reason:String(e?.message||'Lyrics worker error').slice(0,120)
+    });
+    finalizeLyricsFallback(e?.message||'Lyrics worker error');
+  };
+
+  worker.postMessage({type:'separate-vocals',audio:audioBuffer},[audioBuffer]);
+}
+
 function destroyWorker(){if(state.watchdog){clearInterval(state.watchdog);state.watchdog=null}if(state.worker){state.worker.terminate();state.worker=null}}
 function touchWorker(){state.lastWorkerActivity=Date.now()}
 function createWorker(){destroyWorker();state.worker=new Worker(`./whisper-worker.js?v=${encodeURIComponent(APP_VERSION)}`,{type:'module'});state.worker.onmessage=e=>{touchWorker();onWorkerMessage(e)};state.worker.onerror=e=>{destroyWorker();failProgress(e.message||'Worker error');$('#generateBtn').disabled=false};touchWorker();return state.worker}
@@ -609,6 +751,9 @@ async function generateCaptions(){
   $('#generateBtn').disabled=true;
   state.voiceRetry=false;
   state.voiceRetryImproved=false;
+  state.lyricsAttempted=false;
+  state.lyricsFallbackWords=[];
+  destroyLyricsWorker();
   state.startedAt=performance.now();
   state.modelFirstRun=localStorage.getItem(modelReadyStorageKey())!=='1';
   resetProgressFlow();
@@ -819,6 +964,42 @@ function onWorkerMessage({data}){
   if(data.type==='result'){
     stopProgressDrift();
     const words=data.words||[];
+
+    if(
+      !data.lyricsPass &&
+      data.voiceRetry &&
+      !data.voiceRetryImproved &&
+      data.lyricsAudio &&
+      !state.lyricsAttempted
+    ){
+      startLyricsMode(data.lyricsAudio,words);
+      return;
+    }
+
+    if(data.lyricsPass){
+      const usable=looksLikeUsableLyrics(words,data.text||'');
+      trackEvent('lyrics_mode_completed',{
+        recovered:usable,
+        word_count:words.length
+      });
+
+      if(!usable){
+        finalizeLyricsFallback('Separated vocals did not produce usable lyrics');
+        return;
+      }
+
+      destroyLyricsWorker();
+      destroyWorker();
+      showProgress('finalize',98.8,isGreekUI()
+        ?'Το Lyrics Mode ανέκτησε τη φωνή. Δημιουργούμε τώρα τους υπότιτλους.'
+        :'Lyrics Mode recovered the vocals. Creating captions now.');
+      finalizeCaptionWords(words,{
+        enhancedApplied:false,
+        enhancedFallback:false
+      });
+      return;
+    }
+
     destroyWorker();
     if(state.enhanced&&words.length){
       startEnhancedCorrection(words);
@@ -831,6 +1012,7 @@ function onWorkerMessage({data}){
     stopProgressDrift();
     destroyWorker();
     destroyEnhanceWorker();
+    destroyLyricsWorker();
     failProgress(data.message||'Transcription failed');
     $('#generateBtn').disabled=false;
   }

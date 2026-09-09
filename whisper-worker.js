@@ -225,10 +225,11 @@ function transcriptionQuality(text,words){
 }
 
 self.onmessage = async ({data})=>{
-  if(data.type !== 'transcribe') return;
+  if(data.type!=='transcribe'&&data.type!=='transcribe-isolated')return;
   try{
     const audio = new Float32Array(data.audio);
     const duration = audio.length / 16000;
+    const isolatedPass=data.type==='transcribe-isolated';
     postMessage({type:'device',device:'wasm'});
     const pipe = await getTranscriber(data.model || 'onnx-community/whisper-base_timestamped');
     postMessage({type:'transcribe-start'});
@@ -250,7 +251,7 @@ self.onmessage = async ({data})=>{
     let voiceRetry=false;
     let voiceRetryImproved=false;
 
-    if(shouldVoiceBoostRetry(firstText,firstWords,duration)){
+    if(!isolatedPass&&shouldVoiceBoostRetry(firstText,firstWords,duration)){
       voiceRetry=true;
       postMessage({type:'voice-retry-start',reason:'music'});
 
@@ -280,13 +281,21 @@ self.onmessage = async ({data})=>{
     }
 
     postMessage({type:'transcribe-progress',progress:100});
-    postMessage({
+    const resultMessage={
       type:'result',
       words:finalWords,
       text:String(finalOut?.text||''),
       voiceRetry,
       voiceRetryImproved,
-    });
+      lyricsPass:isolatedPass,
+    };
+
+    if(!isolatedPass&&voiceRetry&&!voiceRetryImproved){
+      resultMessage.lyricsAudio=audio.buffer;
+      postMessage(resultMessage,[audio.buffer]);
+    }else{
+      postMessage(resultMessage);
+    }
   }catch(error){
     postMessage({type:'error',message:error?.message||String(error),stack:error?.stack||''});
   }
