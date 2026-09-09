@@ -384,3 +384,36 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   .enhanced-option{grid-template-columns:minmax(0,1fr) auto;padding:13px;gap:10px}
   .enhanced-toggle{width:68px}
 }
+
+
+/* v0.5.12 Coming Soon states */
+.enhanced-coming-soon{
+  position:relative;
+  opacity:.56;
+  filter:saturate(.45);
+  cursor:not-allowed;
+  user-select:none;
+}
+.enhanced-coming-soon .enhanced-copy{
+  filter:blur(.18px);
+}
+.enhanced-coming-soon .enhanced-title-row span{
+  background:#687068;
+  color:#fff;
+}
+.enhanced-coming-soon .enhanced-toggle,
+.enhanced-coming-soon .enhanced-toggle:disabled{
+  opacity:.72;
+  cursor:not-allowed;
+  background:#eef0ed;
+  border-color:#dde1dc;
+}
+.enhanced-coming-soon .enhanced-toggle i{
+  background:#d7dbd6;
+}
+.enhanced-coming-soon .enhanced-toggle b{
+  color:#737b75;
+}
+#modelSelect option:disabled{
+  color:#9ca39e;
+}

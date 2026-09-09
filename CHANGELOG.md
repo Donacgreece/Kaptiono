@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.5.12
+- Temporarily disabled Whisper Large v3 Turbo after real-world browser testing showed unreliable loading and long idle failures.
+- Kept Large v3 Turbo visible in the model selector as High Accuracy · Coming Soon.
+- Temporarily disabled Enhanced after real-world browser testing showed unreliable second-model loading.
+- Kept Enhanced visible as a muted, non-clickable Coming Soon preview.
+- Added hard runtime guards so stale browser state cannot activate either unfinished feature.
+- Removed the Enhanced worker from the service-worker shell cache while the feature is unavailable.
+- Added the requested Google AdSense loader for publisher ca-pub-9529892005549874.
+- Updated privacy-facing copy to reflect that Google Analytics and Google AdSense are also loaded by the page.
+- Preserved the permanent full product README unchanged.
+
 ## 0.5.11
 - Added optional Whisper Large v3 Turbo as High Accuracy mode for powerful desktop/laptop devices.
 - Kept Whisper Small as the default Recommended model.

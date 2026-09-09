@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.11" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.12" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -119,6 +119,8 @@
     ]
   }
   </script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9529892005549874"
+     crossorigin="anonymous"></script>
 </head>
 <body>
   <div id="appSplash" class="app-splash" role="status" aria-label="Kaptiono loading">
@@ -133,7 +135,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.11</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.12</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -156,7 +158,7 @@
           <small data-i18n="dropHint">ή σύρε MP4 / MOV / WebM εδώ</small>
           <input id="fileInput" type="file" accept="video/*,.mp4,.mov,.m4v,.webm" hidden />
         </button>
-        <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Μόνο ο κώδικας της εφαρμογής και το AI model κατεβαίνουν από το internet.</small></div></div>
+        <div class="privacy-note"><span>✓</span><div><strong data-i18n="privacyTitle">Το video μένει στη συσκευή σου.</strong><small data-i18n="privacyText">Το video, το audio και τα captions παραμένουν στη συσκευή σου. Η σελίδα χρησιμοποιεί επίσης υπηρεσίες Google για analytics και διαφημίσεις.</small></div></div>
       </section>
 
       <section id="supportPage" class="support-page hidden">
@@ -368,7 +370,7 @@
               <div class="field-grid two">
                 <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
                   <option value="onnx-community/whisper-small_timestamped" selected>Whisper Small · High quality · Recommended</option>
-                  <option value="onnx-community/whisper-large-v3-turbo">Whisper Large v3 Turbo · High Accuracy · Desktop</option>
+                  <option value="onnx-community/whisper-large-v3-turbo" disabled>Whisper Large v3 Turbo · High Accuracy · COMING SOON</option>
                   <option value="onnx-community/whisper-base_timestamped">Whisper Base · Stable</option>
                   <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
                 </select><small id="modelHint">—</small></label>
@@ -377,17 +379,17 @@
                 </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></label>
               </div>
 
-              <div id="enhancedOption" class="enhanced-option">
+              <div id="enhancedOption" class="enhanced-option enhanced-coming-soon" aria-disabled="true">
                 <div class="enhanced-copy">
                   <div class="enhanced-title-row">
                     <strong>Enhanced</strong>
-                    <span>EXPERIMENTAL</span>
+                    <span>COMING SOON</span>
                   </div>
-                  <p id="enhancedDescription">Δεύτερο local AI pass που προσπαθεί να διορθώσει λανθασμένα αναγνωρισμένες λέξεις με βάση τα συμφραζόμενα, χωρίς upload.</p>
-                  <small id="enhancedHint">Προαιρετικό. Κατεβάζει επιπλέον multilingual AI model και αυξάνει τον χρόνο επεξεργασίας.</small>
+                  <p id="enhancedDescription">Context-aware correction για λανθασμένα αναγνωρισμένες λέξεις, με δεύτερο local AI pass.</p>
+                  <small id="enhancedHint">Η λειτουργία παραμένει ορατή ως preview αλλά δεν είναι ακόμη διαθέσιμη.</small>
                 </div>
-                <button id="enhancedToggle" class="enhanced-toggle" type="button" role="switch" aria-checked="false">
-                  <i></i><b id="enhancedToggleText">OFF</b>
+                <button id="enhancedToggle" class="enhanced-toggle" type="button" role="switch" aria-checked="false" aria-disabled="true" disabled>
+                  <i></i><b id="enhancedToggleText">SOON</b>
                 </button>
               </div>
 
@@ -540,8 +542,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.11</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.12</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.11"></script>
+  <script type="module" src="./app.js?v=0.5.12"></script>
 </body>
 </html>
