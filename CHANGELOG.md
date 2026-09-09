@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.31
+- Removed the repeated privacy note from the phone homepage.
+- Rebalanced the phone viewport so the upload area fills the remaining space naturally.
+- Kept the footer below the initial viewport so it appears only after a small scroll.
+
 ## 0.5.30
 - Updated the homepage hero copy to the new Local or Cloud AI message.
 - Added mobile bilingual layout stabilization so switching EL/EN keeps text blocks at a consistent height and avoids visible page jumping.

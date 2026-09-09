@@ -811,3 +811,41 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   .hero-copy h1[data-i18n="heroTitle"],
   .hero-copy p[data-i18n="heroText"]{width:100%}
 }
+
+
+/* v0.5.31 phone home viewport balance */
+@media(max-width:620px){
+  main{
+    margin-top:14px;
+    margin-bottom:0;
+  }
+  .start-card{
+    min-height:calc(100svh - 88px);
+    grid-template-rows:auto minmax(260px,1fr);
+    align-content:stretch;
+    align-items:stretch;
+    padding:18px;
+    padding-bottom:22px;
+    gap:16px;
+  }
+  .privacy-note{
+    display:none;
+  }
+  .dropzone.home-panel{
+    width:100%;
+    height:auto;
+    min-height:260px;
+    align-self:stretch;
+    padding:26px 16px;
+    gap:12px;
+  }
+  .upload-icon{
+    width:62px;
+    height:62px;
+    font-size:31px;
+  }
+  .site-footer{
+    margin-top:18px;
+    padding-top:15px;
+  }
+}
