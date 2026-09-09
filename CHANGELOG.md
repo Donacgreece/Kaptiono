@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.32
+- Detects Cloudflare Workers AI daily quota exhaustion specifically via account-limited error 3036.
+- Automatically switches back to Whisper Small Local when the daily Cloud allocation is exhausted.
+- Disables the Cloud model until the next 00:00 UTC reset and re-enables it automatically afterwards.
+- Persists Cloud availability state locally across refreshes and restores it when the daily quota resets.
+
 ## 0.5.31
 - Removed the repeated privacy note from the phone homepage.
 - Rebalanced the phone viewport so the upload area fills the remaining space naturally.

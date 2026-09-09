@@ -849,3 +849,12 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
     padding-top:15px;
   }
 }
+
+
+/* v0.5.32 Cloud quota availability */
+.model-picker-option.unavailable,
+.model-picker-option:disabled{opacity:.5;cursor:not-allowed;background:#f4f5f3;color:#747c76}
+.model-picker-option.unavailable:hover,
+.model-picker-option:disabled:hover{background:#f4f5f3}
+.model-picker-option.unavailable strong,
+.model-picker-option:disabled strong{color:#737b75}
