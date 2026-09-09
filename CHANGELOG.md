@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.5.11
+- Added optional Whisper Large v3 Turbo as High Accuracy mode for powerful desktop/laptop devices.
+- Kept Whisper Small as the default Recommended model.
+- Added optional Enhanced mode, OFF by default and marked Experimental.
+- Enhanced performs a second multilingual local AI pass using a small instruction model to repair likely ASR word-recognition mistakes from context.
+- Enhanced does not upload transcript, audio, captions, or video.
+- Added conservative hallucination guards and token alignment so corrected words retain Whisper timing wherever possible.
+- If Enhanced fails, runs out of memory, or produces an unsafe rewrite, Kaptiono preserves the original Whisper transcript instead of failing caption generation.
+- Added a five-stage progress flow when Enhanced is enabled.
+- Added mobile and high-memory warnings for Large v3 Turbo.
+- Preserved the permanent full product README unchanged.
+
 ## 0.5.10
 - Added immediate visual acknowledgement when video export is clicked.
 - Added an export status panel directly below the player, so quick export no longer appears frozen.

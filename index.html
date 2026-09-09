@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.10" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.11" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -133,7 +133,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.10</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.11</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -368,6 +368,7 @@
               <div class="field-grid two">
                 <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
                   <option value="onnx-community/whisper-small_timestamped" selected>Whisper Small · High quality · Recommended</option>
+                  <option value="onnx-community/whisper-large-v3-turbo">Whisper Large v3 Turbo · High Accuracy · Desktop</option>
                   <option value="onnx-community/whisper-base_timestamped">Whisper Base · Stable</option>
                   <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
                 </select><small id="modelHint">—</small></label>
@@ -375,6 +376,21 @@
                   <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
                 </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></label>
               </div>
+
+              <div id="enhancedOption" class="enhanced-option">
+                <div class="enhanced-copy">
+                  <div class="enhanced-title-row">
+                    <strong>Enhanced</strong>
+                    <span>EXPERIMENTAL</span>
+                  </div>
+                  <p id="enhancedDescription">Δεύτερο local AI pass που προσπαθεί να διορθώσει λανθασμένα αναγνωρισμένες λέξεις με βάση τα συμφραζόμενα, χωρίς upload.</p>
+                  <small id="enhancedHint">Προαιρετικό. Κατεβάζει επιπλέον multilingual AI model και αυξάνει τον χρόνο επεξεργασίας.</small>
+                </div>
+                <button id="enhancedToggle" class="enhanced-toggle" type="button" role="switch" aria-checked="false">
+                  <i></i><b id="enhancedToggleText">OFF</b>
+                </button>
+              </div>
+
               <button id="generateBtn" class="primary-btn" type="button"><span data-i18n="generateButton">Δημιουργία captions</span><b>→</b></button>
               <div id="progressBox" class="progress-box hidden">
                 <div class="progress-stage-row"><span id="progressStep" class="progress-step">Βήμα 1 από 4</span><span id="elapsed">0:00</span></div>
@@ -524,8 +540,8 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.10</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer><span>Kaptiono Web Lab 0.5.11</span><span>Free · Local · Private · No watermark</span></footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.10"></script>
+  <script type="module" src="./app.js?v=0.5.11"></script>
 </body>
 </html>

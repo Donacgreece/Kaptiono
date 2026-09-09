@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.10';
+const APP_VERSION='0.5.11';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
@@ -36,7 +36,7 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,enhanced:localStorage.getItem('kaptiono-enhanced')==='1',enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false};
 const video=$('#video');
 
 function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);}
@@ -64,6 +64,9 @@ function showPage(page){
   $('#supportPage').classList.toggle('hidden',page!=='support');
   $('#roadmapPage').classList.toggle('hidden',page!=='roadmap');
   window.scrollTo({top:0,behavior:'smooth'});
+  updateEnhancedUi();
+  updateModelHint();
+  updateCompatibilityNote();
 }
 function goHome(){showPage('home');trackVirtualPage('/','Kaptiono · Home')}
 function goSupport(){showPage('support');trackVirtualPage('/support','Kaptiono · Support')}
@@ -184,9 +187,69 @@ function hexAlpha(hex,pct){const h=String(hex).replace('#','');if(h.length!==6)r
 function renderCaptionEditor(){const editor=$('#captionEditor');editor.innerHTML='';$('#emptyCaptions').classList.toggle('hidden',state.captions.length>0);editor.classList.toggle('hidden',!state.captions.length);state.captions.forEach((c,i)=>{const row=document.createElement('div');row.className='caption-row';row.innerHTML=`<span class="caption-time">${formatTime(c.start)}<br>${formatTime(c.end)}</span><textarea rows="2"></textarea>`;const ta=row.querySelector('textarea');ta.value=c.text;ta.addEventListener('input',()=>{c.text=ta.value;updateCaptionOverlay()});editor.appendChild(row)})}
 
 // High-quality browser transcription
-$('#modelSelect').addEventListener('change',updateModelHint);function updateModelHint(){const v=$('#modelSelect').value;const hint=$('#modelHint');if(v.includes('small'))hint.textContent=isGreekUI()?'Προεπιλεγμένο High Quality. Δίνει την καλύτερη ποιότητα captions, αλλά το πρώτο download είναι μεγαλύτερο.':'Default High Quality mode. Best caption quality, with a larger first model download.';else if(v.includes('base'))hint.textContent=isGreekUI()?'Προτεινόμενο Stable mode. Καλή ποιότητα ελληνικών με πολύ μικρότερο download από το Small.':'Recommended Stable mode. Good quality with a much smaller download than Small.';else hint.textContent=isGreekUI()?'Γρήγορη επιλογή για έλεγχο ότι η συσκευή ολοκληρώνει κανονικά το local AI.':'Fast option to verify that local AI completes correctly on this device.'}
-function updateCompatibilityNote(){const note=$('#compatNote');if(!window.isSecureContext){note.classList.remove('hidden');note.textContent=isGreekUI()?'Το HTTPS δεν έχει ενεργοποιηθεί ακόμη. Το Kaptiono χρησιμοποιεί προσωρινά WASM χωρίς persistent AI cache. Η εγκατάσταση PWA και τα automatic updates θα λειτουργήσουν πλήρως μόλις ενεργοποιηθεί το HTTPS.':'HTTPS is not active yet. Kaptiono is temporarily using WASM without persistent AI cache. PWA installation and automatic updates will work fully once HTTPS is active.'}else if(isIOS){note.classList.remove('hidden');note.textContent=isGreekUI()?'iPhone: χρησιμοποιούμε WebCodecs/Mediabunny για το audio αντί για το παλιό decodeAudioData. Αν το Small είναι βαρύ, επίλεξε Base.':'iPhone: audio is extracted through WebCodecs/Mediabunny instead of the old decodeAudioData path. If Small is too heavy, choose Base.'}else note.classList.add('hidden');$('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser'}
-updateCompatibilityNote();updateModelHint();
+$('#modelSelect').addEventListener('change',()=>{updateModelHint();updateCompatibilityNote()});
+function updateModelHint(){
+  const v=$('#modelSelect').value;
+  const hint=$('#modelHint');
+  if(v.includes('large-v3-turbo'))hint.textContent=isGreekUI()
+    ?'High Accuracy. Πολύ μεγαλύτερο model και υψηλή χρήση RAM. Προτείνεται για δυνατά desktop/laptop.'
+    :'High Accuracy. Much larger model and high RAM usage. Recommended for powerful desktop/laptop devices.';
+  else if(v.includes('small'))hint.textContent=isGreekUI()
+    ?'Προεπιλεγμένο High Quality. Δίνει πολύ καλή ποιότητα captions με λογικότερο κόστος από το Large.'
+    :'Default High Quality. Strong caption quality with a more practical footprint than Large.';
+  else if(v.includes('base'))hint.textContent=isGreekUI()
+    ?'Stable mode. Καλή ποιότητα με πολύ μικρότερο download από το Small.'
+    :'Stable mode. Good quality with a much smaller download than Small.';
+  else hint.textContent=isGreekUI()
+    ?'Γρήγορη επιλογή για έλεγχο ότι η συσκευή ολοκληρώνει κανονικά το local AI.'
+    :'Fast option to verify that local AI completes correctly on this device.';
+}
+function updateEnhancedUi(){
+  const btn=$('#enhancedToggle');
+  if(!btn)return;
+  btn.classList.toggle('active',state.enhanced);
+  btn.setAttribute('aria-checked',state.enhanced?'true':'false');
+  $('#enhancedToggleText').textContent=state.enhanced?'ON':'OFF';
+  $('#enhancedDescription').textContent=isGreekUI()
+    ?'Δεύτερο local AI pass που προσπαθεί να διορθώσει λανθασμένα αναγνωρισμένες λέξεις με βάση τα συμφραζόμενα, χωρίς upload.'
+    :'A second local AI pass that tries to correct misrecognized words using context, with no upload.';
+  $('#enhancedHint').textContent=isGreekUI()
+    ?'Προαιρετικό και experimental. Κατεβάζει επιπλέον multilingual AI model και αυξάνει τον χρόνο επεξεργασίας.'
+    :'Optional and experimental. Downloads an additional multilingual AI model and increases processing time.';
+}
+$('#enhancedToggle').addEventListener('click',()=>{
+  state.enhanced=!state.enhanced;
+  try{localStorage.setItem('kaptiono-enhanced',state.enhanced?'1':'0')}catch{}
+  updateEnhancedUi();
+  trackEvent('enhanced_toggled',{enabled:state.enhanced});
+});
+function updateCompatibilityNote(){
+  const note=$('#compatNote');
+  const large=$('#modelSelect')?.value?.includes('large-v3-turbo');
+  if(!window.isSecureContext){
+    note.classList.remove('hidden');
+    note.textContent=isGreekUI()
+      ?'Το HTTPS δεν έχει ενεργοποιηθεί ακόμη. Το Kaptiono χρησιμοποιεί WASM χωρίς persistent AI cache. Τα μεγάλα AI models θα χρειάζεται να ξαναφορτώνονται συχνότερα.'
+      :'HTTPS is not active yet. Kaptiono is using WASM without persistent AI cache. Large AI models may need to be downloaded again more often.';
+  }else if(isIOS&&large){
+    note.classList.remove('hidden');
+    note.textContent=isGreekUI()
+      ?'Το Large v3 Turbo είναι πολύ βαρύ για iPhone/iPad και μπορεί να αποτύχει λόγω μνήμης. Για mobile προτείνεται Small ή Base.'
+      :'Large v3 Turbo is very heavy for iPhone/iPad and may fail because of memory limits. Small or Base is recommended on mobile.';
+  }else if(isIOS){
+    note.classList.remove('hidden');
+    note.textContent=isGreekUI()
+      ?'iPhone: χρησιμοποιούμε WebCodecs/Mediabunny για το audio. Αν το Small είναι βαρύ, επίλεξε Base.'
+      :'iPhone: audio is extracted through WebCodecs/Mediabunny. If Small is too heavy, choose Base.';
+  }else if(large){
+    note.classList.remove('hidden');
+    note.textContent=isGreekUI()
+      ?'High Accuracy mode: το Large v3 Turbo απαιτεί σημαντικά περισσότερη RAM και μεγαλύτερο πρώτο download. Προτείνεται ισχυρό desktop/laptop.'
+      :'High Accuracy mode: Large v3 Turbo needs significantly more RAM and a much larger first download. A powerful desktop/laptop is recommended.';
+  }else note.classList.add('hidden');
+  $('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
+}
+updateCompatibilityNote();updateModelHint();updateEnhancedUi();
 
 function destroyWorker(){if(state.watchdog){clearInterval(state.watchdog);state.watchdog=null}if(state.worker){state.worker.terminate();state.worker=null}}
 function touchWorker(){state.lastWorkerActivity=Date.now()}
@@ -195,6 +258,7 @@ function startWatchdog(){if(state.watchdog)clearInterval(state.watchdog);state.w
 
 function selectedModelFriendlyName(){
   const value=$('#modelSelect')?.value||'';
+  if(value.includes('large-v3-turbo'))return 'Whisper Large v3 Turbo';
   if(value.includes('small'))return 'Whisper Small';
   if(value.includes('base'))return 'Whisper Base';
   if(value.includes('tiny'))return 'Whisper Tiny';
@@ -248,29 +312,32 @@ function stopProgressDrift(){
   if(state.progressTicker){clearInterval(state.progressTicker);state.progressTicker=null}
 }
 function progressCopy(stage){
-  const el=isGreekUI(),model=selectedModelFriendlyName();
+  const el=isGreekUI(),model=selectedModelFriendlyName(),steps=state.enhanced?5:4;
   if(stage==='audio')return el
-    ?{step:'Βήμα 1 από 4',title:'Προετοιμασία video',detail:'Διαβάζουμε και προετοιμάζουμε το audio τοπικά. Το video δεν ανεβαίνει πουθενά.'}
-    :{step:'Step 1 of 4',title:'Preparing video',detail:'We read and prepare the audio locally. Your video is not uploaded anywhere.'};
+    ?{step:`Βήμα 1 από ${steps}`,title:'Προετοιμασία video',detail:'Διαβάζουμε και προετοιμάζουμε το audio τοπικά. Το video δεν ανεβαίνει πουθενά.'}
+    :{step:`Step 1 of ${steps}`,title:'Preparing video',detail:'We read and prepare the audio locally. Your video is not uploaded anywhere.'};
   if(stage==='model'){
     if(state.modelFirstRun){
       if(!window.isSecureContext)return el
-        ?{step:'Βήμα 2 από 4',title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή για αυτή τη χρήση. Με HTTPS θα μπορεί να αποθηκεύεται τοπικά για τις επόμενες φορές.`}
-        :{step:'Step 2 of 4',title:'Downloading Local AI',detail:`First run: ${model} is downloading to your device for this session. With HTTPS it can be stored locally for future runs.`};
+        ?{step:`Βήμα 2 από ${steps}`,title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή για αυτή τη χρήση. Με HTTPS θα μπορεί να αποθηκεύεται τοπικά για τις επόμενες φορές.`}
+        :{step:`Step 2 of ${steps}`,title:'Downloading Local AI',detail:`First run: ${model} is downloading to your device for this session. With HTTPS it can be stored locally for future runs.`};
       return el
-        ?{step:'Βήμα 2 από 4',title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή σου. Στις επόμενες χρήσεις θα φορτώνει από το τοπικό cache.`}
-        :{step:'Step 2 of 4',title:'Downloading Local AI',detail:`First run: ${model} is downloading to your device. Future runs can load it from the local browser cache.`};
+        ?{step:`Βήμα 2 από ${steps}`,title:'Λήψη Local AI',detail:`Πρώτη εκτέλεση: κατεβάζουμε το ${model} στη συσκευή σου. Στις επόμενες χρήσεις θα φορτώνει από το τοπικό cache.`}
+        :{step:`Step 2 of ${steps}`,title:'Downloading Local AI',detail:`First run: ${model} is downloading to your device. Future runs can load it from the local browser cache.`};
     }
     return el
-      ?{step:'Βήμα 2 από 4',title:'Φόρτωση Local AI',detail:`Ετοιμάζουμε το ${model} στη συσκευή σου για την απομαγνητοφώνηση.`}
-      :{step:'Step 2 of 4',title:'Loading Local AI',detail:`Preparing ${model} on your device for transcription.`};
+      ?{step:`Βήμα 2 από ${steps}`,title:'Φόρτωση Local AI',detail:`Ετοιμάζουμε το ${model} στη συσκευή σου για την απομαγνητοφώνηση.`}
+      :{step:`Step 2 of ${steps}`,title:'Loading Local AI',detail:`Preparing ${model} on your device for transcription.`};
   }
   if(stage==='transcribe')return el
-    ?{step:'Βήμα 3 από 4',title:'Απομαγνητοφώνηση',detail:'Το Local AI ακούει το video και δημιουργεί το κείμενο μαζί με τα timestamps.'}
-    :{step:'Step 3 of 4',title:'Transcribing',detail:'Local AI is listening to the video and generating text with timestamps.'};
+    ?{step:`Βήμα 3 από ${steps}`,title:'Απομαγνητοφώνηση',detail:'Το Local AI ακούει το video και δημιουργεί το κείμενο μαζί με τα timestamps.'}
+    :{step:`Step 3 of ${steps}`,title:'Transcribing',detail:'Local AI is listening to the video and generating text with timestamps.'};
+  if(stage==='enhance')return el
+    ?{step:'Βήμα 4 από 5',title:'Enhanced correction',detail:'Δεύτερο multilingual local AI pass ελέγχει το transcript και προσπαθεί να διορθώσει λανθασμένα αναγνωρισμένες λέξεις από τα συμφραζόμενα.'}
+    :{step:'Step 4 of 5',title:'Enhanced correction',detail:'A second multilingual local AI pass checks the transcript and tries to correct misrecognized words from context.'};
   if(stage==='finalize')return el
-    ?{step:'Βήμα 4 από 4',title:'Δημιουργία captions',detail:'Χωρίζουμε το transcript σε captions και εφαρμόζουμε τη ροή και το επιλεγμένο style.'}
-    :{step:'Step 4 of 4',title:'Creating captions',detail:'We split the transcript into captions and apply the selected flow and style.'};
+    ?{step:`Βήμα ${state.enhanced?5:4} από ${steps}`,title:'Δημιουργία captions',detail:'Χωρίζουμε το transcript σε captions και εφαρμόζουμε τη ροή και το επιλεγμένο style.'}
+    :{step:`Step ${state.enhanced?5:4} of ${steps}`,title:'Creating captions',detail:'We split the transcript into captions and apply the selected flow and style.'};
   if(stage==='done')return el
     ?{step:'Ολοκληρώθηκε',title:'Οι υπότιτλοι είναι έτοιμοι',detail:'Τα captions εμφανίζονται τώρα στη ζωντανή προεπισκόπηση και μπορείς να τα επεξεργαστείς ή να τα εξαγάγεις.'}
     :{step:'Completed',title:'Your captions are ready',detail:'Captions are now visible in the live preview and can be edited or exported.'};
@@ -282,7 +349,7 @@ function progressCopy(stage){
 $('#generateBtn').addEventListener('click',generateCaptions);
 async function generateCaptions(){
   if(!state.file)return;
-  trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value});
+  trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value,enhanced:state.enhanced});
   $('#generateBtn').disabled=true;
   state.startedAt=performance.now();
   state.modelFirstRun=localStorage.getItem(modelReadyStorageKey())!=='1';
@@ -324,6 +391,118 @@ function resampleLinear(input,fromRate,toRate){if(fromRate===toRate)return input
 function concatFloat32(parts,total){const out=new Float32Array(total);let pos=0;for(const p of parts){out.set(p,pos);pos+=p.length}return out}
 function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
 
+
+function enhanceReadyStorageKey(){
+  return 'kaptiono:model-ready:onnx-community/Qwen2.5-0.5B-Instruct';
+}
+function destroyEnhanceWorker(){
+  if(state.enhanceWorker){
+    state.enhanceWorker.terminate();
+    state.enhanceWorker=null;
+  }
+}
+function createEnhanceWorker(){
+  destroyEnhanceWorker();
+  state.enhanceWorker=new Worker(`./enhance-worker.js?v=${encodeURIComponent(APP_VERSION)}`,{type:'module'});
+  state.enhanceWorker.onmessage=e=>onEnhanceWorkerMessage(e);
+  state.enhanceWorker.onerror=e=>{
+    console.warn('Enhanced worker failed; preserving Whisper transcript',e);
+    fallbackFromEnhanced(e?.message||'Enhanced worker error');
+  };
+  return state.enhanceWorker;
+}
+function startEnhancedCorrection(words){
+  state.pendingEnhanceWords=Array.isArray(words)?words:[];
+  state.enhanceFirstRun=localStorage.getItem(enhanceReadyStorageKey())!=='1';
+  showProgress('enhance',91,state.enhanceFirstRun
+    ?(isGreekUI()
+      ?'Φόρτωση Enhanced AI για πρώτη φορά. Το επιπλέον multilingual model κατεβαίνει τοπικά στη συσκευή σου.'
+      :'Loading Enhanced AI for the first time. The additional multilingual model is downloading locally to your device.')
+    :(isGreekUI()
+      ?'Φόρτωση Enhanced AI από το τοπικό cache.'
+      :'Loading Enhanced AI from the local browser cache.'));
+  startProgressDrift(94,.12,700);
+  const worker=createEnhanceWorker();
+  worker.postMessage({
+    type:'enhance',
+    words:state.pendingEnhanceWords,
+    language:$('#languageSelect').value
+  });
+}
+function finalizeCaptionWords(words,{enhancedApplied=false,enhancedFallback=false}={}){
+  stopProgressDrift();
+  showProgress('finalize',99,enhancedFallback
+    ?(isGreekUI()
+      ?'Το Enhanced δεν ολοκληρώθηκε. Κρατήσαμε με ασφάλεια το αρχικό Whisper transcript και δημιουργούμε τα captions.'
+      :'Enhanced did not complete. The original Whisper transcript was safely preserved and captions are being created.')
+    :'');
+  state.sourceWords=Array.isArray(words)?words:[];
+  state.pendingEnhanceWords=null;
+  reflowCaptions();
+  updateCaptionOverlay();
+  trackEvent('captions_generated',{
+    word_count:state.sourceWords.length,
+    enhanced_requested:state.enhanced,
+    enhanced_applied:enhancedApplied,
+    enhanced_fallback:enhancedFallback
+  });
+  setTimeout(()=>{
+    showProgress('done',100);
+    $('#generateBtn').disabled=false;
+    setTimeout(()=>{
+      $('#progressBox').classList.add('hidden');
+      clearProgressMotion();
+    },1400);
+  },260);
+}
+function fallbackFromEnhanced(message){
+  stopProgressDrift();
+  destroyEnhanceWorker();
+  console.warn('Enhanced fallback:',message);
+  trackEvent('enhanced_fallback',{reason:String(message||'unknown').slice(0,120)});
+  const original=state.pendingEnhanceWords||[];
+  finalizeCaptionWords(original,{enhancedApplied:false,enhancedFallback:true});
+}
+function onEnhanceWorkerMessage({data}){
+  if(data.type==='enhance-cache-status'){
+    if(!data.enabled&&!window.isSecureContext){
+      $('#systemAi').textContent='WASM + Whisper + Enhanced · no cache';
+    }
+  }
+  if(data.type==='enhance-worker-ready'){
+    showProgress('enhance',91.5);
+  }
+  if(data.type==='enhance-model-progress'){
+    const p=Math.max(0,Math.min(100,Number(data.progress)||0));
+    showProgress('enhance',Math.min(94.5,91.5+p*.03));
+  }
+  if(data.type==='enhance-model-ready'){
+    stopProgressDrift();
+    try{localStorage.setItem(enhanceReadyStorageKey(),'1')}catch{}
+    state.enhanceFirstRun=false;
+    $('#systemAi').textContent='WASM + Whisper + Enhanced';
+    showProgress('enhance',94.5,isGreekUI()
+      ?'Το Enhanced AI είναι έτοιμο. Ελέγχουμε τώρα τις λέξεις του transcript με βάση τα συμφραζόμενα.'
+      :'Enhanced AI is ready. Checking transcript words against their context.');
+    startProgressDrift(97,.10,650);
+  }
+  if(data.type==='enhance-pass-progress'){
+    const p=Math.max(0,Math.min(100,Number(data.progress)||0));
+    showProgress('enhance',Math.min(98,94.5+p*.035));
+  }
+  if(data.type==='enhance-result'){
+    stopProgressDrift();
+    destroyEnhanceWorker();
+    finalizeCaptionWords(data.words||state.pendingEnhanceWords||[],{
+      enhancedApplied:Boolean(data.changed),
+      enhancedFallback:false
+    });
+  }
+  if(data.type==='enhance-error'){
+    fallbackFromEnhanced(data.message||'Enhanced correction failed');
+  }
+}
+
 function onWorkerMessage({data}){
   if(data.type==='cache-status'){
     if(!data.enabled&&!window.isSecureContext)$('#systemAi').textContent='WASM + Whisper · no cache';
@@ -351,32 +530,27 @@ function onWorkerMessage({data}){
   if(data.type==='transcribe-start'){
     stopProgressDrift();
     showProgress('transcribe',62);
-    startProgressDrift(92,.32,700);
+    startProgressDrift(state.enhanced?88:92,.32,700);
   }
   if(data.type==='transcribe-progress'){
     const p=Math.max(0,Math.min(100,Number(data.progress)||0));
-    showProgress('transcribe',Math.min(94,62+p*.32));
+    showProgress('transcribe',Math.min(state.enhanced?90:94,62+p*(state.enhanced?.28:.32)));
   }
   if(data.type==='result'){
     stopProgressDrift();
-    showProgress('finalize',96);
-    trackEvent('captions_generated',{word_count:(data.words||[]).length});
+    const words=data.words||[];
     destroyWorker();
-    state.sourceWords=data.words||[];
-    reflowCaptions();
-    updateCaptionOverlay();
-    setTimeout(()=>{
-      showProgress('done',100);
-      $('#generateBtn').disabled=false;
-      setTimeout(()=>{
-        $('#progressBox').classList.add('hidden');
-        clearProgressMotion();
-      },1400);
-    },260);
+    if(state.enhanced&&words.length){
+      startEnhancedCorrection(words);
+    }else{
+      showProgress('finalize',96);
+      finalizeCaptionWords(words,{enhancedApplied:false,enhancedFallback:false});
+    }
   }
   if(data.type==='error'){
     stopProgressDrift();
     destroyWorker();
+    destroyEnhanceWorker();
     failProgress(data.message||'Transcription failed');
     $('#generateBtn').disabled=false;
   }
