@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.17" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.18" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -135,7 +135,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.17</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.18</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Τοπικό & ιδιωτικό</span></span>
@@ -196,6 +196,18 @@
           <button id="roadmapOpenBtn" class="roadmap-open-btn" type="button">
             <span data-i18n="roadmapCtaButton">Άνοιγμα Roadmap</span><b>→</b>
           </button>
+        </section>
+
+        <section class="support-contact card">
+          <div class="contact-mark">@</div>
+          <div class="contact-copy">
+            <span class="eyebrow">CONTACT</span>
+            <h2 data-i18n="contactTitle">Θέλεις να επικοινωνήσεις με το Kaptiono;</h2>
+            <p data-i18n="contactText">Για feedback, bugs, συνεργασίες ή commercial licensing μπορείς να επικοινωνήσεις απευθείας μαζί μας.</p>
+          </div>
+          <a class="contact-btn" href="mailto:info@kaptiono.com">
+            <span>info@kaptiono.com</span><b>→</b>
+          </a>
         </section>
 
         <section class="support-donate card">
@@ -542,8 +554,19 @@
       <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
     </div>
 
-    <footer><span>Kaptiono Web Lab 0.5.17</span><span>Free · Local · Private · No watermark</span></footer>
+    <footer class="site-footer">
+      <div class="footer-meta">
+        <span>Kaptiono Web Lab 0.5.18</span>
+        <span>Free · Local · Private · No watermark</span>
+      </div>
+      <nav class="footer-links" aria-label="Footer">
+        <button id="footerSupportBtn" type="button">Support</button>
+        <button id="footerRoadmapBtn" type="button">Roadmap</button>
+        <a href="mailto:info@kaptiono.com">Contact</a>
+        <a href="https://github.com/Donacgreece/Kaptiono" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.17"></script>
+  <script type="module" src="./app.js?v=0.5.18"></script>
 </body>
 </html>

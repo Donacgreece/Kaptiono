@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.18
+- Added info@kaptiono.com as the official Kaptiono contact address.
+- Added a dedicated Contact card to the Support page for feedback, bugs, partnerships and commercial licensing.
+- Added compact footer navigation for Support, Roadmap, Contact and GitHub.
+- Contact links use mailto:info@kaptiono.com.
+- Added a Contact section to the existing full README.
+- Added the contact address to the commercial licensing note in the README.
+- No captioning, transcription, export, AI, mobile, PWA, analytics or AdSense behavior was changed.
+
 ## 0.5.17
 - Added a public source-available license notice using PolyForm Noncommercial License 1.0.0.
 - Added SPDX identifier PolyForm-Noncommercial-1.0.0.

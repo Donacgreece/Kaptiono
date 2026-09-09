@@ -407,7 +407,7 @@ Features are added only when they are stable enough for real creator workflows.
 
 Kaptiono is **source available** under the **PolyForm Noncommercial License 1.0.0**.
 
-You may use, study, modify and redistribute the software for purposes permitted by that license. **Commercial use is not granted by the public license.** If you want to use Kaptiono or its source code commercially, a separate commercial license may be available.
+You may use, study, modify and redistribute the software for purposes permitted by that license. **Commercial use is not granted by the public license.** If you want to use Kaptiono or its source code commercially, a separate commercial license may be available. Contact **info@kaptiono.com**.
 
 The software license does **not** grant rights to use the **Kaptiono** name, logo, icon or brand identity for another product or service.
 
@@ -417,6 +417,16 @@ See:
 - [`TRADEMARKS.md`](TRADEMARKS.md) for the Kaptiono brand policy
 
 Kaptiono should therefore be described as **source available**, not OSI open source.
+
+---
+
+## Contact
+
+For feedback, bug reports, partnerships, creator collaborations, or commercial licensing:
+
+**info@kaptiono.com**
+
+Official website: **https://kaptiono.com**
 
 ---
 
