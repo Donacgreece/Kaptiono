@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.14
+- Reverted the v0.5.13 mobile Home compression.
+- Restored the Home/mobile layout behavior from the earlier v0.5.10-style design.
+- Removed the extra short-phone typography reductions that made text too small on iPhone.
+- Kept all newer functionality, including AdSense and the Coming Soon states for Large v3 Turbo and Enhanced.
+- Left Caption Studio, transcription, export, roadmap, and PWA logic unchanged.
+- Preserved the permanent full product README unchanged.
+
 ## 0.5.13
 - Reworked Home sizing around the actual device viewport instead of fixed mobile heights.
 - The full Home card now targets the visible phone viewport using small viewport units, including browsers with dynamic address bars.
