@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.25
+
+- Rebalanced the homepage so the full main experience fits inside the initial viewport on desktop and mobile.
+- Reduced the oversized video drop area without reducing mobile headline or body text sizes.
+- Tightened homepage spacing so scrolling is mainly reserved for the footer.
+
 ## 0.5.24
 - Shortened the Home privacy note for a cleaner mobile layout.
 - Greek copy now reads: **«Το video μένει στη συσκευή σου. Μόνο το audio αποστέλλεται στο Cloud mode.»**

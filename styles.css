@@ -537,3 +537,120 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
     white-space:nowrap;
   }
 }
+
+/* v0.5.25 viewport-fit homepage */
+@media(min-width:901px){
+  main{
+    margin-top:18px;
+    margin-bottom:10px;
+  }
+  .start-card{
+    min-height:calc(100dvh - 100px);
+    padding:clamp(24px,2.8vw,38px);
+    gap:clamp(16px,2vw,28px);
+    grid-template-rows:minmax(0,1fr) auto;
+    align-items:center;
+  }
+  .start-card .home-panel{
+    min-height:0;
+  }
+  .hero-copy.home-panel{
+    padding:clamp(8px,1.4vw,18px);
+  }
+  .hero-copy h1{
+    margin:10px 0 14px;
+  }
+  .hero-copy p{
+    line-height:1.46;
+  }
+  .hero-badges{
+    margin-top:18px;
+    gap:7px;
+  }
+  .hero-badges span{
+    min-height:34px;
+    padding:7px 10px;
+  }
+  .dropzone.home-panel{
+    width:100%;
+    min-height:0;
+    height:clamp(280px,38dvh,350px);
+    align-self:center;
+    padding:22px;
+  }
+  .privacy-note{
+    min-height:64px;
+    padding:13px 18px;
+  }
+}
+
+@media(max-width:900px){
+  main{
+    margin-top:10px;
+    margin-bottom:8px;
+  }
+  .start-card{
+    min-height:calc(100dvh - 82px);
+    padding:clamp(12px,1.8dvh,18px);
+    gap:clamp(8px,1.2dvh,12px);
+    align-content:center;
+  }
+  .hero-copy.home-panel{
+    padding:4px 0 0;
+  }
+  .hero-copy h1{
+    margin:8px 0 10px;
+  }
+  .hero-copy p{
+    line-height:1.42;
+  }
+  .hero-badges{
+    margin-top:12px;
+  }
+  .dropzone.home-panel{
+    min-height:0;
+    height:clamp(155px,20dvh,190px);
+    padding:16px;
+  }
+  .upload-icon{
+    width:54px;
+    height:54px;
+  }
+  .privacy-note{
+    min-height:62px;
+    padding:10px 13px;
+  }
+}
+
+@media(max-width:620px){
+  .start-card{
+    min-height:calc(100dvh - 72px);
+    padding:12px;
+    gap:8px;
+  }
+  .hero-copy h1{
+    font-size:clamp(36px,11vw,48px);
+  }
+  .hero-copy p{
+    font-size:15px;
+  }
+  .hero-badges{
+    margin-top:10px;
+    gap:5px;
+  }
+  .hero-badges span{
+    min-height:32px;
+    padding:6px 8px;
+    font-size:9px;
+  }
+  .dropzone.home-panel{
+    height:clamp(150px,19dvh,180px);
+  }
+  .dropzone strong{
+    font-size:19px;
+  }
+  .privacy-note{
+    min-height:60px;
+    padding:9px 11px;
+  }
+}
