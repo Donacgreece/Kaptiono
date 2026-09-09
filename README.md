@@ -16,6 +16,9 @@
   <img src="https://img.shields.io/badge/AI-Whisper-111111?style=for-the-badge" alt="Whisper AI">
   <img src="https://img.shields.io/badge/Processing-Local-111111?style=for-the-badge" alt="Local processing">
   <img src="https://img.shields.io/badge/Watermark-None-111111?style=for-the-badge" alt="No watermark">
+  <a href="LICENSE">
+    <img src="https://img.shields.io/badge/License-PolyForm_Noncommercial_1.0.0-111111?style=for-the-badge" alt="PolyForm Noncommercial License 1.0.0">
+  </a>
 </p>
 
 <p align="center">
@@ -397,6 +400,23 @@ Planned directions include:
 - 🖥️ Continued desktop experience development
 
 Features are added only when they are stable enough for real creator workflows.
+
+---
+
+## License
+
+Kaptiono is **source available** under the **PolyForm Noncommercial License 1.0.0**.
+
+You may use, study, modify and redistribute the software for purposes permitted by that license. **Commercial use is not granted by the public license.** If you want to use Kaptiono or its source code commercially, a separate commercial license may be available.
+
+The software license does **not** grant rights to use the **Kaptiono** name, logo, icon or brand identity for another product or service.
+
+See:
+
+- [`LICENSE`](LICENSE) for the software license notice and official PolyForm terms
+- [`TRADEMARKS.md`](TRADEMARKS.md) for the Kaptiono brand policy
+
+Kaptiono should therefore be described as **source available**, not OSI open source.
 
 ---
 

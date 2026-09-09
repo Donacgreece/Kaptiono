@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.17
+- Added a public source-available license notice using PolyForm Noncommercial License 1.0.0.
+- Added SPDX identifier PolyForm-Noncommercial-1.0.0.
+- Added a Required Notice identifying the Kaptiono copyright holder.
+- Clarified that the public license does not grant commercial use.
+- Added TRADEMARKS.md to keep the Kaptiono name, logo, icon and brand identity separate from the source-code license.
+- Added a licensing section and license badge to the existing full product README.
+- Clarified that Kaptiono should be described as source available rather than OSI open source.
+- No application, transcription, export, AI, mobile, PWA, analytics, or AdSense behavior was changed.
+
 ## 0.5.16
 - Rebuilt word-by-word highlight timing around the actual video frame loop.
 - Uses requestVideoFrameCallback when available and requestAnimationFrame as fallback.
