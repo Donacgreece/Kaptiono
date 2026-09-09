@@ -417,3 +417,23 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
 #modelSelect option:disabled{
   color:#9ca39e;
 }
+
+
+/* v0.5.16 frame-synced word highlighting */
+.caption-overlay .word{
+  color:inherit;
+  transform:scale(1);
+  transform-origin:center 72%;
+  transition:color 72ms linear,transform 82ms cubic-bezier(.2,.75,.2,1);
+  will-change:color,transform;
+}
+.caption-overlay .word.active-word{
+  color:var(--caption-highlight)!important;
+  transform:scale(var(--word-active-scale,1.055));
+}
+@media(prefers-reduced-motion:reduce){
+  .caption-overlay .word{
+    transition:color 40ms linear;
+    transform:none!important;
+  }
+}

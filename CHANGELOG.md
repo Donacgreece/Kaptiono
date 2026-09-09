@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.16
+- Rebuilt word-by-word highlight timing around the actual video frame loop.
+- Uses requestVideoFrameCallback when available and requestAnimationFrame as fallback.
+- Removed dependence on low-frequency timeupdate events for active-word animation.
+- Added midpoint timing boundaries to eliminate tiny dead zones between adjacent Whisper words.
+- Added a very small visual sync lead to compensate for paint latency.
+- Added a deterministic single-active-word engine.
+- Added smooth TikTok-style active-word color and subtle scale transitions.
+- Updated burned-in video export to use the same active-word timing logic as live preview.
+- Added manual caption-edit word realignment so edited caption text no longer leaves stale highlighted words.
+- User-added words receive interpolated timing while aligned/replaced words keep their original Whisper timing.
+- Kept the v0.5.10-style mobile layout, AdSense, Coming Soon AI states, and transcription engine unchanged.
+- Preserved the permanent full product README byte-for-byte.
+
 ## 0.5.15
 - Removed the Google Analytics / AdSense mention from the visible Home privacy note.
 - Home now simply states that video, audio and captions stay on the user's device.
