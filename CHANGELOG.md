@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.15
+- Removed the Google Analytics / AdSense mention from the visible Home privacy note.
+- Home now simply states that video, audio and captions stay on the user's device.
+- Kept the AdSense script enabled.
+- Kept the more detailed privacy disclosure in the Support section.
+- Preserved the permanent full product README unchanged.
+
 ## 0.5.14
 - Reverted the v0.5.13 mobile Home compression.
 - Restored the Home/mobile layout behavior from the earlier v0.5.10-style design.
