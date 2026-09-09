@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.27
+- Shortened the homepage privacy explanation for a cleaner three-line mobile layout.
+- Replaced the native AI model dropdown with a clearer custom picker so only LOCAL or CLOUD is bold and appears at the end.
+- Reordered models to put the recommended Local option first and Cloud High Accuracy second.
+
 ## 0.5.26
 - Restored a roomier mobile homepage layout without reducing heading sizes.
 - Rebalanced the desktop hero and upload area so both sides feel visually symmetrical.

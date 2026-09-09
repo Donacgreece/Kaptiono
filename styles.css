@@ -538,7 +538,7 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   }
 }
 
-/* v0.5.26 homepage refinements */
+/* v0.5.27 homepage refinements */
 @media(min-width:901px){
   main{
     margin-top:18px;
@@ -656,7 +656,7 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
 }
 
 
-/* v0.5.26 balanced homepage + clearer model selector */
+/* v0.5.27 balanced homepage + clearer model selector */
 #modelSelect{font-weight:800}
 #modelSelect option{font-weight:800}
 #modelHint{display:block;line-height:1.45}
@@ -775,4 +775,30 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
     padding:14px;
     align-items:flex-start;
   }
+}
+
+
+/* v0.5.27 compact hero copy + custom model picker */
+.model-setting{position:relative;overflow:visible}
+.model-native-select{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
+.model-picker{position:relative;width:100%;z-index:8}
+.model-picker-button{width:100%;min-height:42px;border:1px solid #dbe0db;border-radius:11px;background:#f8f9f7;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;cursor:pointer;color:var(--ink);font-size:12px;font-weight:400}
+.model-picker-copy{min-width:0;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.model-picker-copy .model-name,.model-picker-copy .model-meta{font-weight:400}
+.model-picker-copy .model-engine{font-weight:900}
+.model-separator{font-weight:400;color:#6f7771}
+.model-picker-chevron{flex:none;font-size:18px;line-height:1;transform:translateY(-1px);transition:transform .16s ease}
+.model-picker.open .model-picker-chevron{transform:rotate(180deg) translateY(1px)}
+.model-picker-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:120;border:1px solid #aeb5af;border-radius:12px;background:#fff;box-shadow:0 16px 38px rgba(16,24,18,.16);padding:6px;overflow:hidden}
+.model-picker-option{width:100%;min-height:42px;border:0;border-radius:8px;background:#fff;padding:9px 10px;text-align:left;cursor:pointer;color:var(--ink);font-size:12px;font-weight:400;line-height:1.35}
+.model-picker-option span{font-weight:400}
+.model-picker-option strong{font-weight:900}
+.model-picker-option:hover,.model-picker-option:focus-visible{background:#f4f6f1;outline:none}
+.model-picker-option.active{background:#eef4dc}
+#modelHint{margin-top:1px}
+
+@media(max-width:620px){
+  .hero-copy p[data-i18n="heroText"]{max-width:500px;line-height:1.42}
+  .model-picker-button,.model-picker-option{font-size:16px}
+  .model-picker-menu{position:absolute}
 }
