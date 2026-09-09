@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.28
+- Removed the Privacy-first pill from the header for a cleaner top navigation.
+- Balanced the three Support principle cards so their copy has a similar visual length.
+- Kept the existing mobile and AI model selector refinements from v0.5.27.
+
 ## 0.5.27
 - Shortened the homepage privacy explanation for a cleaner three-line mobile layout.
 - Replaced the native AI model dropdown with a clearer custom picker so only LOCAL or CLOUD is bold and appears at the end.
