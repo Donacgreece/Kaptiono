@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.26
+- Restored a roomier mobile homepage layout without reducing heading sizes.
+- Rebalanced the desktop hero and upload area so both sides feel visually symmetrical.
+- Clarified AI model order and labeling with clearer LOCAL, CLOUD and RECOMMENDED wording.
+
 ## 0.5.25
 
 - Rebalanced the homepage so the full main experience fits inside the initial viewport on desktop and mobile.

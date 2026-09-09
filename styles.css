@@ -538,7 +538,7 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   }
 }
 
-/* v0.5.25 viewport-fit homepage */
+/* v0.5.26 homepage refinements */
 @media(min-width:901px){
   main{
     margin-top:18px;
@@ -652,5 +652,127 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
   .privacy-note{
     min-height:60px;
     padding:9px 11px;
+  }
+}
+
+
+/* v0.5.26 balanced homepage + clearer model selector */
+#modelSelect{font-weight:800}
+#modelSelect option{font-weight:800}
+#modelHint{display:block;line-height:1.45}
+
+@media(min-width:901px){
+  .start-card{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) auto;
+    align-items:stretch;
+    min-height:calc(100dvh - 100px);
+    padding:clamp(28px,3vw,42px);
+    gap:clamp(24px,2.6vw,40px);
+  }
+  .start-card .home-panel{
+    min-height:100%;
+  }
+  .hero-copy.home-panel{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:clamp(12px,1.8vw,22px) 0;
+  }
+  .hero-copy h1{
+    max-width:920px;
+    margin:10px 0 16px;
+  }
+  .hero-copy p{
+    max-width:760px;
+    line-height:1.5;
+  }
+  .hero-badges{
+    margin-top:22px;
+  }
+  .dropzone.home-panel{
+    align-self:stretch;
+    height:100%;
+    min-height:380px;
+    padding:28px;
+  }
+  .privacy-note{
+    min-height:72px;
+    padding:14px 18px;
+  }
+}
+
+@media(max-width:900px){
+  .start-card{
+    min-height:auto;
+    padding:18px;
+    gap:14px;
+    align-content:start;
+  }
+  .hero-copy.home-panel{
+    padding:8px 0 0;
+    text-align:center;
+    align-items:center;
+  }
+  .hero-copy h1,.hero-copy p{
+    max-width:100%;
+  }
+  .hero-badges{
+    justify-content:center;
+    margin-top:14px;
+  }
+  .dropzone.home-panel{
+    height:auto;
+    min-height:240px;
+    padding:20px 16px;
+  }
+  .privacy-note{
+    min-height:84px;
+    padding:14px;
+  }
+}
+
+@media(max-width:620px){
+  .start-card{
+    padding:18px;
+    gap:14px;
+  }
+  .hero-copy.home-panel{
+    padding:8px 0 0;
+  }
+  .hero-copy h1{
+    font-size:clamp(38px,11vw,56px);
+    margin:10px 0 14px;
+  }
+  .hero-copy p{
+    font-size:15px;
+    line-height:1.48;
+  }
+  .hero-badges{
+    margin-top:14px;
+    gap:8px;
+  }
+  .hero-badges span{
+    min-height:36px;
+    padding:8px 10px;
+    font-size:10px;
+  }
+  .dropzone.home-panel{
+    min-height:230px;
+    padding:24px 16px;
+    gap:12px;
+  }
+  .upload-icon{
+    width:60px;
+    height:60px;
+    font-size:30px;
+  }
+  .dropzone strong{
+    font-size:20px;
+  }
+  .privacy-note{
+    min-height:90px;
+    padding:14px;
+    align-items:flex-start;
   }
 }

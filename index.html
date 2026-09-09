@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.25" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.26" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -136,7 +136,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.25</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.26</small></span>
       </button>
       <div class="top-actions">
         <span class="privacy-pill"><i></i><span data-i18n="localPrivate">Privacy-first</span></span>
@@ -366,13 +366,13 @@
             </div>
 
             <div class="main-panel active" data-main-panel="captions">
-              <div class="panel-title"><div><span class="eyebrow">AI CAPTIONS</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Χρησιμοποίησε Small για local processing ή Cloud High Accuracy για δοκιμές με Whisper Large v3 Turbo.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
+              <div class="panel-title"><div><span class="eyebrow">AI CAPTIONS</span><h2 data-i18n="generateTitle">Δημιουργία captions</h2><p data-i18n="qualityHint">Προτείνουμε Whisper Small για local χρήση. Τα Base και Tiny είναι πιο ελαφριές local επιλογές, ενώ το Cloud High Accuracy δίνει τη μέγιστη ακρίβεια.</p></div><span id="engineBadge" class="engine-badge">AUTO</span></div>
               <div class="field-grid two">
                 <label class="setting"><span data-i18n="aiModel">AI model</span><select id="modelSelect">
-                  <option value="onnx-community/whisper-small_timestamped" selected>Whisper Small · High quality · Recommended</option>
-                  <option value="cloudflare/whisper-large-v3-turbo">Whisper Large v3 Turbo · CLOUD · High Accuracy</option>
-                  <option value="onnx-community/whisper-base_timestamped">Whisper Base · Stable</option>
-                  <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test</option>
+                  <option value="onnx-community/whisper-small_timestamped" selected>Whisper Small · LOCAL · RECOMMENDED</option>
+                  <option value="onnx-community/whisper-base_timestamped">Whisper Base · LOCAL · BALANCED</option>
+                  <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · LOCAL · FAST TEST</option>
+                  <option value="cloudflare/whisper-large-v3-turbo">Whisper Large v3 Turbo · CLOUD · HIGH ACCURACY</option>
                 </select><small id="modelHint">·</small></label>
                 <label class="setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect">
                   <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
@@ -544,7 +544,7 @@
 
     <footer class="site-footer">
       <div class="footer-meta footer-meta-desktop">
-        <span>Kaptiono Web Lab 0.5.25</span>
+        <span>Kaptiono Web Lab 0.5.26</span>
         <span>Free · Local + Cloud AI · Original video stays local · No watermark</span>
       </div>
       <nav class="footer-links" aria-label="Footer">
@@ -555,10 +555,10 @@
       </nav>
       <div class="footer-meta footer-meta-mobile" aria-label="Kaptiono version">
         <span>Kaptiono · Free · Local + Cloud AI</span>
-        <small>v0.5.25</small>
+        <small>v0.5.26</small>
       </div>
     </footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.25"></script>
+  <script type="module" src="./app.js?v=0.5.26"></script>
 </body>
 </html>
