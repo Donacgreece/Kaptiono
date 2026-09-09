@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.29
+- Reworked the homepage hero copy to be shorter and more direct.
+- Kept the existing Google Analytics integration unchanged.
+
 ## 0.5.28
 - Removed the Privacy-first pill from the header for a cleaner top navigation.
 - Balanced the three Support principle cards so their copy has a similar visual length.
