@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.19
+- Removed the dedicated Contact card from the Support page to keep Support cleaner and less repetitive.
+- Kept Contact in the footer with mailto:info@kaptiono.com.
+- Kept Support, Roadmap and GitHub footer navigation unchanged.
+- Kept the README contact information and commercial licensing contact unchanged.
+- No captioning, transcription, export, AI, mobile, PWA, analytics or AdSense behavior was changed.
+
 ## 0.5.18
 - Added info@kaptiono.com as the official Kaptiono contact address.
 - Added a dedicated Contact card to the Support page for feedback, bugs, partnerships and commercial licensing.
