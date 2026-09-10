@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.35';
+const APP_VERSION='0.5.36';
 const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -85,7 +85,7 @@ function stabilizeMobileI18nLayout(){
   });
 }
 
-function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();updateExportButtons?.();stabilizeMobileI18nLayout();queueMicrotask(()=>{try{refreshCloudAvailability()}catch{}});}
+function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();updateExportButtons?.();refreshLocalModelDownloadModal?.();stabilizeMobileI18nLayout();queueMicrotask(()=>{try{refreshCloudAvailability()}catch{}});}
 $$('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(state.uiLang);
 let i18nResizeTimer=0;window.addEventListener('resize',()=>{clearTimeout(i18nResizeTimer);i18nResizeTimer=setTimeout(stabilizeMobileI18nLayout,120)});
 
@@ -492,6 +492,139 @@ const modelLabels={
   'onnx-community/whisper-base_timestamped':{name:'Whisper Base',meta:'Balanced',engine:'LOCAL'},
   'onnx-community/whisper-tiny_timestamped':{name:'Whisper Tiny',meta:'Fast test',engine:'LOCAL'}
 };
+const localModelDownloads={
+  'onnx-community/whisper-small_timestamped':{name:'Whisper Small',sizeMb:255,smaller:'onnx-community/whisper-base_timestamped'},
+  'onnx-community/whisper-base_timestamped':{name:'Whisper Base',sizeMb:85,smaller:'onnx-community/whisper-tiny_timestamped'},
+  'onnx-community/whisper-tiny_timestamped':{name:'Whisper Tiny',sizeMb:45,smaller:null}
+};
+let modelDownloadResolver=null;
+let modelDownloadPendingModel='';
+
+function localModelReadyStorageKey(model){
+  return `kaptiono:model-ready:${model||'default'}`;
+}
+function localModelSlug(model){
+  return String(model||'').split('/').pop().toLowerCase();
+}
+async function isLocalModelCached(model){
+  if(!model||String(model).startsWith('cloudflare/'))return true;
+  let markedReady=false;
+  try{markedReady=localStorage.getItem(localModelReadyStorageKey(model))==='1'}catch{}
+  if(!markedReady)return false;
+  if(!window.isSecureContext||!('caches' in window)){
+    try{localStorage.removeItem(localModelReadyStorageKey(model))}catch{}
+    return false;
+  }
+  try{
+    const slug=localModelSlug(model);
+    const cacheNames=await caches.keys();
+    for(const cacheName of cacheNames){
+      const cache=await caches.open(cacheName);
+      const requests=await cache.keys();
+      if(requests.some(request=>{
+        const url=String(request.url||'').toLowerCase();
+        return url.includes(slug)&&(url.includes('/onnx/')||url.includes('tokenizer')||url.includes('config'));
+      }))return true;
+    }
+    try{localStorage.removeItem(localModelReadyStorageKey(model))}catch{}
+    return false;
+  }catch{
+    return markedReady;
+  }
+}
+function modelDownloadCopy(model){
+  const info=localModelDownloads[model]||{name:selectedModelFriendlyName(),sizeMb:0,smaller:null};
+  const size=info.sizeMb?`≈ ${info.sizeMb} MB`:'·';
+  if(isGreekUI())return{
+    title:`Λήψη ${info.name}`,
+    description:'Το Kaptiono χρειάζεται να κατεβάσει αυτό το AI model στη συσκευή σου πριν ξεκινήσει.',
+    sizeLabel:'Μέγεθος λήψης',
+    size,
+    sizeNote:'Το πραγματικό μέγεθος μπορεί να διαφέρει λίγο ανά browser.',
+    privacyTitle:'Μένει στη συσκευή σου',
+    privacyText:window.isSecureContext?'Η λήψη γίνεται μία φορά και αποθηκεύεται τοπικά για τις επόμενες χρήσεις. Το video σου δεν ανεβαίνει.':'Χωρίς HTTPS το model μπορεί να χρειαστεί ξανά λήψη σε επόμενη χρήση. Το video σου δεν ανεβαίνει.',
+    confirm:`Λήψη model · ${size}`,
+    smaller:'Επιλογή μικρότερου model',
+    cancel:'Ακύρωση'
+  };
+  return{
+    title:`Download ${info.name}`,
+    description:'Kaptiono needs to download this AI model to your device before it can start.',
+    sizeLabel:'Download size',
+    size,
+    sizeNote:'The actual size may vary slightly by browser.',
+    privacyTitle:'Stays on your device',
+    privacyText:window.isSecureContext?'The model is downloaded once and stored locally for future use. Your video is not uploaded.':'Without HTTPS the model may need to be downloaded again in a future session. Your video is not uploaded.',
+    confirm:`Download model · ${size}`,
+    smaller:'Choose a smaller model',
+    cancel:'Cancel'
+  };
+}
+function refreshLocalModelDownloadModal(){
+  const modal=$('#modelDownloadModal');
+  if(!modal||modal.classList.contains('hidden')||!modelDownloadPendingModel)return;
+  const copy=modelDownloadCopy(modelDownloadPendingModel);
+  $('#modelDownloadTitle').textContent=copy.title;
+  $('#modelDownloadDescription').textContent=copy.description;
+  $('#modelDownloadSizeLabel').textContent=copy.sizeLabel;
+  $('#modelDownloadSize').textContent=copy.size;
+  $('#modelDownloadSizeNote').textContent=copy.sizeNote;
+  $('#modelDownloadPrivacyTitle').textContent=copy.privacyTitle;
+  $('#modelDownloadPrivacyText').textContent=copy.privacyText;
+  $('#modelDownloadConfirm').textContent=copy.confirm;
+  $('#modelDownloadSmaller').textContent=copy.smaller;
+  $('#modelDownloadCancel').textContent=copy.cancel;
+  const smaller=localModelDownloads[modelDownloadPendingModel]?.smaller;
+  $('#modelDownloadSmaller').classList.toggle('hidden',!smaller);
+}
+function closeLocalModelDownloadModal(action='cancel'){
+  const modal=$('#modelDownloadModal');
+  modal?.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  const resolve=modelDownloadResolver;
+  modelDownloadResolver=null;
+  modelDownloadPendingModel='';
+  if(resolve)resolve(action);
+}
+function promptLocalModelDownload(model){
+  if(modelDownloadResolver)closeLocalModelDownloadModal('cancel');
+  modelDownloadPendingModel=model;
+  const modal=$('#modelDownloadModal');
+  if(!modal)return Promise.resolve('download');
+  modal.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  refreshLocalModelDownloadModal();
+  $('#modelDownloadConfirm')?.focus();
+  trackEvent('local_model_download_prompt',{model:model.split('/').pop(),size_mb:localModelDownloads[model]?.sizeMb||0});
+  return new Promise(resolve=>{modelDownloadResolver=resolve});
+}
+async function ensureLocalModelDownloadPermission(){
+  while(!isCloudModelSelected()){
+    const model=$('#modelSelect')?.value||DEFAULT_LOCAL_MODEL_VALUE;
+    if(await isLocalModelCached(model))return true;
+    const action=await promptLocalModelDownload(model);
+    if(action==='cancel')return false;
+    if(action==='smaller'){
+      const smaller=localModelDownloads[model]?.smaller;
+      if(!smaller)continue;
+      const select=$('#modelSelect');
+      select.value=smaller;
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+      continue;
+    }
+    if(action==='download'){
+      trackEvent('local_model_download_confirmed',{model:model.split('/').pop(),size_mb:localModelDownloads[model]?.sizeMb||0});
+      return true;
+    }
+  }
+  return true;
+}
+$('#modelDownloadConfirm')?.addEventListener('click',()=>closeLocalModelDownloadModal('download'));
+$('#modelDownloadSmaller')?.addEventListener('click',()=>closeLocalModelDownloadModal('smaller'));
+$('#modelDownloadCancel')?.addEventListener('click',()=>closeLocalModelDownloadModal('cancel'));
+$('#modelDownloadClose')?.addEventListener('click',()=>closeLocalModelDownloadModal('cancel'));
+$('#modelDownloadModal')?.addEventListener('click',event=>{if(event.target===$('#modelDownloadModal'))closeLocalModelDownloadModal('cancel')});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!$('#modelDownloadModal')?.classList.contains('hidden'))closeLocalModelDownloadModal('cancel')});
 function nextCloudQuotaResetUtc(){
   const now=new Date();
   return Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()+1,0,0,0,0);
@@ -680,7 +813,7 @@ function selectedModelFriendlyName(){
   return 'Whisper';
 }
 function modelReadyStorageKey(){
-  return `kaptiono:model-ready:${$('#modelSelect')?.value||'default'}`;
+  return localModelReadyStorageKey($('#modelSelect')?.value||'default');
 }
 function cloudLanguageCode(value){
   return ({greek:'el',english:'en',spanish:'es',french:'fr',german:'de',italian:'it'})[value]||'';
@@ -773,7 +906,12 @@ async function generateCaptions(){
   enforceComingSoonModels();
   if(!state.file)return;
   refreshCloudAvailability();
-  const cloud=isCloudModelSelected();
+  let cloud=isCloudModelSelected();
+  if(!cloud){
+    const permitted=await ensureLocalModelDownloadPermission();
+    if(!permitted)return;
+    cloud=isCloudModelSelected();
+  }
   updateProcessingModeLabel();
   trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value,engine:cloud?'cloud':'local',enhanced:state.enhanced});
   $('#generateBtn').disabled=true;

@@ -919,3 +919,34 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
     align-content:center;
   }
 }
+
+
+/* v0.5.36 first-time Local AI download confirmation */
+body.modal-open{overflow:hidden}
+.model-download-card{width:min(500px,100%);padding:28px}
+.model-download-card h2{margin:10px 0 9px;font-size:30px;line-height:1.05;letter-spacing:-.035em;padding-right:34px}
+.model-download-description{margin:0;color:var(--muted);font-size:12px;line-height:1.6;max-width:420px}
+.model-download-size{margin-top:18px;padding:16px 17px;border:1px solid var(--line);border-radius:16px;background:#f8fbea;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 14px;align-items:center}
+.model-download-size>span{font-size:10px;font-weight:900;color:#59625c}
+.model-download-size>strong{font-size:20px;letter-spacing:-.025em;color:#25320f}
+.model-download-size>small{grid-column:1/-1;color:var(--muted);font-size:9px;line-height:1.45}
+.model-download-local-note{margin-top:10px;padding:13px 14px;border-radius:15px;background:#f6faf2;display:grid;grid-template-columns:32px minmax(0,1fr);gap:11px;align-items:start}
+.model-download-local-note>span{width:32px;height:32px;border-radius:50%;background:var(--lime2);display:grid;place-items:center;color:#638b00;font-weight:900}
+.model-download-local-note>div{display:flex;flex-direction:column;gap:3px;padding-top:1px}
+.model-download-local-note strong{font-size:11px}
+.model-download-local-note small{font-size:9px;line-height:1.5;color:var(--muted)}
+.model-download-actions{display:grid;gap:8px;margin-top:16px}
+.model-download-primary{margin:0;min-height:50px}
+.model-download-secondary{width:100%;height:46px;background:#fff}
+.model-download-cancel{height:38px;border:0;background:transparent;color:var(--muted);font-size:10px;font-weight:800;cursor:pointer}
+.model-download-cancel:hover{color:var(--ink)}
+@media(max-width:620px){
+  .model-download-card{padding:23px 18px 18px;border-radius:24px}
+  .model-download-card h2{font-size:28px;margin-top:9px}
+  .model-download-description{font-size:12px}
+  .model-download-size{padding:14px;margin-top:15px}
+  .model-download-size>strong{font-size:19px}
+  .model-download-local-note{padding:12px}
+  .model-download-primary{min-height:52px;font-size:13px}
+  .model-download-secondary{height:48px;font-size:12px}
+}

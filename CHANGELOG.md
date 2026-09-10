@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.36
+- Added first-time confirmation before downloading a Local Whisper model.
+- Shows an approximate download size for Small, Base and Tiny before any model download starts.
+- Offers a smaller Local model directly from the confirmation dialog.
+- Skips the prompt when the selected model is already present in persistent browser cache.
+
 ## 0.5.35
 - Rebalanced the desktop roadmap to four items in every lane.
 - Made all roadmap cards and item rows symmetrical on desktop.
