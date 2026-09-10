@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.38
+- Added a polished opt-in privacy banner with Accept Analytics, Reject optional and detailed privacy settings.
+- Google Analytics now stays unloaded until explicit Analytics consent is granted, with consent revocation available from the footer.
+- Removed unconditional Google AdSense loading so advertising tags do not run before a compliant advertising consent flow is available.
+- Added bilingual Privacy Policy, Cookie Policy and Terms of Use pages with responsive desktop and mobile layouts.
+- Reworked the footer into balanced primary and legal link groups, including persistent Privacy Preferences access.
+- Added Privacy, Cookies and Terms URLs to sitemap.xml and the new privacy/legal assets to the PWA application shell.
+
 ## 0.5.37
 - Clarified the Local AI download alternative as "Smaller Local model or Cloud".
 - The alternative action now returns the user to the model selector instead of silently switching models.

@@ -1,14 +1,14 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.37';
+const APP_VERSION='0.5.38';
 const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
 function trackEvent(name, params={}){
-  try{ if(typeof window.gtag==='function') window.gtag('event', name, params); }catch{}
+  try{ if(window.KaptionoConsent?.analytics===true&&typeof window.gtag==='function') window.gtag('event', name, params); }catch{}
 }
 function trackVirtualPage(path, title){
-  try{ if(typeof window.gtag==='function') window.gtag('event','page_view',{page_path:path,page_title:title}); }catch{}
+  try{ if(window.KaptionoConsent?.analytics===true&&typeof window.gtag==='function') window.gtag('event','page_view',{page_path:path,page_title:title}); }catch{}
 }
 const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -85,7 +85,7 @@ function stabilizeMobileI18nLayout(){
   });
 }
 
-function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();updateExportButtons?.();refreshLocalModelDownloadModal?.();stabilizeMobileI18nLayout();queueMicrotask(()=>{try{refreshCloudAvailability()}catch{}});}
+function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);window.dispatchEvent(new CustomEvent('kaptiono:languagechange',{detail:{lang}}));if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();updateExportButtons?.();refreshLocalModelDownloadModal?.();stabilizeMobileI18nLayout();queueMicrotask(()=>{try{refreshCloudAvailability()}catch{}});}
 $$('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(state.uiLang);
 let i18nResizeTimer=0;window.addEventListener('resize',()=>{clearTimeout(i18nResizeTimer);i18nResizeTimer=setTimeout(stabilizeMobileI18nLayout,120)});
 
@@ -1910,6 +1910,12 @@ if('serviceWorker' in navigator){
   });
 }
 
+
+try{
+  const initialPage=new URLSearchParams(location.search).get('page');
+  if(initialPage==='support')showPage('support');
+  else if(initialPage==='roadmap')showPage('roadmap');
+}catch{}
 
 function finishAppBoot(){
   requestAnimationFrame(()=>{
