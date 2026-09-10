@@ -1,6 +1,6 @@
-import { Input, ALL_FORMATS, BlobSource, AudioSampleSink } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
+import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.32';
+const APP_VERSION='0.5.33';
 const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -1317,12 +1317,22 @@ function preferredVideoRecorderFormat(){
   for(const f of candidates){try{if(MediaRecorder.isTypeSupported(f.mime))return f}catch{}}
   return null;
 }
+function socialExportAvailable(){
+  return typeof window.VideoEncoder!=='undefined'&&typeof window.VideoDecoder!=='undefined';
+}
+function preferredVideoExportFormat(){
+  if(socialExportAvailable())return {mime:'video/mp4',ext:'mp4',label:'MP4',pipeline:'social'};
+  const legacy=preferredVideoRecorderFormat();
+  return legacy?{...legacy,pipeline:'legacy'}:null;
+}
 function updateExportButtons(){
-  const ok=state.captions.length>0,format=preferredVideoRecorderFormat(),videoOk=ok&&!!format&&!state.exporting;
+  const ok=state.captions.length>0,format=preferredVideoExportFormat(),videoOk=ok&&!!format&&!state.exporting;
   $('#srtBtn').disabled=!ok;$('#txtBtn').disabled=!ok;
   $('#quickVideoExportBtn').disabled=!videoOk;$('#videoDownloadBtn').disabled=!videoOk;
-  const label=format?`${format.label} · burned captions`:(isGreekUI()?'Δεν υποστηρίζεται video export σε αυτόν τον browser':'Video export is not supported in this browser');
-  $('#videoExportFormat').textContent=label;$('#quickExportHint').textContent=format?(isGreekUI()?`Τοπικό export σε ${format.label}.`:`Local ${format.label} export.`):label;
+  const social=format?.pipeline==='social';
+  const label=format?(social?'MP4 · H.264 + AAC · Social Ready':`${format.label} · burned captions`):(isGreekUI()?'Δεν υποστηρίζεται video export σε αυτόν τον browser':'Video export is not supported in this browser');
+  $('#videoExportFormat').textContent=label;
+  $('#quickExportHint').textContent=format?(social?(isGreekUI()?'Social-ready MP4, τοπικά στη συσκευή σου.':'Social-ready MP4, created locally on your device.'):(isGreekUI()?`Τοπικό export σε ${format.label}.`:`Local ${format.label} export.`)):label;
 }
 function srtTime(sec){const ms=Math.round(sec*1000),h=Math.floor(ms/3600000),m=Math.floor(ms%3600000/60000),s=Math.floor(ms%60000/1000),r=ms%1000;return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(r).padStart(3,'0')}`}
 function baseName(){return (state.file?.name||'kaptiono').replace(/\.[^.]+$/,'')+'-kaptiono'}
@@ -1330,125 +1340,208 @@ function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.
 $('#srtBtn').addEventListener('click',()=>{const s=state.captions.map((c,i)=>`${i+1}\n${srtTime(c.start)} --> ${srtTime(c.end)}\n${captionCase(c.text)}\n`).join('\n');downloadBlob(new Blob([s],{type:'text/plain;charset=utf-8'}),baseName()+'.srt')});
 $('#txtBtn').addEventListener('click',()=>downloadBlob(new Blob([state.captions.map(c=>c.text).join(' ')],{type:'text/plain;charset=utf-8'}),baseName()+'.txt'));
 $('#quickVideoExportBtn').addEventListener('click',exportVideo);$('#videoDownloadBtn').addEventListener('click',exportVideo);
-async function exportVideo(){
-  if(state.exporting||!state.file||!state.captions.length)return;
-  const format=preferredVideoRecorderFormat();
-  if(!format){
-    alert(isGreekUI()?'Ο browser σου δεν υποστηρίζει ακόμη local video export. Μπορείς να κατεβάσεις SRT/TXT.':'Your browser does not support local video export yet. You can still download SRT/TXT.');
-    return;
-  }
 
-  trackEvent('video_export_started',{caption_count:state.captions.length,format:format.ext});
-  state.exporting=true;
-  updateExportButtons();
+function chooseSocialFrameRate(rawFps){
+  const fps=Number(rawFps)||30;
+  return fps>=45?60:30;
+}
+function socialOutputSize(displayWidth,displayHeight){
+  let w=Math.max(2,Number(displayWidth)||1080),h=Math.max(2,Number(displayHeight)||1920);
+  const portrait=h>w;
+  const maxW=portrait?1080:1920;
+  const maxH=portrait?1920:1080;
+  const scale=Math.min(1,maxW/w,maxH/h);
+  w=Math.max(2,Math.round((w*scale)/2)*2);
+  h=Math.max(2,Math.round((h*scale)/2)*2);
+  return {width:w,height:h};
+}
+function socialVideoBitrate(width,height,fps){
+  const pixels=Math.max(1,width*height);
+  const base1080=8_000_000;
+  const resolutionFactor=Math.max(.45,Math.min(1.35,pixels/(1920*1080)));
+  const fpsFactor=fps>=50?1.55:1;
+  return Math.round(base1080*resolutionFactor*fpsFactor);
+}
 
-  // Immediate acknowledgement of the click, before metadata/audio/canvas setup begins.
-  setExportUi('prepare',null);
-
-  let ac=null;
-  let src=null;
+async function renderSocialMp4(){
+  const input=new Input({formats:ALL_FORMATS,source:new BlobSource(state.file)});
   try{
-    // Let the browser paint the feedback state before starting heavier setup work.
-    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    const videoTrack=await input.getPrimaryVideoTrack();
+    if(!videoTrack)throw new Error('VIDEO_TRACK_MISSING');
+    if(!(await videoTrack.canDecode()))throw new Error('VIDEO_CODEC_NOT_DECODABLE');
 
+    const [displayWidth,displayHeight,stats]=await Promise.all([
+      videoTrack.getDisplayWidth(),
+      videoTrack.getDisplayHeight(),
+      videoTrack.computePacketStats(240).catch(()=>null)
+    ]);
+    const sourceFps=stats?.averagePacketRate||30;
+    const fps=chooseSocialFrameRate(sourceFps);
+    const {width,height}=socialOutputSize(displayWidth,displayHeight);
+    const bitrate=socialVideoBitrate(width,height,fps);
+
+    const canvas=document.createElement('canvas');
+    canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext('2d',{alpha:false,desynchronized:true});
+    if(!ctx)throw new Error('Canvas unavailable');
+
+    const target=new BufferTarget();
+    const output=new Output({
+      format:new Mp4OutputFormat({fastStart:'in-memory'}),
+      target
+    });
+
+    let firstTimestamp=null;
+    const conversion=await Conversion.init({
+      input,
+      output,
+      tracks:'primary',
+      video:{
+        codec:'avc',
+        bitrate,
+        frameRate:fps,
+        width,
+        height,
+        fit:'fill',
+        alpha:'discard',
+        keyFrameInterval:2,
+        allowRotationMetadata:false,
+        forceTranscode:true,
+        processedWidth:width,
+        processedHeight:height,
+        process:(sample)=>{
+          if(firstTimestamp===null)firstTimestamp=Number(sample.timestamp)||0;
+          ctx.fillStyle='#000';
+          ctx.fillRect(0,0,width,height);
+          if(typeof sample.drawWithFit==='function')sample.drawWithFit(ctx,{fit:'fill'});
+          else sample.draw(ctx,0,0,width,height);
+          const t=Math.max(0,(Number(sample.timestamp)||0)-firstTimestamp);
+          drawCanvasCaption(ctx,width,height,t);
+          return canvas;
+        }
+      },
+      audio:{
+        codec:'aac'
+      }
+    });
+
+    if(!conversion.isValid){
+      const reasons=(conversion.discardedTracks||[]).map(x=>x.reason).filter(Boolean).join(',');
+      throw new Error(`SOCIAL_EXPORT_UNSUPPORTED${reasons?':'+reasons:''}`);
+    }
+
+    conversion.onProgress=(progress)=>{
+      const pct=Math.max(0,Math.min(100,(Number(progress)||0)*100));
+      setExportUi('render',pct);
+    };
+
+    await conversion.execute();
+    setExportUi('finalize',null);
+
+    const buffer=target.buffer;
+    if(!buffer||!buffer.byteLength)throw new Error('EMPTY_MP4_OUTPUT');
+    return {
+      blob:new Blob([buffer],{type:'video/mp4'}),
+      ext:'mp4',
+      fps,
+      width,
+      height,
+      pipeline:'mediabunny-webcodecs'
+    };
+  }finally{
+    try{input.dispose?.()}catch{}
+  }
+}
+
+async function renderLegacyVideo(){
+  const format=preferredVideoRecorderFormat();
+  if(!format)throw new Error('LEGACY_EXPORT_UNSUPPORTED');
+  let ac=null,src=null;
+  try{
     src=document.createElement('video');
     src.src=state.url;
     src.preload='auto';
     src.playsInline=true;
     src.setAttribute('playsinline','');
-
     await new Promise((res,rej)=>{
       src.onloadedmetadata=res;
       src.onerror=()=>rej(new Error(isGreekUI()?'Αποτυχία φόρτωσης video για export.':'Video load failed for export.'));
     });
 
-    const maxDim=1080;
-    const sc=Math.min(1,maxDim/Math.max(src.videoWidth,src.videoHeight));
-    const w=Math.max(2,Math.round(src.videoWidth*sc/2)*2);
-    const h=Math.max(2,Math.round(src.videoHeight*sc/2)*2);
-    const canvas=document.createElement('canvas');
-    canvas.width=w;
-    canvas.height=h;
-
+    const displayW=src.videoWidth||1080,displayH=src.videoHeight||1920;
+    const {width:w,height:h}=socialOutputSize(displayW,displayH);
+    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
     const ctx=canvas.getContext('2d',{alpha:false});
     if(!ctx)throw new Error('Canvas unavailable');
 
     const stream=canvas.captureStream(30);
-    ac=new AudioContext();
-    await ac.resume();
-    const node=ac.createMediaElementSource(src);
-    const dest=ac.createMediaStreamDestination();
-    node.connect(dest);
-    dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
-
+    ac=new AudioContext();await ac.resume();
+    const node=ac.createMediaElementSource(src),dest=ac.createMediaStreamDestination();
+    node.connect(dest);dest.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
     const rec=new MediaRecorder(stream,{mimeType:format.mime,videoBitsPerSecond:6_000_000});
-    const blobs=[];
-    rec.ondataavailable=e=>e.data.size&&blobs.push(e.data);
-    const stopped=new Promise((res,rej)=>{
-      rec.onstop=res;
-      rec.onerror=e=>rej(e.error||new Error('MediaRecorder error'));
-    });
-
-    rec.start(1000);
-    setExportUi('render',0);
-
+    const blobs=[];rec.ondataavailable=e=>e.data.size&&blobs.push(e.data);
+    const stopped=new Promise((res,rej)=>{rec.onstop=res;rec.onerror=e=>rej(e.error||new Error('MediaRecorder error'));});
+    rec.start(1000);setExportUi('render',0);
     let lastPct=-1;
     const draw=()=>{
-      try{
-        ctx.drawImage(src,0,0,w,h);
-        drawCanvasCaption(ctx,w,h,src.currentTime);
-      }catch{}
-
-      const pct=Math.min(100,src.duration?src.currentTime/src.duration*100:0);
-      const rounded=Math.round(pct);
-      if(rounded!==lastPct){
-        lastPct=rounded;
-        setExportUi('render',pct);
-      }
+      try{ctx.drawImage(src,0,0,w,h);drawCanvasCaption(ctx,w,h,src.currentTime)}catch{}
+      const pct=Math.min(100,src.duration?src.currentTime/src.duration*100:0),rounded=Math.round(pct);
+      if(rounded!==lastPct){lastPct=rounded;setExportUi('render',pct)}
       if(!src.paused&&!src.ended)requestAnimationFrame(draw);
     };
-
-    await src.play();
-    draw();
-
-    await new Promise((res,rej)=>{
-      src.onended=res;
-      src.onerror=()=>rej(new Error('Playback failed during export'));
-    });
-
-    setExportUi('finalize',null);
-    rec.stop();
-    await stopped;
-
+    await src.play();draw();
+    await new Promise((res,rej)=>{src.onended=res;src.onerror=()=>rej(new Error('Playback failed during export'));});
+    setExportUi('finalize',null);rec.stop();await stopped;
     const outMime=rec.mimeType||format.mime;
-    const outputBlob=new Blob(blobs,{type:outMime});
-    downloadBlob(outputBlob,`${baseName()}.${format.ext}`);
+    return {blob:new Blob(blobs,{type:outMime}),ext:format.ext,fps:30,width:w,height:h,pipeline:'legacy-mediarecorder'};
+  }finally{
+    try{src?.pause()}catch{}
+    try{await ac?.close()}catch{}
+  }
+}
 
+async function exportVideo(){
+  if(state.exporting||!state.file||!state.captions.length)return;
+  const format=preferredVideoExportFormat();
+  if(!format){
+    alert(isGreekUI()?'Ο browser σου δεν υποστηρίζει ακόμη local video export. Μπορείς να κατεβάσεις SRT/TXT.':'Your browser does not support local video export yet. You can still download SRT/TXT.');
+    return;
+  }
+
+  trackEvent('video_export_started',{caption_count:state.captions.length,format:format.ext,pipeline:format.pipeline});
+  state.exporting=true;updateExportButtons();setExportUi('prepare',null);
+  try{
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    let result=null;
+    let socialError=null;
+    if(socialExportAvailable()){
+      try{result=await renderSocialMp4()}catch(e){socialError=e;console.warn('Social MP4 export fallback:',e)}
+    }
+    if(!result){
+      const legacy=preferredVideoRecorderFormat();
+      if(!legacy)throw socialError||new Error('VIDEO_EXPORT_UNSUPPORTED');
+      result=await renderLegacyVideo();
+    }
+
+    downloadBlob(result.blob,`${baseName()}.${result.ext}`);
     trackEvent('video_export_completed',{
       caption_count:state.captions.length,
-      format:format.ext,
-      size_bytes:outputBlob.size
+      format:result.ext,
+      size_bytes:result.blob.size,
+      pipeline:result.pipeline,
+      fps:result.fps,
+      width:result.width,
+      height:result.height
     });
-
     setExportUi('done',100);
   }catch(e){
     setExportUi('error',null);
     alert((isGreekUI()?'Το video export απέτυχε: ':'Video export failed: ')+(e?.message||String(e)));
   }finally{
-    try{src?.pause()}catch{}
-    try{await ac?.close()}catch{}
-    state.exporting=false;
-    updateExportButtons();
-
-    // Success clears automatically after the acknowledgement. Errors remain visible
-    // long enough to make it clear that the click was registered and something failed.
-    if(state.exportStage==='done'){
-      setTimeout(()=>resetExportUi(),1800);
-    }else if(state.exportStage==='error'){
-      setTimeout(()=>resetExportUi(),5000);
-    }else{
-      setTimeout(()=>resetExportUi(),1200);
-    }
+    state.exporting=false;updateExportButtons();
+    if(state.exportStage==='done')setTimeout(()=>resetExportUi(),1800);
+    else if(state.exportStage==='error')setTimeout(()=>resetExportUi(),5000);
+    else setTimeout(()=>resetExportUi(),1200);
   }
 }
 function canvasFontSpec(s,font){

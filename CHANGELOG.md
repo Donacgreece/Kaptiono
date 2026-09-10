@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.33
+- Replaced the primary real-time MediaRecorder export with deterministic Mediabunny/WebCodecs MP4 transcoding.
+- Burned-in exports now target H.264 video, AAC audio, constant 30/60 fps, 2-second keyframes and non-fragmented fast-start MP4 output for better TikTok/Reels/Shorts compatibility.
+- Social export preserves portrait videos up to 1080x1920 and landscape videos up to 1920x1080.
+- Kept the legacy MediaRecorder path as an automatic compatibility fallback when the social MP4 pipeline is unavailable.
+
 ## 0.5.32
 - Detects Cloudflare Workers AI daily quota exhaustion specifically via account-limited error 3036.
 - Automatically switches back to Whisper Small Local when the daily Cloud allocation is exhausted.
