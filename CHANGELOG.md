@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.35
+- Rebalanced the desktop roadmap to four items in every lane.
+- Made all roadmap cards and item rows symmetrical on desktop.
+- Folded the Full Offline Mode goal into the PWA offline foundation and moved Social Safe Zones to Exploring.
+
 ## 0.5.34
 - Added two user-selectable burned-in video export modes.
 - Social Compatible is the default and recommended H.264/AAC MP4 path for TikTok, Reels and Shorts.
