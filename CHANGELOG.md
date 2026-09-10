@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.39
+- Added live Cloud High Accuracy daily availability in the AI model area.
+- Added Cloud quota preflight so a video is not started when the remaining daily Cloud time is insufficient.
+- Added server quota synchronization after each Cloud transcription and daily reset awareness.
+- Added support for the Cloudflare Worker D1 quota endpoint and audio-duration quota accounting.
+
 ## 0.5.38
 - Added a polished opt-in privacy banner with Accept Analytics, Reject optional and detailed privacy settings.
 - Google Analytics now stays unloaded until explicit Analytics consent is granted, with consent revocation available from the footer.

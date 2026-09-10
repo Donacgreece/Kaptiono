@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.38';
+const APP_VERSION='0.5.39';
 const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -38,7 +38,7 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,exportMode:(localStorage.getItem('kaptiono-export-mode')==='fast'?'fast':'social'),enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null,cloudQuotaTimer:null};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,exportMode:(localStorage.getItem('kaptiono-export-mode')==='fast'?'fast':'social'),enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null,cloudQuotaTimer:null,cloudQuota:null,cloudQuotaLoading:false,cloudQuotaLastFetch:0};
 const video=$('#video');
 
 function stabilizeMobileI18nLayout(){
@@ -135,7 +135,7 @@ function loadFile(file){
   const defaultModel='onnx-community/whisper-small_timestamped';$('#modelSelect').value=defaultModel;syncModelPicker?.();$('#languageSelect').value=state.uiLang==='el'?'greek':'english';updateModelHint();updateCompatibilityNote();
   $('#workspace').scrollIntoView({behavior:'smooth',block:'start'});
 }
-video.addEventListener('loadedmetadata',()=>{const res=`${video.videoWidth}×${video.videoHeight}`;$('#videoResolution').textContent=res;$('#duration').textContent=formatTime(video.duration);$('#seek').max=video.duration||1;$('#projectMeta').textContent=`${state.file?.name||''} · ${res} · ${formatTime(video.duration)}`;$('#videoLoading').classList.add('hidden');fitVideoStage();});
+video.addEventListener('loadedmetadata',()=>{const res=`${video.videoWidth}×${video.videoHeight}`;$('#videoResolution').textContent=res;$('#duration').textContent=formatTime(video.duration);$('#seek').max=video.duration||1;$('#projectMeta').textContent=`${state.file?.name||''} · ${res} · ${formatTime(video.duration)}`;$('#videoLoading').classList.add('hidden');fitVideoStage();renderCloudQuotaStatus();});
 video.addEventListener('loadeddata',()=>$('#videoLoading').classList.add('hidden'));
 video.addEventListener('timeupdate',()=>{
   $('#currentTime').textContent=formatTime(video.currentTime);
@@ -486,6 +486,8 @@ function renderCaptionEditor(){const editor=$('#captionEditor');editor.innerHTML
 const CLOUD_MODEL_VALUE='cloudflare/whisper-large-v3-turbo';
 const DEFAULT_LOCAL_MODEL_VALUE='onnx-community/whisper-small_timestamped';
 const CLOUD_QUOTA_STORAGE_KEY='kaptiono:cloud-unavailable-until';
+const CLOUD_QUOTA_STATUS_URL=new URL('quota',CLOUD_TRANSCRIBE_URL).href;
+const CLOUD_QUOTA_STATUS_TTL=20000;
 const modelLabels={
   'onnx-community/whisper-small_timestamped':{name:'Whisper Small',meta:'Recommended',engine:'LOCAL'},
   'cloudflare/whisper-large-v3-turbo':{name:'Whisper Large v3 Turbo',meta:'High Accuracy',engine:'CLOUD'},
@@ -648,12 +650,129 @@ function getCloudUnavailableUntil(){
 function cloudResetTimeLabel(until){
   try{return new Intl.DateTimeFormat(state.uiLang==='el'?'el-GR':'en-GB',{hour:'2-digit',minute:'2-digit'}).format(new Date(until))}catch{return ''}
 }
+function formatCloudQuotaDuration(seconds){
+  const total=Math.max(0,Math.floor(Number(seconds)||0));
+  const mins=Math.floor(total/60);
+  const hours=Math.floor(mins/60);
+  const rest=mins%60;
+  if(isGreekUI()){
+    if(hours&&rest)return `${hours}ω ${rest}λ`;
+    if(hours)return `${hours}ω`;
+    return `${Math.max(0,mins)}λ`;
+  }
+  if(hours&&rest)return `${hours}h ${rest}m`;
+  if(hours)return `${hours}h`;
+  return `${Math.max(0,mins)}m`;
+}
+function normalizeCloudQuota(payload){
+  const q=payload?.quota||payload?.kaptiono?.quota||null;
+  if(!q||q.configured===false)return null;
+  const remainingSeconds=Number(q.remaining_seconds);
+  const remainingNeurons=Number(q.remaining_neurons);
+  if(!Number.isFinite(remainingSeconds)&&!Number.isFinite(remainingNeurons))return null;
+  return {
+    configured:true,
+    remainingSeconds:Math.max(0,Number.isFinite(remainingSeconds)?remainingSeconds:0),
+    remainingNeurons:Math.max(0,Number.isFinite(remainingNeurons)?remainingNeurons:0),
+    usedNeurons:Math.max(0,Number(q.used_neurons)||0),
+    allocationNeurons:Math.max(0,Number(q.allocation_neurons)||10000),
+    resetAt:q.reset_at||new Date(nextCloudQuotaResetUtc()).toISOString(),
+    updatedAt:Date.now()
+  };
+}
+function applyCloudQuotaPayload(payload){
+  const quota=normalizeCloudQuota(payload);
+  if(!quota)return false;
+  state.cloudQuota=quota;
+  state.cloudQuotaLastFetch=Date.now();
+  const resetMs=Date.parse(quota.resetAt)||nextCloudQuotaResetUtc();
+  if(quota.remainingSeconds<=0){
+    try{localStorage.setItem(CLOUD_QUOTA_STORAGE_KEY,String(resetMs))}catch{}
+  }else{
+    try{localStorage.removeItem(CLOUD_QUOTA_STORAGE_KEY)}catch{}
+  }
+  refreshCloudAvailability();
+  renderCloudQuotaStatus();
+  return true;
+}
+function renderCloudQuotaStatus(){
+  const el=$('#cloudQuotaStatus');
+  if(!el)return;
+  const cloud=isCloudModelSelected();
+  el.classList.toggle('hidden',!cloud);
+  if(!cloud)return;
+  el.classList.remove('warning','unavailable');
+  const label=el.querySelector('span');
+  if(state.cloudQuotaLoading&&!state.cloudQuota){
+    label.textContent=isGreekUI()?'Έλεγχος διαθέσιμου Cloud…':'Checking Cloud availability…';
+    return;
+  }
+  const q=state.cloudQuota;
+  if(!q){
+    label.textContent=isGreekUI()?'Cloud High Accuracy':'Cloud High Accuracy';
+    return;
+  }
+  const reset=cloudResetTimeLabel(Date.parse(q.resetAt)||nextCloudQuotaResetUtc());
+  const remaining=formatCloudQuotaDuration(q.remainingSeconds);
+  const videoSeconds=Number(video?.duration)||0;
+  if(q.remainingSeconds<=0){
+    el.classList.add('unavailable');
+    label.textContent=isGreekUI()?`Cloud μη διαθέσιμο σήμερα · ανανέωση ${reset}`:`Cloud unavailable today · resets ${reset}`;
+    return;
+  }
+  if(videoSeconds>0&&q.remainingSeconds+1<videoSeconds){
+    el.classList.add('warning');
+    label.textContent=isGreekUI()?`Cloud: ${remaining} διαθέσιμα · video ${formatCloudQuotaDuration(videoSeconds)}`:`Cloud: ${remaining} left · video ${formatCloudQuotaDuration(videoSeconds)}`;
+    return;
+  }
+  label.textContent=isGreekUI()?`Cloud σήμερα: ~${remaining} διαθέσιμα · ανανέωση ${reset}`:`Cloud today: ~${remaining} left · resets ${reset}`;
+}
+async function fetchCloudQuotaStatus({force=false}={}){
+  if(!force&&state.cloudQuota&&Date.now()-state.cloudQuotaLastFetch<CLOUD_QUOTA_STATUS_TTL){
+    renderCloudQuotaStatus();
+    return state.cloudQuota;
+  }
+  if(state.cloudQuotaLoading)return state.cloudQuota;
+  state.cloudQuotaLoading=true;
+  renderCloudQuotaStatus();
+  try{
+    const response=await fetch(CLOUD_QUOTA_STATUS_URL,{method:'GET',cache:'no-store',headers:{'Accept':'application/json'}});
+    if(!response.ok)return state.cloudQuota;
+    const payload=await response.json();
+    applyCloudQuotaPayload(payload);
+    return state.cloudQuota;
+  }catch(error){
+    console.warn('Cloud quota status unavailable',error);
+    return state.cloudQuota;
+  }finally{
+    state.cloudQuotaLoading=false;
+    renderCloudQuotaStatus();
+  }
+}
+async function ensureCloudQuotaForVideo(durationSeconds){
+  const quota=await fetchCloudQuotaStatus({force:true});
+  if(!quota)return true;
+  if(quota.remainingSeconds<=0){
+    markCloudQuotaExhausted(Date.parse(quota.resetAt)||nextCloudQuotaResetUtc());
+    alert(isGreekUI()?'Το Cloud High Accuracy δεν είναι διαθέσιμο για σήμερα. Επίλεξε Local AI ή δοκίμασε ξανά μετά την ημερήσια ανανέωση.':'Cloud High Accuracy is unavailable for today. Choose Local AI or try again after the daily reset.');
+    return false;
+  }
+  const needed=Math.max(0,Number(durationSeconds)||0);
+  if(needed&&quota.remainingSeconds+1<needed){
+    renderCloudQuotaStatus();
+    alert(isGreekUI()
+      ?`Δεν υπάρχει αρκετός Cloud χρόνος για αυτό το video. Χρειάζονται περίπου ${formatCloudQuotaDuration(needed)}, ενώ απομένουν περίπου ${formatCloudQuotaDuration(quota.remainingSeconds)} σήμερα.`
+      :`There is not enough Cloud time for this video. It needs about ${formatCloudQuotaDuration(needed)}, while about ${formatCloudQuotaDuration(quota.remainingSeconds)} remains today.`);
+    return false;
+  }
+  return true;
+}
 function isCloudQuotaUnavailable(){return getCloudUnavailableUntil()>Date.now()}
 function scheduleCloudQuotaRefresh(until){
   if(state.cloudQuotaTimer){clearTimeout(state.cloudQuotaTimer);state.cloudQuotaTimer=null}
   if(!until)return;
   const delay=Math.max(1000,Math.min(2147483000,until-Date.now()+1200));
-  state.cloudQuotaTimer=setTimeout(()=>{state.cloudQuotaTimer=null;refreshCloudAvailability()},delay);
+  state.cloudQuotaTimer=setTimeout(()=>{state.cloudQuotaTimer=null;state.cloudQuota=null;state.cloudQuotaLastFetch=0;refreshCloudAvailability();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})},delay);
 }
 function refreshCloudAvailability(){
   const select=$('#modelSelect');
@@ -675,9 +794,10 @@ function refreshCloudAvailability(){
     select.dispatchEvent(new Event('change',{bubbles:true}));
   }else syncModelPicker();
   scheduleCloudQuotaRefresh(until);
+  renderCloudQuotaStatus();
 }
-function markCloudQuotaExhausted(){
-  const until=nextCloudQuotaResetUtc();
+function markCloudQuotaExhausted(serverUntil=0){
+  const until=Number(serverUntil)||nextCloudQuotaResetUtc();
   try{localStorage.setItem(CLOUD_QUOTA_STORAGE_KEY,String(until))}catch{}
   trackEvent('cloud_quota_exhausted',{reset_utc:new Date(until).toISOString()});
   refreshCloudAvailability();
@@ -688,6 +808,10 @@ function isCloudQuotaLimitResponse(response,result,raw=''){
   if(codes.includes(3036))return true;
   const haystack=`${raw||''} ${result?.message||''} ${result?.error?.message||''} ${typeof result?.error==='string'?result.error:''}`.toLowerCase();
   return response?.status===429&&(haystack.includes('daily free allocation')||haystack.includes('10,000 neurons')||haystack.includes('10000 neurons')||haystack.includes('used up your daily')||haystack.includes('account limited'));
+}
+function isCloudInsufficientResponse(result){
+  const code=String(result?.code||result?.error?.code||'');
+  return code==='KAPTIONO_CLOUD_QUOTA_INSUFFICIENT';
 }
 function syncModelPicker(){
   const select=$('#modelSelect');
@@ -730,9 +854,9 @@ document.addEventListener('click',event=>{
   if(picker&&!picker.contains(event.target))setModelPickerOpen(false);
 });
 document.addEventListener('keydown',event=>{if(event.key==='Escape')setModelPickerOpen(false)});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshCloudAvailability()});
-window.addEventListener('focus',refreshCloudAvailability);
-$('#modelSelect').addEventListener('change',()=>{syncModelPicker();updateModelHint();updateCompatibilityNote();updateProcessingModeLabel()});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshCloudAvailability();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})}});
+window.addEventListener('focus',()=>{refreshCloudAvailability();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})});
+$('#modelSelect').addEventListener('change',()=>{syncModelPicker();updateModelHint();updateCompatibilityNote();updateProcessingModeLabel();renderCloudQuotaStatus();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})});
 syncModelPicker();
 refreshCloudAvailability();
 function isCloudModelSelected(){return String($('#modelSelect')?.value||'').startsWith('cloudflare/')}
@@ -919,6 +1043,10 @@ async function generateCaptions(){
     if(!permitted)return;
     cloud=isCloudModelSelected();
   }
+  if(cloud){
+    const quotaOk=await ensureCloudQuotaForVideo(video.duration);
+    if(!quotaOk)return;
+  }
   updateProcessingModeLabel();
   trackEvent('generate_captions',{model:$('#modelSelect').value.split('/').pop(),language:$('#languageSelect').value,engine:cloud?'cloud':'local',enhanced:state.enhanced});
   $('#generateBtn').disabled=true;
@@ -1044,7 +1172,7 @@ async function transcribeCloudAudio(audio,audioDuration){
   trackEvent('cloud_transcription_started',{language:language||'auto',audio_seconds:Math.round(Number(audioDuration)||0)});
 
   try{
-    const headers={'Content-Type':'audio/wav'};
+    const headers={'Content-Type':'audio/wav','X-Kaptiono-Audio-Duration':String(Math.max(0,Number(audioDuration)||0))};
     if(language)headers['X-Kaptiono-Language']=language;
     const response=await fetch(CLOUD_TRANSCRIBE_URL,{
       method:'POST',
@@ -1063,13 +1191,19 @@ async function transcribeCloudAudio(audio,audioDuration){
       if(!response.ok)throw new Error(`CLOUD_HTTP_${response.status}`);
       throw new Error('CLOUD_INVALID_RESPONSE');
     }
+    if(isCloudInsufficientResponse(result)){
+      applyCloudQuotaPayload(result);
+      throw new Error('CLOUD_INSUFFICIENT_FOR_VIDEO');
+    }
     if(!response.ok){
       if(isCloudQuotaLimitResponse(response,result,raw)){
-        markCloudQuotaExhausted();
+        const serverReset=Date.parse(result?.quota?.reset_at||result?.kaptiono?.quota?.reset_at||'')||0;
+        markCloudQuotaExhausted(serverReset);
         throw new Error('CLOUD_DAILY_QUOTA_EXHAUSTED');
       }
       throw new Error(result?.message||result?.error?.message||result?.error||`CLOUD_HTTP_${response.status}`);
     }
+    applyCloudQuotaPayload(result);
     const words=normalizeCloudWords(result,audioDuration);
     stopProgressDrift();
     showProgress('transcribe',95);
@@ -1103,7 +1237,7 @@ async function extractAudio16k(file,onProgress=()=>{}){
 function mixToMono(buffer){const n=buffer.length,out=new Float32Array(n),chs=buffer.numberOfChannels||1;for(let c=0;c<chs;c++){const data=buffer.getChannelData(c);for(let i=0;i<n;i++)out[i]+=data[i]/chs}return out}
 function resampleLinear(input,fromRate,toRate){if(fromRate===toRate)return input.slice();const ratio=fromRate/toRate,len=Math.max(1,Math.round(input.length/ratio)),out=new Float32Array(len);for(let i=0;i<len;i++){const pos=i*ratio,a=Math.floor(pos),b=Math.min(input.length-1,a+1),f=pos-a;out[i]=(input[a]||0)*(1-f)+(input[b]||0)*f}return out}
 function concatFloat32(parts,total){const out=new Float32Array(total);let pos=0;for(const p of parts){out.set(p,pos);pos+=p.length}return out}
-function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('CLOUD_DAILY_QUOTA_EXHAUSTED'))return isGreekUI()?'Το ημερήσιο Cloud όριο εξαντλήθηκε. Επιστρέψαμε στο Whisper Small Local. Το Cloud θα ενεργοποιηθεί ξανά αυτόματα μετά την ημερήσια ανανέωση.':'The daily Cloud limit has been reached. We switched back to Whisper Small Local. Cloud will become available again automatically after the daily reset.';if(msg.includes('CLOUD_TRANSCRIPTION_TIMEOUT'))return isGreekUI()?'Το Cloud High Accuracy άργησε υπερβολικά να απαντήσει. Δοκίμασε ξανά ή χρησιμοποίησε Local Small.':'Cloud High Accuracy took too long to respond. Try again or use Local Small.';if(msg.includes('CLOUD_AUDIO_TOO_LARGE'))return isGreekUI()?'Το extracted audio είναι πολύ μεγάλο για το Cloud High Accuracy. Χρησιμοποίησε Local Small ή μικρότερο clip.':'The extracted audio is too large for Cloud High Accuracy. Use Local Small or a shorter clip.';if(msg.includes('Failed to fetch')||msg.includes('CLOUD_HTTP_')||msg.includes('CLOUD_INVALID_RESPONSE'))return isGreekUI()?'Δεν ήταν δυνατή η σύνδεση με το Cloud High Accuracy. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.':'Could not connect to Cloud High Accuracy. Check your connection and try again.';if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
+function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('CLOUD_INSUFFICIENT_FOR_VIDEO'))return isGreekUI()?'Δεν υπάρχει αρκετός Cloud χρόνος για αυτό το video σήμερα. Επίλεξε Local AI ή δοκίμασε ξανά μετά την ανανέωση.':'There is not enough Cloud time for this video today. Choose Local AI or try again after the reset.';if(msg.includes('CLOUD_DAILY_QUOTA_EXHAUSTED'))return isGreekUI()?'Το ημερήσιο Cloud όριο εξαντλήθηκε. Επιστρέψαμε στο Whisper Small Local. Το Cloud θα ενεργοποιηθεί ξανά αυτόματα μετά την ημερήσια ανανέωση.':'The daily Cloud limit has been reached. We switched back to Whisper Small Local. Cloud will become available again automatically after the daily reset.';if(msg.includes('CLOUD_TRANSCRIPTION_TIMEOUT'))return isGreekUI()?'Το Cloud High Accuracy άργησε υπερβολικά να απαντήσει. Δοκίμασε ξανά ή χρησιμοποίησε Local Small.':'Cloud High Accuracy took too long to respond. Try again or use Local Small.';if(msg.includes('CLOUD_AUDIO_TOO_LARGE'))return isGreekUI()?'Το extracted audio είναι πολύ μεγάλο για το Cloud High Accuracy. Χρησιμοποίησε Local Small ή μικρότερο clip.':'The extracted audio is too large for Cloud High Accuracy. Use Local Small or a shorter clip.';if(msg.includes('Failed to fetch')||msg.includes('CLOUD_HTTP_')||msg.includes('CLOUD_INVALID_RESPONSE'))return isGreekUI()?'Δεν ήταν δυνατή η σύνδεση με το Cloud High Accuracy. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.':'Could not connect to Cloud High Accuracy. Check your connection and try again.';if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
 
 
 function enhanceReadyStorageKey(){
