@@ -42,7 +42,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.33" />
+  <link rel="stylesheet" href="./styles.css?v=0.5.34" />
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-YFEYPK43QF"></script>
   <script>
@@ -136,7 +136,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.33</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.34</small></span>
       </button>
       <div class="top-actions">
         <div class="lang-switch" aria-label="Language"><button type="button" data-lang="el" class="active">EL</button><button type="button" data-lang="en">EN</button></div>
@@ -341,6 +341,17 @@
               <button id="muteBtn" class="player-icon" type="button" aria-label="Mute">♪</button>
             </div>
             <div class="preview-export-bar">
+              <div class="export-mode-wrap export-mode-wrap-quick">
+                <div class="export-mode-head"><span data-i18n="exportModeLabel">Τρόπος export</span><small data-i18n="exportModeHelp">Διάλεξε ταχύτητα ή μέγιστη συμβατότητα.</small></div>
+                <div class="export-mode-selector" role="group" aria-label="Video export mode">
+                  <button class="export-mode-option active" type="button" data-export-mode="social" aria-pressed="true">
+                    <span><strong data-i18n="exportSocialTitle">Social Compatible</strong><small data-i18n="exportSocialSub">TikTok · Reels · Shorts</small></span><b data-i18n="recommended">Recommended</b>
+                  </button>
+                  <button class="export-mode-option" type="button" data-export-mode="fast" aria-pressed="false">
+                    <span><strong data-i18n="exportFastTitle">Fast Export</strong><small data-i18n="exportFastSub">Γρήγορο browser export</small></span>
+                  </button>
+                </div>
+              </div>
               <button id="quickVideoExportBtn" class="quick-export-btn" type="button" disabled>
                 <span><b id="quickVideoExportLabel" data-i18n="downloadVideo">Λήψη video με υπότιτλους</b><small id="quickExportHint" data-i18n="downloadVideoHint">Δημιουργείται τοπικά στη συσκευή σου.</small></span>
                 <strong id="quickVideoExportIcon">↓</strong>
@@ -500,6 +511,17 @@
 
             <div class="main-panel" data-main-panel="export">
               <div class="panel-title"><div><span class="eyebrow">EXPORT</span><h2 data-i18n="exportTitle">Αποθήκευση αποτελέσματος</h2><p data-i18n="exportHint">Το αρχείο δημιουργείται τοπικά στον browser.</p></div></div>
+              <div class="export-mode-wrap export-mode-wrap-panel">
+                <div class="export-mode-head"><span data-i18n="exportModeLabel">Τρόπος export</span><small data-i18n="exportModeHelp">Διάλεξε ταχύτητα ή μέγιστη συμβατότητα.</small></div>
+                <div class="export-mode-selector" role="group" aria-label="Video export mode">
+                  <button class="export-mode-option active" type="button" data-export-mode="social" aria-pressed="true">
+                    <span><strong data-i18n="exportSocialTitle">Social Compatible</strong><small data-i18n="exportSocialSub">TikTok · Reels · Shorts</small></span><b data-i18n="recommended">Recommended</b>
+                  </button>
+                  <button class="export-mode-option" type="button" data-export-mode="fast" aria-pressed="false">
+                    <span><strong data-i18n="exportFastTitle">Fast Export</strong><small data-i18n="exportFastSub">Γρήγορο browser export</small></span>
+                  </button>
+                </div>
+              </div>
               <button id="videoDownloadBtn" class="video-download-cta" type="button" disabled>
                 <span><small id="videoExportEyebrow" data-i18n="burnedCaptions">BURNED-IN CAPTIONS</small><strong id="videoDownloadLabel" data-i18n="downloadVideo">Λήψη video με υπότιτλους</strong><em id="videoExportFormat">·</em></span><b id="videoDownloadIcon">↓</b>
               </button>
@@ -557,7 +579,7 @@
 
     <footer class="site-footer">
       <div class="footer-meta footer-meta-desktop">
-        <span>Kaptiono Web Lab 0.5.33</span>
+        <span>Kaptiono Web Lab 0.5.34</span>
         <span>Free · Local + Cloud AI · Original video stays local · No watermark</span>
       </div>
       <nav class="footer-links" aria-label="Footer">
@@ -568,10 +590,10 @@
       </nav>
       <div class="footer-meta footer-meta-mobile" aria-label="Kaptiono version">
         <span>Kaptiono · Free · Local + Cloud AI</span>
-        <small>v0.5.33</small>
+        <small>v0.5.34</small>
       </div>
     </footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.33"></script>
+  <script type="module" src="./app.js?v=0.5.34"></script>
 </body>
 </html>

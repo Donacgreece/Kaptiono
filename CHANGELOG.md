@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.5.34
+- Added two user-selectable burned-in video export modes.
+- Social Compatible is the default and recommended H.264/AAC MP4 path for TikTok, Reels and Shorts.
+- Fast Export restores the quicker browser MediaRecorder path for users who prioritize export speed.
+- Export mode is synchronized across preview and Export tab, saved locally, and tracked separately in analytics events.
+
 ## 0.5.33
 - Replaced the primary real-time MediaRecorder export with deterministic Mediabunny/WebCodecs MP4 transcoding.
 - Burned-in exports now target H.264 video, AAC audio, constant 30/60 fps, 2-second keyframes and non-fragmented fast-start MP4 output for better TikTok/Reels/Shorts compatibility.
