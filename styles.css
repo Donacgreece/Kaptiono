@@ -921,7 +921,7 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
 }
 
 
-/* v0.5.36 first-time Local AI download confirmation */
+/* v0.5.37 Local AI download alternatives */
 body.modal-open{overflow:hidden}
 .model-download-card{width:min(500px,100%);padding:28px}
 .model-download-card h2{margin:10px 0 9px;font-size:30px;line-height:1.05;letter-spacing:-.035em;padding-right:34px}

@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.36';
+const APP_VERSION='0.5.37';
 const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -544,7 +544,7 @@ function modelDownloadCopy(model){
     privacyTitle:'Μένει στη συσκευή σου',
     privacyText:window.isSecureContext?'Η λήψη γίνεται μία φορά και αποθηκεύεται τοπικά για τις επόμενες χρήσεις. Το video σου δεν ανεβαίνει.':'Χωρίς HTTPS το model μπορεί να χρειαστεί ξανά λήψη σε επόμενη χρήση. Το video σου δεν ανεβαίνει.',
     confirm:`Λήψη model · ${size}`,
-    smaller:'Επιλογή μικρότερου model',
+    smaller:'Μικρότερο Local model ή Cloud',
     cancel:'Ακύρωση'
   };
   return{
@@ -556,7 +556,7 @@ function modelDownloadCopy(model){
     privacyTitle:'Stays on your device',
     privacyText:window.isSecureContext?'The model is downloaded once and stored locally for future use. Your video is not uploaded.':'Without HTTPS the model may need to be downloaded again in a future session. Your video is not uploaded.',
     confirm:`Download model · ${size}`,
-    smaller:'Choose a smaller model',
+    smaller:'Smaller Local model or Cloud',
     cancel:'Cancel'
   };
 }
@@ -575,7 +575,13 @@ function refreshLocalModelDownloadModal(){
   $('#modelDownloadSmaller').textContent=copy.smaller;
   $('#modelDownloadCancel').textContent=copy.cancel;
   const smaller=localModelDownloads[modelDownloadPendingModel]?.smaller;
-  $('#modelDownloadSmaller').classList.toggle('hidden',!smaller);
+  const cloudAvailable=!isCloudQuotaUnavailable();
+  const alternativeButton=$('#modelDownloadSmaller');
+  alternativeButton.classList.toggle('hidden',!smaller&&!cloudAvailable);
+  if(alternativeButton){
+    if(isGreekUI())alternativeButton.textContent=smaller&&cloudAvailable?'Μικρότερο Local model ή Cloud':smaller?'Μικρότερο Local model':'Cloud High Accuracy';
+    else alternativeButton.textContent=smaller&&cloudAvailable?'Smaller Local model or Cloud':smaller?'Smaller Local model':'Cloud High Accuracy';
+  }
 }
 function closeLocalModelDownloadModal(action='cancel'){
   const modal=$('#modelDownloadModal');
@@ -604,13 +610,14 @@ async function ensureLocalModelDownloadPermission(){
     if(await isLocalModelCached(model))return true;
     const action=await promptLocalModelDownload(model);
     if(action==='cancel')return false;
-    if(action==='smaller'){
-      const smaller=localModelDownloads[model]?.smaller;
-      if(!smaller)continue;
+    if(action==='alternatives'){
+      trackEvent('local_model_alternatives_requested',{model:model.split('/').pop()});
       const select=$('#modelSelect');
-      select.value=smaller;
-      select.dispatchEvent(new Event('change',{bubbles:true}));
-      continue;
+      if(select){
+        select.focus();
+        select.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+      return false;
     }
     if(action==='download'){
       trackEvent('local_model_download_confirmed',{model:model.split('/').pop(),size_mb:localModelDownloads[model]?.sizeMb||0});
@@ -620,7 +627,7 @@ async function ensureLocalModelDownloadPermission(){
   return true;
 }
 $('#modelDownloadConfirm')?.addEventListener('click',()=>closeLocalModelDownloadModal('download'));
-$('#modelDownloadSmaller')?.addEventListener('click',()=>closeLocalModelDownloadModal('smaller'));
+$('#modelDownloadSmaller')?.addEventListener('click',()=>closeLocalModelDownloadModal('alternatives'));
 $('#modelDownloadCancel')?.addEventListener('click',()=>closeLocalModelDownloadModal('cancel'));
 $('#modelDownloadClose')?.addEventListener('click',()=>closeLocalModelDownloadModal('cancel'));
 $('#modelDownloadModal')?.addEventListener('click',event=>{if(event.target===$('#modelDownloadModal'))closeLocalModelDownloadModal('cancel')});

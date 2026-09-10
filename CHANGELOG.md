@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.37
+- Clarified the Local AI download alternative as "Smaller Local model or Cloud".
+- The alternative action now returns the user to the model selector instead of silently switching models.
+- Keeps the alternative available for Tiny when Cloud is available, and adapts the label when Cloud quota is unavailable.
+
 ## 0.5.36
 - Added first-time confirmation before downloading a Local Whisper model.
 - Shows an approximate download size for Small, Base and Tiny before any model download starts.
