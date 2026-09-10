@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.39
+## 0.5.40
 - Added live Cloud High Accuracy daily availability in the AI model area.
 - Added Cloud quota preflight so a video is not started when the remaining daily Cloud time is insufficient.
 - Added server quota synchronization after each Cloud transcription and daily reset awareness.
