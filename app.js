@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.41';
+const APP_VERSION='0.5.42';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -107,12 +107,25 @@ fileInput.addEventListener('change',()=>fileInput.files?.[0]&&loadFile(fileInput
 ['dragleave','drop'].forEach(name=>dropzone.addEventListener(name,e=>{e.preventDefault();dropzone.classList.remove('drag')}));
 dropzone.addEventListener('drop',e=>{const f=e.dataTransfer.files?.[0];if(f)loadFile(f)});
 $('#changeVideoBtn').addEventListener('click',()=>fileInput.click());
+function updateTopbarPageNav(page){
+  const detailPage=page==='support'||page==='roadmap';
+  const back=$('#pageBackNav');
+  $('#supportNav').classList.toggle('hidden',detailPage);
+  back.classList.toggle('hidden',!detailPage);
+  if(detailPage){
+    const roadmap=page==='roadmap';
+    back.textContent=roadmap?'Support':'Kaptiono';
+    back.dataset.backTarget=roadmap?'support':'home';
+    back.setAttribute('aria-label',state.uiLang==='el'?(roadmap?'Πίσω στο Support':'Πίσω στο Kaptiono'):(roadmap?'Back to Support':'Back to Kaptiono'));
+  }
+}
 function showPage(page){
   try{video.pause()}catch{}
   $('#startCard').classList.toggle('hidden',page!=='home');
   $('#workspace').classList.toggle('hidden',page!=='workspace');
   $('#supportPage').classList.toggle('hidden',page!=='support');
   $('#roadmapPage').classList.toggle('hidden',page!=='roadmap');
+  updateTopbarPageNav(page);
   window.scrollTo({top:0,behavior:'smooth'});
   updateEnhancedUi();
   updateModelHint();
@@ -124,9 +137,8 @@ function goSupport(){showPage('support');trackVirtualPage('/support','Kaptiono �
 function goRoadmap(){showPage('roadmap');trackVirtualPage('/roadmap','Kaptiono · Roadmap');trackEvent('roadmap_opened')}
 $('#brandHome').addEventListener('click',goHome);
 $('#supportNav').addEventListener('click',goSupport);
-$('#supportBackBtn').addEventListener('click',goHome);
+$('#pageBackNav')?.addEventListener('click',()=>$('#pageBackNav').dataset.backTarget==='support'?goSupport():goHome());
 $('#roadmapOpenBtn')?.addEventListener('click',goRoadmap);
-$('#roadmapBackBtn')?.addEventListener('click',goSupport);
 $('#footerSupportBtn')?.addEventListener('click',goSupport);
 $('#footerRoadmapBtn')?.addEventListener('click',goRoadmap);
 

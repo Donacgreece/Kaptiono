@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.42
+
+- Support and Roadmap now use the same compact top-right back control as the Privacy, Cookies and Terms pages.
+- Removed the large inline back buttons from the Support and Roadmap cards on mobile and desktop.
+- Navigation behavior is unchanged: Support returns to Kaptiono, while Roadmap returns to Support.
+- This release is based directly on v0.5.41 and does not include the discarded SEO landing-page experiment.
+
 ## 0.5.41
 - Added a lazy local LibAV/FFmpeg WebAssembly fallback for Safari/WebKit AAC and ALAC audio decoding when Mediabunny/WebCodecs and native Web Audio both fail.
 - The fallback converts source audio locally to 16 kHz mono PCM/WAV for Whisper and Cloud audio extraction. The original video remains on-device.
