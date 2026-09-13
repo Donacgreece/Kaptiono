@@ -1,3 +1,8 @@
+## v0.5.45 - 2026-09-13
+
+- Added the Google Search Console HTML verification file at the site root for domain ownership verification.
+- No UI, captioning, export, Cloud, Local AI or layout behavior changed.
+
 # Changelog
 
 ## 0.5.44

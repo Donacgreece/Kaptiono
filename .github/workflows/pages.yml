@@ -63,7 +63,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "const APP_VERSION='0.5.44'" app.js
+          grep -Fq "const APP_VERSION='0.5.45'" app.js
+          test -s google6ca96312d74da820.html
+          grep -Fxq 'google-site-verification: google6ca96312d74da820.html' google6ca96312d74da820.html
           grep -Fq 'extractAudio16kWithLibav' app.js
           grep -Fq 'KAPTIONO_LIBAV_BASE' app.js
           grep -Fq 'AUDIO_EXTRACTION_FAILED' app.js
@@ -93,6 +95,7 @@ jobs:
           test -s site-dist/vendor/libav/libav-6.10.9.0-kaptiono-audio-cli.wasm.wasm
           test -s site-dist/third-party-source/libavjs-6.10.9.0-kaptiono-audio-source.tar.xz
           test -s site-dist/THIRD_PARTY_NOTICES.md
+          test -s site-dist/google6ca96312d74da820.html
           test -s site-dist/THIRD_PARTY_LICENSES/LGPL-2.1.txt
 
       - name: Configure Pages

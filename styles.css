@@ -998,7 +998,7 @@ body.modal-open{overflow:hidden}
   }
 }
 
-/* v0.5.44 mobile footer hierarchy
+/* v0.5.45 mobile footer hierarchy
    Footer-only rules: homepage first viewport and desktop layout remain unchanged. */
 @media(max-width:620px){
   .site-footer{
