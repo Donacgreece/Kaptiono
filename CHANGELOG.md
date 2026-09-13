@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.5.42
+## 0.5.43
+
+- Standardized the top-right Back control as the same compact arrow-only button on desktop and mobile.
+- Support, Roadmap, Privacy, Cookies and Terms now share the same visual navigation treatment.
+- Destination behavior is unchanged and accessible labels still describe where the Back control leads.
+
+## 0.5.43
 
 - Support and Roadmap now use the same compact top-right back control as the Privacy, Cookies and Terms pages.
 - Removed the large inline back buttons from the Support and Roadmap cards on mobile and desktop.

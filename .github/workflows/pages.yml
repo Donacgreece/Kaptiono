@@ -63,7 +63,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "const APP_VERSION='0.5.42'" app.js
+          grep -Fq "const APP_VERSION='0.5.43'" app.js
           grep -Fq 'extractAudio16kWithLibav' app.js
           grep -Fq 'KAPTIONO_LIBAV_BASE' app.js
           grep -Fq 'AUDIO_EXTRACTION_FAILED' app.js

@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.42';
+const APP_VERSION='0.5.43';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -114,7 +114,7 @@ function updateTopbarPageNav(page){
   back.classList.toggle('hidden',!detailPage);
   if(detailPage){
     const roadmap=page==='roadmap';
-    back.textContent=roadmap?'Support':'Kaptiono';
+    back.textContent='←';
     back.dataset.backTarget=roadmap?'support':'home';
     back.setAttribute('aria-label',state.uiLang==='el'?(roadmap?'Πίσω στο Support':'Πίσω στο Kaptiono'):(roadmap?'Back to Support':'Back to Kaptiono'));
   }
