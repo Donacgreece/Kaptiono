@@ -489,3 +489,10 @@ No unnecessary complexity.
   Local AI subtitles for creators.<br><br>
   <a href="https://kaptiono.com">kaptiono.com</a>
 </p>
+
+
+## Safari / WebKit audio compatibility
+
+Kaptiono uses a layered local audio-extraction path. It first tries Mediabunny/WebCodecs, then native Web Audio, and only if both fail it lazily loads a separate LibAV/FFmpeg WebAssembly fallback. The fallback is intended for Safari/WebKit AAC/ALAC decoding issues and converts the audio locally to 16 kHz mono PCM for transcription. The original video is not uploaded by this fallback.
+
+The LibAV/FFmpeg runtime is distributed as a separate replaceable third-party component and is not relicensed under the Kaptiono PolyForm license. See `THIRD_PARTY_NOTICES.md`, `LICENSE_SCOPE.md`, `THIRD_PARTY_SOURCE_OFFER.md`, `LIBAV_RUNTIME_REPLACEMENT.md`, `LEGAL_COMPLIANCE_LIBAV_AUDIO.md` and `PATENT_NOTICE.md`.

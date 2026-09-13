@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.41
+- Added a lazy local LibAV/FFmpeg WebAssembly fallback for Safari/WebKit AAC and ALAC audio decoding when Mediabunny/WebCodecs and native Web Audio both fail.
+- The fallback converts source audio locally to 16 kHz mono PCM/WAV for Whisper and Cloud audio extraction. The original video remains on-device.
+- Added a decode-focused LibAV build that disables GPL and nonfree FFmpeg modes, excludes AAC encoding, and rejects external GPL/nonfree codec libraries.
+- Added reproducible CI build guards, exact corresponding-source publication, runtime replacement instructions, third-party notices, LGPL/0BSD license copies, and a codec patent notice.
+- Updated Terms of Use with third-party software and media compatibility disclosures.
+
 ## 0.5.40
 - Added live Cloud High Accuracy daily availability in the AI model area.
 - Added Cloud quota preflight so a video is not started when the remaining daily Cloud time is insufficient.

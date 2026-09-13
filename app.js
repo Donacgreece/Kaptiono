@@ -1,6 +1,9 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.40';
+const APP_VERSION='0.5.41';
+const KAPTIONO_LIBAV_VERSION='6.10.9.0';
+const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
+const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
 const CLOUD_TRANSCRIBE_URL='https://kaptiono-transcribe.donacgreece.workers.dev/';
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => [...document.querySelectorAll(s)];
@@ -923,8 +926,8 @@ function updateCompatibilityNote(){
   }else if(isIOS){
     note.classList.remove('hidden');
     note.textContent=isGreekUI()
-      ?'iPhone: χρησιμοποιούμε WebCodecs/Mediabunny για το audio. Αν το Small είναι βαρύ, επίλεξε Base ή δοκίμασε Cloud High Accuracy.'
-      :'iPhone: audio is extracted through WebCodecs/Mediabunny. If Small is too heavy, choose Base or try Cloud High Accuracy.';
+      ?'iPhone: χρησιμοποιούμε WebCodecs/Mediabunny για το audio, με local LibAV/FFmpeg fallback όταν ο Safari δεν μπορεί να αποκωδικοποιήσει AAC.'
+      :'iPhone: audio uses WebCodecs/Mediabunny with a local LibAV/FFmpeg fallback when Safari cannot decode AAC.';
   }else note.classList.add('hidden');
   $('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
 }
@@ -1224,20 +1227,100 @@ async function transcribeCloudAudio(audio,audioDuration){
   }
 }
 
+const kaptionoClassicScriptLoads=new Map();
+let kaptionoLibavFrontendPromise=null;
+function loadClassicScriptOnce(src,key=src,timeoutMs=25000){
+  const cacheKey=String(key||src);
+  if(kaptionoClassicScriptLoads.has(cacheKey))return kaptionoClassicScriptLoads.get(cacheKey);
+  const promise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');let settled=false;
+    const finish=(error)=>{if(settled)return;settled=true;clearTimeout(timer);script.onload=null;script.onerror=null;if(error){try{script.remove()}catch{}reject(error)}else resolve()};
+    const timer=setTimeout(()=>finish(new Error('libav-frontend-timeout')),timeoutMs);
+    script.async=true;script.src=src;script.dataset.kaptionoRuntime=cacheKey;
+    script.onload=()=>finish();script.onerror=()=>finish(new Error('libav-frontend-network'));
+    document.head.appendChild(script);
+  }).catch(error=>{kaptionoClassicScriptLoads.delete(cacheKey);throw error});
+  kaptionoClassicScriptLoads.set(cacheKey,promise);return promise;
+}
+function kaptionoLibavBase(){return String(window.KAPTIONO_LIBAV_BASE||KAPTIONO_LIBAV_DEFAULT_BASE)}
+async function loadKaptionoLibavAudioFrontend(){
+  if(window.LibAV?.LibAV)return {wrapper:window.LibAV,base:new URL(kaptionoLibavBase(),document.baseURI).toString()};
+  if(kaptionoLibavFrontendPromise)return kaptionoLibavFrontendPromise;
+  kaptionoLibavFrontendPromise=(async()=>{
+    const base=new URL(kaptionoLibavBase(),document.baseURI).toString();
+    const src=`${base}libav-${KAPTIONO_LIBAV_VERSION}-${KAPTIONO_LIBAV_VARIANT}.js`;
+    await loadClassicScriptOnce(src,'kaptiono-libav-audio-6.10.9.0');
+    const wrapper=window.LibAV;if(!wrapper?.LibAV)throw new Error('libav-runtime-missing');wrapper.base=base;return {wrapper,base};
+  })().catch(error=>{kaptionoLibavFrontendPromise=null;const wrapped=new Error('libav-frontend-load');wrapped.cause=error;throw wrapped});
+  return kaptionoLibavFrontendPromise;
+}
+async function createKaptionoLibavInstance(){
+  const {wrapper,base}=await loadKaptionoLibavAudioFrontend();
+  try{return await wrapper.LibAV({base,nothreads:true,noworker:isSafari||isIOS})}
+  catch(error){const wrapped=new Error('libav-instance-init');wrapped.cause=error;throw wrapped}
+}
+function libavInputExtension(file){
+  const name=String(file?.name||'').toLowerCase(),match=/\.([a-z0-9]{1,8})$/.exec(name);if(match)return match[1];
+  const mime=String(file?.type||'').toLowerCase();if(mime.includes('quicktime'))return 'mov';if(mime.includes('mp4')||mime.includes('m4a'))return 'mp4';return 'mp4';
+}
+function pcm16WavToFloat32(buffer){
+  const view=new DataView(buffer);if(view.byteLength<44)throw new Error('libav-wav-short');
+  const ascii=(offset,length)=>{let out='';for(let i=0;i<length;i++)out+=String.fromCharCode(view.getUint8(offset+i));return out};
+  if(ascii(0,4)!=='RIFF'||ascii(8,4)!=='WAVE')throw new Error('libav-wav-invalid');
+  let offset=12,format=0,channels=0,sampleRate=0,bits=0,dataOffset=-1,dataSize=0;
+  while(offset+8<=view.byteLength){
+    const id=ascii(offset,4),size=view.getUint32(offset+4,true),start=offset+8;
+    if(id==='fmt '&&size>=16&&start+16<=view.byteLength){format=view.getUint16(start,true);channels=view.getUint16(start+2,true);sampleRate=view.getUint32(start+4,true);bits=view.getUint16(start+14,true)}
+    else if(id==='data'){dataOffset=start;dataSize=Math.min(size,Math.max(0,view.byteLength-start));break}
+    offset=start+size+(size%2);
+  }
+  if(format!==1||bits!==16||!channels||!sampleRate||dataOffset<0||dataSize<2)throw new Error('libav-wav-format');
+  const frames=Math.floor(dataSize/(2*channels)),out=new Float32Array(frames);let pos=dataOffset;
+  for(let i=0;i<frames;i++){let sum=0;for(let c=0;c<channels;c++){sum+=view.getInt16(pos,true)/32768;pos+=2}out[i]=Math.max(-1,Math.min(1,sum/channels))}
+  if(sampleRate===16000)return out;return resampleLinear(out,sampleRate,16000);
+}
+async function extractAudio16kWithLibav(file,onProgress=()=>{}){
+  const libav=await createKaptionoLibavInstance();
+  const session=`kaptiono_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+  const inputName=`${session}_input.${libavInputExtension(file)}`,outputName=`${session}_mono16.wav`,writes=[];
+  let mounted=false,aborted=false;
+  try{
+    onProgress(4);await libav.mkreadaheadfile(inputName,file);mounted=true;onProgress(12);
+    await libav.mkstreamwriterdev(outputName);
+    libav.onwrite=(name,position,data)=>{if(name!==outputName||!data?.length)return;writes.push({position:Number(position)||0,data:new Uint8Array(data)})};
+    const args=['-nostdin','-hide_banner','-loglevel','error','-i',inputName,'-map','0:a:0','-vn','-ac','1','-ar','16000','-c:a','pcm_s16le','-f','wav','-y',outputName];
+    const code=await libav.ffmpeg(...args);if(code!==0)throw new Error(`libav-ffmpeg-${code}`);if(!writes.length)throw new Error('libav-output-empty');
+    writes.sort((a,b)=>a.position-b.position);let expected=0,total=0;for(const chunk of writes){if(chunk.position!==expected)throw new Error('libav-output-nonsequential');expected+=chunk.data.byteLength;total+=chunk.data.byteLength}
+    const joined=new Uint8Array(total);let cursor=0;for(const chunk of writes){joined.set(chunk.data,cursor);cursor+=chunk.data.byteLength}
+    onProgress(94);const out=pcm16WavToFloat32(joined.buffer);if(!out.length)throw new Error('libav-output-empty');onProgress(100);
+    $('#systemAudio').textContent='LibAV / FFmpeg WASM · audio fallback';
+    trackEvent('audio_libav_fallback_success',{browser:isSafari?'safari':isIOS?'ios-webkit':'other',input_type:String(file?.type||'unknown').slice(0,80)});
+    return out;
+  }catch(error){trackEvent('audio_libav_fallback_failed',{reason:String(error?.message||error).slice(0,120)});throw error}
+  finally{
+    if(!aborted){if(mounted)try{await libav.unlinkreadaheadfile(inputName)}catch{}try{await libav.unlink(outputName)}catch{}try{libav.terminate()}catch{}}
+  }
+}
 async function extractAudio16k(file,onProgress=()=>{}){
-  // Primary path: demux + decode through Mediabunny/WebCodecs. This is specifically
-  // used to avoid Safari/iPhone decodeAudioData failures on video containers.
+  let primaryError=null,webAudioError=null;
+  // 1) Preferred path: Mediabunny + the browser decoder/WebCodecs.
   try{
     const input=new Input({formats:ALL_FORMATS,source:new BlobSource(file)});const duration=await input.computeDuration();const track=await input.getPrimaryAudioTrack();if(!track)throw new Error('NO_AUDIO_TRACK');if(!(await track.canDecode()))throw new Error('AUDIO_CODEC_NOT_DECODABLE');const sink=new AudioSampleSink(track),parts=[];let total=0,lastP=0;for await(const sample of sink.samples(0,duration)){const ab=sample.toAudioBuffer();const mono=mixToMono(ab);const rs=resampleLinear(mono,ab.sampleRate,16000);parts.push(rs);total+=rs.length;const t=Number(sample.timestamp||0)+Number(sample.duration||0),p=duration?Math.min(100,t/duration*100):lastP;lastP=p;onProgress(p);sample.close?.()}input.dispose?.();onProgress(100);return concatFloat32(parts,total)
-  }catch(primary){
-    console.warn('Mediabunny audio extraction failed, trying Web Audio fallback',primary);
-    const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw primary;const ac=new AC();try{const arr=await file.arrayBuffer();const decoded=await ac.decodeAudioData(arr.slice(0));const mono=mixToMono(decoded),out=resampleLinear(mono,decoded.sampleRate,16000);onProgress(100);await ac.close();return out}catch(fallback){await ac.close().catch(()=>{});const err=new Error(`AUDIO_EXTRACTION_FAILED: ${fallback?.message||primary?.message||''}`);err.cause=primary;throw err}
+  }catch(error){primaryError=error;console.warn('Mediabunny/WebCodecs audio extraction failed.',error)}
+  // 2) Native Web Audio is still useful on browsers where container decode works.
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(AC){
+    const ac=new AC();try{const arr=await file.arrayBuffer();const decoded=await ac.decodeAudioData(arr.slice(0));const mono=mixToMono(decoded),out=resampleLinear(mono,decoded.sampleRate,16000);onProgress(100);await ac.close();return out}
+    catch(error){webAudioError=error;console.warn('Native Web Audio decode failed; trying local LibAV/FFmpeg fallback.',error);await ac.close().catch(()=>{})}
   }
+  // 3) Final local fallback: decode AAC/ALAC from MP4/MOV with a separate LGPL LibAV/FFmpeg WASM runtime.
+  try{return await extractAudio16kWithLibav(file,onProgress)}
+  catch(libavError){const err=new Error(`AUDIO_EXTRACTION_FAILED: ${libavError?.message||webAudioError?.message||primaryError?.message||''}`);err.cause=libavError;throw err}
 }
 function mixToMono(buffer){const n=buffer.length,out=new Float32Array(n),chs=buffer.numberOfChannels||1;for(let c=0;c<chs;c++){const data=buffer.getChannelData(c);for(let i=0;i<n;i++)out[i]+=data[i]/chs}return out}
 function resampleLinear(input,fromRate,toRate){if(fromRate===toRate)return input.slice();const ratio=fromRate/toRate,len=Math.max(1,Math.round(input.length/ratio)),out=new Float32Array(len);for(let i=0;i<len;i++){const pos=i*ratio,a=Math.floor(pos),b=Math.min(input.length-1,a+1),f=pos-a;out[i]=(input[a]||0)*(1-f)+(input[b]||0)*f}return out}
 function concatFloat32(parts,total){const out=new Float32Array(total);let pos=0;for(const p of parts){out.set(p,pos);pos+=p.length}return out}
-function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('CLOUD_INSUFFICIENT_FOR_VIDEO'))return isGreekUI()?'Δεν υπάρχει αρκετός Cloud χρόνος για αυτό το video σήμερα. Επίλεξε Local AI ή δοκίμασε ξανά μετά την ανανέωση.':'There is not enough Cloud time for this video today. Choose Local AI or try again after the reset.';if(msg.includes('CLOUD_DAILY_QUOTA_EXHAUSTED'))return isGreekUI()?'Το ημερήσιο Cloud όριο εξαντλήθηκε. Επιστρέψαμε στο Whisper Small Local. Το Cloud θα ενεργοποιηθεί ξανά αυτόματα μετά την ημερήσια ανανέωση.':'The daily Cloud limit has been reached. We switched back to Whisper Small Local. Cloud will become available again automatically after the daily reset.';if(msg.includes('CLOUD_TRANSCRIPTION_TIMEOUT'))return isGreekUI()?'Το Cloud High Accuracy άργησε υπερβολικά να απαντήσει. Δοκίμασε ξανά ή χρησιμοποίησε Local Small.':'Cloud High Accuracy took too long to respond. Try again or use Local Small.';if(msg.includes('CLOUD_AUDIO_TOO_LARGE'))return isGreekUI()?'Το extracted audio είναι πολύ μεγάλο για το Cloud High Accuracy. Χρησιμοποίησε Local Small ή μικρότερο clip.':'The extracted audio is too large for Cloud High Accuracy. Use Local Small or a shorter clip.';if(msg.includes('Failed to fetch')||msg.includes('CLOUD_HTTP_')||msg.includes('CLOUD_INVALID_RESPONSE'))return isGreekUI()?'Δεν ήταν δυνατή η σύνδεση με το Cloud High Accuracy. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.':'Could not connect to Cloud High Accuracy. Check your connection and try again.';if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν μπόρεσα να αποκωδικοποιήσω το audio αυτού του αρχείου στο συγκεκριμένο iPhone/browser. Δοκίμασε το ίδιο video ξανά μετά από refresh ή ένα MP4/MOV με AAC.':'Could not decode this file audio on this iPhone/browser. Refresh and retry, or use MP4/MOV with AAC.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
+function friendlyError(e){const msg=String(e?.message||e);if(msg.includes('CLOUD_INSUFFICIENT_FOR_VIDEO'))return isGreekUI()?'Δεν υπάρχει αρκετός Cloud χρόνος για αυτό το video σήμερα. Επίλεξε Local AI ή δοκίμασε ξανά μετά την ανανέωση.':'There is not enough Cloud time for this video today. Choose Local AI or try again after the reset.';if(msg.includes('CLOUD_DAILY_QUOTA_EXHAUSTED'))return isGreekUI()?'Το ημερήσιο Cloud όριο εξαντλήθηκε. Επιστρέψαμε στο Whisper Small Local. Το Cloud θα ενεργοποιηθεί ξανά αυτόματα μετά την ημερήσια ανανέωση.':'The daily Cloud limit has been reached. We switched back to Whisper Small Local. Cloud will become available again automatically after the daily reset.';if(msg.includes('CLOUD_TRANSCRIPTION_TIMEOUT'))return isGreekUI()?'Το Cloud High Accuracy άργησε υπερβολικά να απαντήσει. Δοκίμασε ξανά ή χρησιμοποίησε Local Small.':'Cloud High Accuracy took too long to respond. Try again or use Local Small.';if(msg.includes('CLOUD_AUDIO_TOO_LARGE'))return isGreekUI()?'Το extracted audio είναι πολύ μεγάλο για το Cloud High Accuracy. Χρησιμοποίησε Local Small ή μικρότερο clip.':'The extracted audio is too large for Cloud High Accuracy. Use Local Small or a shorter clip.';if(msg.includes('Failed to fetch')||msg.includes('CLOUD_HTTP_')||msg.includes('CLOUD_INVALID_RESPONSE'))return isGreekUI()?'Δεν ήταν δυνατή η σύνδεση με το Cloud High Accuracy. Έλεγξε τη σύνδεσή σου και δοκίμασε ξανά.':'Could not connect to Cloud High Accuracy. Check your connection and try again.';if(msg.includes('AUDIO_EXTRACTION_FAILED'))return isGreekUI()?'Δεν ήταν δυνατή η αποκωδικοποίηση του audio ούτε με το local compatibility fallback. Δοκίμασε ξανά μετά από refresh ή χρησιμοποίησε ένα κανονικό MP4/MOV με έγκυρο audio track.':'The audio could not be decoded even with the local compatibility fallback. Refresh and retry, or use a standard MP4/MOV with a valid audio track.';if(msg.includes('NO_AUDIO_TRACK'))return isGreekUI()?'Το video δεν έχει audio track.':'The video has no audio track.';return msg}
 
 
 function enhanceReadyStorageKey(){
@@ -1964,7 +2047,7 @@ function drawCanvasCaption(ctx,w,h,t){
 }
 
 // Browser capability status
-$('#systemAi').textContent='Whisper Small · WASM';$('#systemAudio').textContent=('AudioDecoder' in window)?'WebCodecs + Mediabunny':'Mediabunny + Web Audio';$('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
+$('#systemAi').textContent='Whisper Small · WASM';$('#systemAudio').textContent=('AudioDecoder' in window)?'WebCodecs + Mediabunny · LibAV fallback':'Mediabunny + Web Audio · LibAV fallback';$('#systemDevice').textContent=isIOS?'iPhone / iPad':isSafari?'Safari':'Desktop browser';
 
 // PWA install and update lifecycle
 

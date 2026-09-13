@@ -1,0 +1,10 @@
+Kaptiono
+Required Notice: Copyright 2026 Dimitris Galatsanos.
+Kaptiono first-party material is licensed under PolyForm-Noncommercial-1.0.0.
+
+This software uses a separately loaded LibAV/FFmpeg WebAssembly audio fallback.
+Applicable FFmpeg library portions are provided under LGPL-2.1-or-later terms.
+See THIRD_PARTY_NOTICES.md, THIRD_PARTY_LICENSES/, THIRD_PARTY_SOURCE_OFFER.md,
+LIBAV_RUNTIME_REPLACEMENT.md and PATENT_NOTICE.md.
+
+Kaptiono first-party licensing does not replace or restrict rights granted by third-party licenses.

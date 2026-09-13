@@ -1,0 +1,12 @@
+[
+  "avformat",
+  "avcodec",
+  "swresample",
+  "format-mp4",
+  "parser-aac",
+  "decoder-aac",
+  "decoder-alac",
+  "format-wav",
+  "encoder-pcm_s16le",
+  "cli"
+]

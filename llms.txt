@@ -22,3 +22,9 @@ The original video stays on the user's device. Local models process audio on-dev
 ## Optional
 
 - [GitHub repository](https://github.com/Donacgreece/Kaptiono): Source repository for the Kaptiono project.
+
+## Third-party and licensing
+
+- [Third-party notices](https://kaptiono.com/THIRD_PARTY_NOTICES.md): Third-party software and license information.
+- [License scope](https://kaptiono.com/LICENSE_SCOPE.md): Scope of the Kaptiono first-party license and third-party components.
+- [Codec patent notice](https://kaptiono.com/PATENT_NOTICE.md): Informational notice about standardized media codec patent considerations.

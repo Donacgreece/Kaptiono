@@ -1,4 +1,4 @@
-name: Deploy Kaptiono Web Lab to GitHub Pages
+name: Deploy Kaptiono to GitHub Pages
 
 on:
   push:
@@ -20,15 +20,89 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Restore pinned LibAV audio runtime cache
+        id: libav-cache
+        uses: actions/cache@v5
+        with:
+          path: .cache/libav-kaptiono-audio
+          key: kaptiono-libav-audio-v1-6.10.9.0-ffmpeg9.0-emscripten6.0.5-${{ runner.os }}
+
+      - name: Setup pinned Emscripten for LibAV
+        if: steps.libav-cache.outputs.cache-hit != 'true'
+        uses: emscripten-core/setup-emsdk@v15
+        with:
+          version: 6.0.5
+          actions-cache-folder: emsdk-cache
+
+      - name: Build or restore LGPL LibAV audio fallback
+        shell: bash
+        env:
+          KAPTIONO_LIBAV_CACHE_DIR: ${{ github.workspace }}/.cache/libav-kaptiono-audio
+        run: |
+          set -euo pipefail
+          bash tools/build-libav-audio.sh
+          test -s vendor/libav/libav-6.10.9.0-kaptiono-audio-cli.js
+          test -s vendor/libav/libav-6.10.9.0-kaptiono-audio-cli.wasm.js
+          test -s vendor/libav/libav-6.10.9.0-kaptiono-audio-cli.wasm.wasm
+          test -s third-party-source/libavjs-6.10.9.0-kaptiono-audio-source.tar.xz
+          tar -tJf third-party-source/libavjs-6.10.9.0-kaptiono-audio-source.tar.xz | grep -F 'ffmpeg-9.0.tar.xz' > /dev/null
+          tar -tJf third-party-source/libavjs-6.10.9.0-kaptiono-audio-source.tar.xz | grep -F 'emfiberthreads-' > /dev/null
+          tar -tJf third-party-source/libavjs-6.10.9.0-kaptiono-audio-source.tar.xz | grep -F 'kaptiono-ffmpeg-changes.diff' > /dev/null
+
+      - name: Validate Kaptiono release
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq "const APP_VERSION='0.5.41'" app.js
+          grep -Fq 'extractAudio16kWithLibav' app.js
+          grep -Fq 'KAPTIONO_LIBAV_BASE' app.js
+          grep -Fq 'AUDIO_EXTRACTION_FAILED' app.js
+          grep -Fq 'Third-party software and media compatibility' terms/index.html
+          grep -Fq 'PolyForm-Noncommercial-1.0.0' LICENSE
+          grep -Fq 'Safari/WebKit LibAV audio fallback' LICENSE_SCOPE.md
+          grep -Fq 'libav.js / FFmpeg WebAssembly audio fallback' THIRD_PARTY_NOTICES.md
+          grep -Fq 'LGPL' NOTICE
+          grep -Fqi 'patent' PATENT_NOTICE.md
+          test -s THIRD_PARTY_LICENSES/LGPL-2.1.txt
+          test -s THIRD_PARTY_LICENSES/LIBAVJS-0BSD.txt
+          test -s THIRD_PARTY_LICENSES/EMFIBERTHREADS-0BSD.txt
+
+      - name: Assemble Pages artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf site-dist
+          mkdir site-dist
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='.cache' \
+            --exclude='site-dist' \
+            --exclude='tools' \
+            ./ site-dist/
+          test -s site-dist/vendor/libav/libav-6.10.9.0-kaptiono-audio-cli.wasm.wasm
+          test -s site-dist/third-party-source/libavjs-6.10.9.0-kaptiono-audio-source.tar.xz
+          test -s site-dist/THIRD_PARTY_NOTICES.md
+          test -s site-dist/THIRD_PARTY_LICENSES/LGPL-2.1.txt
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
-      - name: Upload static site
+
+      - name: Upload production site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: ./site-dist
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
