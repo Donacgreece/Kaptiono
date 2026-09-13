@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.43';
+const APP_VERSION='0.5.44';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';

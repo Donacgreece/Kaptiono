@@ -1,6 +1,6 @@
-const CACHE='kaptiono-web-v0.5.43';
+const CACHE='kaptiono-web-v0.5.44';
 const SHELL=[
-  './','./index.html','./styles.css?v=0.5.43','./app.js?v=0.5.43','./consent.js?v=0.5.43','./legal.js?v=0.5.43','./whisper-worker.js?v=0.5.43','./manifest.webmanifest',
+  './','./index.html','./styles.css?v=0.5.44','./app.js?v=0.5.44','./consent.js?v=0.5.44','./legal.js?v=0.5.44','./whisper-worker.js?v=0.5.44','./manifest.webmanifest',
   './privacy/','./cookies/','./terms/','./NOTICE','./LICENSE_SCOPE.md','./THIRD_PARTY_NOTICES.md','./PATENT_NOTICE.md','./THIRD_PARTY_SOURCE_OFFER.md','./LIBAV_RUNTIME_REPLACEMENT.md',
   './assets/icons/icon-64.png','./assets/icons/icon-192.png','./assets/icons/icon-512.png',
   './assets/icons/apple-touch-icon.png','./assets/icons/favicon-32x32.png','./assets/icons/favicon-16x16.png',
@@ -18,7 +18,7 @@ self.addEventListener('activate',event=>{
     await Promise.all(keys.filter(k=>k.startsWith('kaptiono-')&&k!==CACHE).map(k=>caches.delete(k)));
     await self.clients.claim();
     const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    clients.forEach(client=>client.postMessage({type:'KAPTIONO_UPDATE_READY',version:'0.5.43'}));
+    clients.forEach(client=>client.postMessage({type:'KAPTIONO_UPDATE_READY',version:'0.5.44'}));
   })());
 });
 

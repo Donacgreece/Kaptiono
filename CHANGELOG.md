@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.44
+
+- Reworked the mobile footer into two clear vertical groups, Kaptiono and Legal, instead of two rows of four links.
+- Kept Licenses in the existing version/meta line below the navigation.
+- Desktop footer layout is unchanged.
+- Homepage/first-viewport layout is unchanged; the footer remains below the fold and requires scrolling on mobile.
+
 ## 0.5.43
 
 - Standardized the top-right Back control as the same compact arrow-only button on desktop and mobile.

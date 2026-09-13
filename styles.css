@@ -997,3 +997,78 @@ body.modal-open{overflow:hidden}
     font-size:10px;
   }
 }
+
+/* v0.5.44 mobile footer hierarchy
+   Footer-only rules: homepage first viewport and desktop layout remain unchanged. */
+@media(max-width:620px){
+  .site-footer{
+    padding:18px 0 max(24px,env(safe-area-inset-bottom));
+    gap:14px;
+  }
+  .footer-links{
+    order:1;
+    width:100%;
+    max-width:380px;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    align-items:start;
+    gap:0;
+    padding:2px 0 0;
+  }
+  .footer-link-group{
+    width:100%;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    align-items:stretch;
+    gap:1px;
+    padding:0 18px;
+    position:relative;
+  }
+  .footer-link-group::before{
+    display:block;
+    margin:0 0 8px;
+    color:#9aa19c;
+    font-size:9px;
+    line-height:1;
+    font-weight:900;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    text-align:left;
+  }
+  .footer-link-group-primary::before{content:"Kaptiono"}
+  .footer-link-group-legal::before{content:"Legal"}
+  .footer-link-group-primary{
+    border-right:1px solid #e5e9e5;
+  }
+  .footer-link-divider{
+    display:none!important;
+  }
+  .footer-links .footer-link-group button,
+  .footer-links .footer-link-group a{
+    width:100%;
+    min-width:0;
+    min-height:32px;
+    padding:7px 0;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    border-radius:7px;
+    font-size:11px;
+    line-height:1.15;
+    white-space:nowrap;
+    text-align:left;
+  }
+  .footer-links .footer-link-group button:active,
+  .footer-links .footer-link-group a:active{
+    background:#eef1ed;
+  }
+  .footer-meta-mobile{
+    order:2;
+    width:calc(100% - 36px);
+    max-width:344px;
+    margin-top:1px;
+    padding-top:12px;
+    border-top:1px solid #e5e9e5;
+  }
+}
