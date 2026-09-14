@@ -1,6 +1,6 @@
-const CACHE='kaptiono-web-v0.5.48';
+const CACHE='kaptiono-web-v1.0.0';
 const SHELL=[
-  './','./index.html','./styles.css?v=0.5.48','./app.js?v=0.5.48','./consent.js?v=0.5.48','./legal.js?v=0.5.48','./whisper-worker.js?v=0.5.48','./manifest.webmanifest',
+  './','./index.html','./styles.css?v=1.0.0','./app.js?v=1.0.0','./consent.js?v=1.0.0','./legal.js?v=1.0.0','./whisper-worker.js?v=1.0.0','./manifest.webmanifest',
   './privacy/','./cookies/','./terms/','./NOTICE','./LICENSE_SCOPE.md','./THIRD_PARTY_NOTICES.md','./PATENT_NOTICE.md','./THIRD_PARTY_SOURCE_OFFER.md','./LIBAV_RUNTIME_REPLACEMENT.md',
   './assets/icons/icon-64.png','./assets/icons/icon-192.png','./assets/icons/icon-512.png',
   './assets/icons/apple-touch-icon.png','./assets/icons/favicon-32x32.png','./assets/icons/favicon-16x16.png',
@@ -8,7 +8,6 @@ const SHELL=[
 ];
 
 self.addEventListener('install',event=>{
-  self.skipWaiting();
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL).catch(()=>{})));
 });
 
@@ -17,8 +16,6 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(k=>k.startsWith('kaptiono-')&&k!==CACHE).map(k=>caches.delete(k)));
     await self.clients.claim();
-    const clients=await self.clients.matchAll({type:'window',includeUncontrolled:true});
-    clients.forEach(client=>client.postMessage({type:'KAPTIONO_UPDATE_READY',version:'0.5.48'}));
   })());
 });
 

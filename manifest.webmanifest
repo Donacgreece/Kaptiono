@@ -29,5 +29,12 @@
       "sizes": "180x180",
       "type": "image/png"
     }
-  ]
+  ],
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://kaptiono.com/manifest.webmanifest"
+    }
+  ],
+  "prefer_related_applications": false
 }

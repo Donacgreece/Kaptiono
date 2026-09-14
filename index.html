@@ -43,8 +43,8 @@
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css?v=0.5.48" />
-  <script src="./consent.js?v=0.5.48"></script>
+  <link rel="stylesheet" href="./styles.css?v=1.0.0" />
+  <script src="./consent.js?v=1.0.0"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -125,7 +125,7 @@
     <header class="topbar">
       <button class="brand" id="brandHome" type="button" aria-label="Kaptiono">
         <img src="./assets/icons/icon-64.png" alt="" />
-        <span><strong>Kaptiono</strong><small>WEB LAB · 0.5.48</small></span>
+        <span><strong>Kaptiono</strong><small>WEB LAB · 1.0.0</small></span>
       </button>
       <div class="top-actions">
         <div class="lang-switch" aria-label="Language"><button type="button" data-lang="el" class="active">EL</button><button type="button" data-lang="en">EN</button></div>
@@ -573,14 +573,23 @@
       </div>
     </div>
 
-    <div id="updateToast" class="update-toast hidden" role="status">
-      <div><strong data-i18n="updateTitle">Νέα έκδοση διαθέσιμη</strong><span data-i18n="updateText">Το Kaptiono μπορεί να ενημερωθεί τώρα.</span></div>
-      <button id="updateNowBtn" type="button" data-i18n="updateAction">Ενημέρωση</button>
+    <div id="updateModal" class="app-modal hidden" role="dialog" aria-modal="true" aria-labelledby="updateModalTitle" aria-describedby="updateModalText">
+      <div class="app-modal-card update-modal-card">
+        <div class="update-modal-icon" aria-hidden="true">↻</div>
+        <span class="eyebrow">KAPTIONO UPDATE</span>
+        <h2 id="updateModalTitle" data-i18n="updateTitle">Νέα έκδοση διαθέσιμη</h2>
+        <p id="updateModalText" class="update-modal-text" data-i18n="updateText">Μια νέα έκδοση του Kaptiono είναι έτοιμη. Η ενημέρωση θα γίνει με ασφαλή επανεκκίνηση της εφαρμογής.</p>
+        <div class="update-modal-version"><span data-i18n="updateAvailableLabel">Διαθέσιμη έκδοση</span><strong id="updateAvailableVersion">·</strong></div>
+        <div class="update-modal-actions">
+          <button id="updateNowBtn" class="primary-btn" type="button" data-i18n="updateAction">Ενημέρωση τώρα</button>
+          <button id="updateLaterBtn" class="ghost-btn" type="button" data-i18n="updateLater">Αργότερα</button>
+        </div>
+      </div>
     </div>
 
     <footer class="site-footer">
       <div class="footer-meta footer-meta-desktop">
-        <span>Kaptiono Web Lab 0.5.48</span>
+        <span>Kaptiono Web Lab 1.0.0</span>
         <span>Free · Local + Cloud AI · Original video stays local · No watermark</span><a class="footer-meta-license" href="./THIRD_PARTY_NOTICES.md">Licenses</a>
       </div>
       <nav class="footer-links" aria-label="Footer">
@@ -600,10 +609,10 @@
       </nav>
       <div class="footer-meta footer-meta-mobile" aria-label="Kaptiono version">
         <span>Kaptiono · Free · Local + Cloud AI</span>
-        <small>v0.5.48 · <a class="footer-meta-license" href="./THIRD_PARTY_NOTICES.md">Licenses</a></small>
+        <small>v1.0.0 · <a class="footer-meta-license" href="./THIRD_PARTY_NOTICES.md">Licenses</a></small>
       </div>
     </footer>
   </div>
-  <script type="module" src="./app.js?v=0.5.48"></script>
+  <script type="module" src="./app.js?v=1.0.0"></script>
 </body>
 </html>

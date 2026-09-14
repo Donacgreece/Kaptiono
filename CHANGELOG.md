@@ -1,3 +1,12 @@
+## v1.0.0 - 2026-09-14
+
+- first stable Kaptiono release
+- added an explicit PWA update modal with Update now and Later actions
+- service-worker upgrades now wait for user approval instead of silently taking control
+- updates are deferred while a video project or critical processing session is active
+- improved installed-PWA detection and persistent install-prompt suppression
+- added Chromium installed-related-app detection where supported and safer iOS install prompt behavior
+
 ## v0.5.48 - 2026-09-14
 
 - unified all Roadmap icons to a single matching icon set
