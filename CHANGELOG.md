@@ -12,6 +12,7 @@
 - added Local vs Cloud, creator workflow, privacy, device, FAQ and conversion sections with responsive custom graphics
 - moved the product FAQ to About and removed the duplicate FAQ section from Support
 - added About to sitemap, llms.txt and the PWA application cache
+- refined the About device showcase on desktop with a better-proportioned monitor mockup and Dynamic Island-style iPhone mockups
 
 ## v0.5.48 - 2026-09-14
 
