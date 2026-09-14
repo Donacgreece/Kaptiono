@@ -1068,3 +1068,72 @@ body.modal-open{overflow:hidden}
     border-top:1px solid #e5e9e5;
   }
 }
+
+/* Kaptiono desktop scrollbars
+   Visual-only polish for mouse/trackpad devices. Touch layouts keep the
+   platform-native overlay scrollbar behavior. */
+@media (hover:hover) and (pointer:fine){
+  html,
+  body,
+  *{
+    scrollbar-width:thin;
+    scrollbar-color:#a7d62d #101612;
+  }
+
+  *::-webkit-scrollbar{
+    width:11px;
+    height:11px;
+  }
+
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-track-piece{
+    background:#101612;
+    border-radius:999px;
+  }
+
+  *::-webkit-scrollbar-thumb{
+    min-height:34px;
+    background:linear-gradient(180deg,#c5f34d 0%,#a7d62d 52%,#86b817 100%);
+    border:2px solid #101612;
+    border-radius:999px;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+  }
+
+  *::-webkit-scrollbar-thumb:hover{
+    background:linear-gradient(180deg,#d0ff59 0%,#b5e63b 52%,#94c822 100%);
+  }
+
+  *::-webkit-scrollbar-thumb:active{
+    background:#baff37;
+  }
+
+  *::-webkit-scrollbar-corner{
+    background:#101612;
+  }
+
+  *::-webkit-scrollbar-button:single-button{
+    display:block;
+    width:11px;
+    height:11px;
+    background-color:#101612;
+    background-repeat:no-repeat;
+    background-position:center;
+    background-size:9px 9px;
+  }
+
+  *::-webkit-scrollbar-button:single-button:vertical:decrement{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath d='M1.5 6L4.5 3L7.5 6' fill='none' stroke='%23a7d62d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  *::-webkit-scrollbar-button:single-button:vertical:increment{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath d='M1.5 3L4.5 6L7.5 3' fill='none' stroke='%23a7d62d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  *::-webkit-scrollbar-button:single-button:horizontal:decrement{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath d='M6 1.5L3 4.5L6 7.5' fill='none' stroke='%23a7d62d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+
+  *::-webkit-scrollbar-button:single-button:horizontal:increment{
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath d='M3 1.5L6 4.5L3 7.5' fill='none' stroke='%23a7d62d' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  }
+}
