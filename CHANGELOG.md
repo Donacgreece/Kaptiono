@@ -1,3 +1,12 @@
+## v0.5.46 - 2026-09-14
+
+- Changed first-visit language selection to follow the device/browser primary language.
+- Greek is selected automatically only when the primary browser/device language is Greek; every other language starts in English.
+- Explicit EL/EN choices are remembered and override future automatic detection.
+- Added migration handling so previously saved English choices remain respected while legacy auto-saved Greek values can be corrected on non-Greek devices.
+- Applied the same language behavior to the main app, Privacy/Cookies/Terms pages, and the privacy consent UI.
+- No layout, captioning, export, Cloud, Local AI or first-viewport behavior changed.
+
 ## v0.5.45 - 2026-09-13
 
 - Added the Google Search Console HTML verification file at the site root for domain ownership verification.

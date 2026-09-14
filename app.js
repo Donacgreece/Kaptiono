@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.45';
+const APP_VERSION='0.5.46';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -41,7 +41,31 @@ const presets={
   minimal:{...base,preset:'minimal',title:'Minimal',subtitle:'Subtle & modern',sample:'Απλά και καθαρά',font_family:'Segoe UI',font_size:42,bold:false,outline_width:1,shadow:1,text_color:'#FFFFFF',highlight_color:'#DDF4A1',vertical_position:86,max_words:5,caption_speed:'balanced',animation:'fade',animation_strength:14,caption_width:88,scale:96}
 };
 
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:localStorage.getItem('kaptiono-lang')||'el',style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,exportMode:(localStorage.getItem('kaptiono-export-mode')==='fast'?'fast':'social'),enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null,cloudQuotaTimer:null,cloudQuota:null,cloudQuotaLoading:false,cloudQuotaLastFetch:0};
+const LANG_PREF_KEY='kaptiono-lang';
+const LANG_EXPLICIT_KEY='kaptiono-lang-explicit-v1';
+function deviceUiLang(){
+  const primary=(navigator.languages?.[0]||navigator.language||'').toLowerCase();
+  return /^el(?:-|$)/.test(primary)?'el':'en';
+}
+function detectInitialUiLang(){
+  const device=deviceUiLang();
+  try{
+    const saved=localStorage.getItem(LANG_PREF_KEY);
+    const explicit=localStorage.getItem(LANG_EXPLICIT_KEY)==='1';
+    if(explicit&&(saved==='el'||saved==='en'))return saved;
+    // Before v0.5.46 English could only be stored after a manual language choice.
+    if(saved==='en'){
+      localStorage.setItem(LANG_EXPLICIT_KEY,'1');
+      return 'en';
+    }
+    // Older builds auto-saved Greek on first load, so an unmarked Greek value is not treated as an explicit choice.
+    return device;
+  }catch{return device}
+}
+function rememberUiLang(lang){
+  try{localStorage.setItem(LANG_PREF_KEY,lang);localStorage.setItem(LANG_EXPLICIT_KEY,'1')}catch{}
+}
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:detectInitialUiLang(),style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,exportMode:(localStorage.getItem('kaptiono-export-mode')==='fast'?'fast':'social'),enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null,cloudQuotaTimer:null,cloudQuota:null,cloudQuotaLoading:false,cloudQuotaLastFetch:0};
 const video=$('#video');
 
 function stabilizeMobileI18nLayout(){
@@ -88,8 +112,8 @@ function stabilizeMobileI18nLayout(){
   });
 }
 
-function setLang(lang){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});localStorage.setItem('kaptiono-lang',lang);window.dispatchEvent(new CustomEvent('kaptiono:languagechange',{detail:{lang}}));if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();updateExportButtons?.();refreshLocalModelDownloadModal?.();stabilizeMobileI18nLayout();queueMicrotask(()=>{try{refreshCloudAvailability()}catch{}});}
-$$('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));setLang(state.uiLang);
+function setLang(lang,remember=false){state.uiLang=lang;document.documentElement.lang=lang;$$('[data-lang]').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));$$('[data-i18n]').forEach(el=>{const v=i18n[lang]?.[el.dataset.i18n];if(v)el.textContent=v});if(remember)rememberUiLang(lang);window.dispatchEvent(new CustomEvent('kaptiono:languagechange',{detail:{lang}}));if(!state.file&&lang==='en')$('#languageSelect').value='english';if(state.exporting)setExportUi(state.exportStage,state.exportPct);updateModelHint?.();updateCompatibilityNote?.();updateProcessingModeLabel?.();updateExportButtons?.();refreshLocalModelDownloadModal?.();stabilizeMobileI18nLayout();queueMicrotask(()=>{try{refreshCloudAvailability()}catch{}});}
+$$('[data-lang]').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang,true)));setLang(state.uiLang);
 let i18nResizeTimer=0;window.addEventListener('resize',()=>{clearTimeout(i18nResizeTimer);i18nResizeTimer=setTimeout(stabilizeMobileI18nLayout,120)});
 
 function formatTime(sec){sec=Math.max(0,Number(sec)||0);const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=Math.floor(sec%60).toString().padStart(2,'0');return h?`${h}:${String(m).padStart(2,'0')}:${s}`:`${m}:${s}`}

@@ -14,7 +14,18 @@
     en:{title:'Privacy by choice',text:'We use essential local storage to keep the app working. Google Analytics is optional and stays off until you choose it.',learn:'Privacy & Cookies',accept:'Accept Analytics',reject:'Reject optional',settings:'Settings',settingsTitle:'Privacy settings',settingsText:'You decide what is allowed. You can change your choice at any time from the footer.',essential:'Essential',essentialText:'Language, app preferences, Local model state and your consent choice.',analytics:'Analytics',analyticsText:'Optional Google Analytics for aggregate usage measurement and product improvement.',always:'ALWAYS ON',optional:'OPTIONAL',save:'Save preferences',privacy:'Privacy Policy',cookies:'Cookie Policy',terms:'Terms of Use',close:'Close'}
   };
 
-  const lang=()=>{try{return localStorage.getItem('kaptiono-lang')==='en'?'en':'el'}catch{return document.documentElement.lang==='en'?'en':'el'}};
+  const lang=()=>{
+    const device=()=>{const primary=(navigator.languages?.[0]||navigator.language||'').toLowerCase();return /^el(?:-|$)/.test(primary)?'el':'en'};
+    try{
+      const saved=localStorage.getItem('kaptiono-lang');
+      const explicit=localStorage.getItem('kaptiono-lang-explicit-v1')==='1';
+      if(explicit&&(saved==='el'||saved==='en'))return saved;
+      if(saved==='en')return 'en';
+      return device();
+    }catch{return device()}
+  };
+  try{document.documentElement.lang=lang()}catch{}
+
   const store=v=>{state={analytics:!!v,decided:true};window.KaptionoConsent={...state};try{localStorage.setItem(KEY,JSON.stringify({version:VERSION,analytics:state.analytics,savedAt:Date.now()}))}catch{}};
   const read=()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||'null');if(!v||v.version!==VERSION||!v.savedAt||Date.now()-v.savedAt>MAX_AGE)return null;return {analytics:v.analytics===true,decided:true}}catch{return null}};
   const clearGaCookies=()=>{try{document.cookie.split(';').forEach(x=>{const n=x.split('=')[0].trim();if(!/^(_ga|_gid|_gat)/.test(n))return;const e='Thu, 01 Jan 1970 00:00:00 GMT';document.cookie=`${n}=;expires=${e};path=/;SameSite=Lax`;document.cookie=`${n}=;expires=${e};path=/;domain=.kaptiono.com;SameSite=Lax`})}catch{}};
