@@ -71,18 +71,18 @@ jobs:
           grep -Fq 'AUDIO_EXTRACTION_FAILED' app.js
           grep -Fq 'Third-party software and media compatibility' terms/index.html
           grep -Fq 'PolyForm-Noncommercial-1.0.0' LICENSE
-          grep -Fq 'Safari/WebKit LibAV audio fallback' LICENSE_SCOPE.md
+          grep -Fq 'Safari/WebKit LibAV audio fallback' docs/legal/LICENSE_SCOPE.md
           grep -Fq 'libav.js / FFmpeg WebAssembly audio fallback' THIRD_PARTY_NOTICES.md
           grep -Fq 'LGPL' NOTICE
-          grep -Fqi 'patent' PATENT_NOTICE.md
+          grep -Fqi 'patent' docs/legal/PATENT_NOTICE.md
           test -s THIRD_PARTY_LICENSES/LGPL-2.1.txt
           test -s THIRD_PARTY_LICENSES/LIBAVJS-0BSD.txt
           test -s THIRD_PARTY_LICENSES/EMFIBERTHREADS-0BSD.txt
           test -s README.md
-          test -s SECURITY.md
-          test -s CONTRIBUTING.md
-          test -s RELEASE_PROCESS.md
-          test -s RELEASE_NOTES_v1.0.0.md
+          test -s .github/SECURITY.md
+          test -s .github/CONTRIBUTING.md
+          test -s docs/releases/RELEASE_PROCESS.md
+          test -s docs/releases/RELEASE_NOTES_v1.0.0.md
           test -s assets/screenshots/kaptiono-product-showcase.png
           test -s assets/share/kaptiono-social-v1-1200x630.png
           grep -Fq 'kaptiono-social-v1-1200x630.png' index.html

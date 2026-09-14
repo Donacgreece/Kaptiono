@@ -28,5 +28,5 @@ The original video stays on the user's device. Local Whisper models process audi
 ## Licensing and third-party software
 
 - [Third-party notices](https://kaptiono.com/THIRD_PARTY_NOTICES.md): Third-party software and license information.
-- [License scope](https://kaptiono.com/LICENSE_SCOPE.md): Scope of the Kaptiono first-party license and third-party components.
-- [Codec patent notice](https://kaptiono.com/PATENT_NOTICE.md): Informational notice about standardized media codec patent considerations.
+- [License scope](https://kaptiono.com/docs/legal/LICENSE_SCOPE.md): Scope of the Kaptiono first-party license and third-party components.
+- [Codec patent notice](https://kaptiono.com/docs/legal/PATENT_NOTICE.md): Informational notice about standardized media codec patent considerations.

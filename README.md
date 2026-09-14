@@ -147,11 +147,11 @@ The LibAV fallback is intended for difficult AAC and ALAC cases on Safari and We
 The LibAV / FFmpeg runtime is distributed as a separate third-party component and is not relicensed under the Kaptiono PolyForm license. See:
 
 - `THIRD_PARTY_NOTICES.md`
-- `LICENSE_SCOPE.md`
-- `THIRD_PARTY_SOURCE_OFFER.md`
-- `LIBAV_RUNTIME_REPLACEMENT.md`
-- `LEGAL_COMPLIANCE_LIBAV_AUDIO.md`
-- `PATENT_NOTICE.md`
+- `docs/legal/LICENSE_SCOPE.md`
+- `docs/legal/THIRD_PARTY_SOURCE_OFFER.md`
+- `docs/legal/LIBAV_RUNTIME_REPLACEMENT.md`
+- `docs/legal/LEGAL_COMPLIANCE_LIBAV_AUDIO.md`
+- `docs/legal/PATENT_NOTICE.md`
 
 ## Progressive Web App
 
@@ -271,7 +271,7 @@ A production release should have:
 
 Published release tags should be treated as immutable. If code changes after a release tag has been published, the next production release should use a new semantic version instead of moving the existing tag.
 
-See `RELEASE_PROCESS.md` for the release and rollback procedure.
+See `docs/releases/RELEASE_PROCESS.md` for the release and rollback procedure.
 
 ## Rollback
 
@@ -290,6 +290,32 @@ For normal development, return to `main` after inspection or rollback work.
 
 The repository is intended to be discoverable around AI subtitles, Whisper, local AI, creator tools, PWA and browser-based caption workflows. Repository topics are maintained as part of the release publishing script.
 
+## Repository layout
+
+The repository root is intentionally kept focused on production application files and top-level project metadata. Supporting documentation is grouped under `docs/`, while release tooling lives under `tools/release/`.
+
+```text
+.github/                 GitHub workflows, security and contribution guidance
+assets/                  Icons, screenshots and social assets
+about/                   Product overview page
+partners/                Partnership page
+privacy/ cookies/ terms/ Public legal pages
+docs/                    Deployment, legal and release documentation
+tools/                   Build and release tooling
+THIRD_PARTY_LICENSES/    Required third-party license texts
+index.html               Application entry point
+app.js / styles.css      Main application logic and styles
+sw.js                    PWA service worker
+manifest.webmanifest     PWA manifest
+robots.txt / sitemap.xml Search discovery files
+llms.txt                 AI/LLM discovery summary
+google6ca96312d74da820.html Search Console verification file
+```
+
+Files required at the site root, including the Search Console verification file, remain there intentionally.
+
+---
+
 ## License
 
 Kaptiono is source available under the **PolyForm Noncommercial License 1.0.0**.
@@ -301,8 +327,8 @@ The public software license does not grant rights to use the Kaptiono name, logo
 See:
 
 - `LICENSE`
-- `TRADEMARKS.md`
-- `LICENSE_SCOPE.md`
+- `docs/legal/TRADEMARKS.md`
+- `docs/legal/LICENSE_SCOPE.md`
 
 Kaptiono should be described as source available, not OSI open source.
 
@@ -310,11 +336,11 @@ Kaptiono should be described as source available, not OSI open source.
 
 Please do not publish sensitive security issues, private video content, transcripts, credentials or personal data in public issues.
 
-For security-sensitive reports, see `SECURITY.md`.
+For security-sensitive reports, see `.github/SECURITY.md`.
 
 ## Contributing and bug reports
 
-For contribution and testing guidance, see `CONTRIBUTING.md`.
+For contribution and testing guidance, see `.github/CONTRIBUTING.md`.
 
 Useful bug reports include:
 

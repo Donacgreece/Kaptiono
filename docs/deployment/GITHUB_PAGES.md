@@ -55,6 +55,6 @@ Public product, partnership and legal pages referenced by the sitemap must remai
 Use:
 
 - `CHANGELOG.md` for release history
-- `RELEASE_NOTES_vX.Y.Z.md` for release-specific notes
+- `../releases/RELEASE_NOTES_vX.Y.Z.md` for release-specific notes
 - GitHub Releases for immutable production archives
-- `RELEASE_PROCESS.md` for release and rollback procedure
+- `../releases/RELEASE_PROCESS.md` for release and rollback procedure

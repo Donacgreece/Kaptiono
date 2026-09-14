@@ -29,7 +29,7 @@ License copies:
 
 The Kaptiono build configuration rejects FFmpeg GPL and nonfree modes and rejects external x264/x265, FDK-AAC, FAAC, LAME, libopus and libvorbis libraries. AAC encoding is not enabled in this fallback. It is used for decode only.
 
-The WebAssembly runtime is loaded lazily and remains a separate replaceable component. See `LIBAV_RUNTIME_REPLACEMENT.md` for replacement instructions and `THIRD_PARTY_SOURCE_OFFER.md` for corresponding-source information.
+The WebAssembly runtime is loaded lazily and remains a separate replaceable component. See `docs/legal/LIBAV_RUNTIME_REPLACEMENT.md` for replacement instructions and `docs/legal/THIRD_PARTY_SOURCE_OFFER.md` for corresponding-source information.
 
 ## Mediabunny
 

@@ -80,10 +80,10 @@ $requiredFiles = @(
     'version.json',
     'README.md',
     'CHANGELOG.md',
-    'RELEASE_PROCESS.md',
-    'RELEASE_NOTES_v1.0.0.md',
-    'SECURITY.md',
-    'CONTRIBUTING.md',
+    'docs\releases\RELEASE_PROCESS.md',
+    'docs\releases\RELEASE_NOTES_v1.0.0.md',
+    '.github\SECURITY.md',
+    '.github\CONTRIBUTING.md',
     'sitemap.xml',
     'robots.txt',
     'llms.txt',
@@ -188,7 +188,7 @@ $checksumName = 'kaptiono-web-lab-v1.0.0-github-pages.zip.sha256'
 $checksumFile = Join-Path $archiveDir $checksumName
 Set-Content -LiteralPath $checksumFile -Encoding Ascii -Value "$hash  kaptiono-web-lab-v1.0.0-github-pages.zip"
 
-Copy-Item -LiteralPath (Join-Path $repo 'RELEASE_NOTES_v1.0.0.md') -Destination $archiveDir -Force
+Copy-Item -LiteralPath (Join-Path $repo 'docs\releases\RELEASE_NOTES_v1.0.0.md') -Destination $archiveDir -Force
 
 $head = (git rev-parse HEAD).Trim()
 Assert-NativeSuccess 'Could not resolve the current commit.'
@@ -236,7 +236,7 @@ else {
     }
 }
 
-$releaseNotes = Join-Path $repo 'RELEASE_NOTES_v1.0.0.md'
+$releaseNotes = Join-Path $repo 'docs\releases\RELEASE_NOTES_v1.0.0.md'
 $releaseExists = $true
 
 gh release view $tag --repo $repoSlug *> $null

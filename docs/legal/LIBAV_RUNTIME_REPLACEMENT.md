@@ -8,8 +8,8 @@ Kaptiono first-party code is licensed separately from the LibAV/FFmpeg WebAssemb
 - pinned upstream commit: `c80e885c3461f7bb7ea565c9631b34243ae0dbf1`
 - FFmpeg: 9.0
 - variant: `kaptiono-audio-cli`
-- build recipe: `tools/build-libav-audio.sh`
-- variant configuration: `tools/libav-kaptiono-audio-config.json`
+- build recipe: `../../tools/build-libav-audio.sh`
+- variant configuration: `../../tools/libav-kaptiono-audio-config.json`
 
 The production files are served separately under `vendor/libav/` and the exact corresponding source is served under `third-party-source/`.
 
