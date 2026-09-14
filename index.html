@@ -44,6 +44,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="stylesheet" href="./styles.css?v=1.0.0" />
+  <link rel="stylesheet" href="./footer.css?v=1.0.0" />
   <script src="./consent.js?v=1.0.0"></script>
   <script type="application/ld+json">
   {
@@ -576,31 +577,19 @@
       </div>
     </div>
 
-    <footer class="site-footer">
-      <div class="footer-meta footer-meta-desktop">
-        <span>Kaptiono Web Lab 1.0.0</span>
-        <span>Free · Local + Cloud AI · Original video stays local · No watermark</span><a class="footer-meta-license" href="./THIRD_PARTY_NOTICES.md">Licenses</a>
-      </div>
-      <nav class="footer-links" aria-label="Footer">
-        <span class="footer-link-group footer-link-group-primary">
-          <button id="footerSupportBtn" type="button">Support</button>
-          <button id="footerRoadmapBtn" type="button">Roadmap</button>
-          <a href="./about/">About</a>
-          <a href="https://github.com/Donacgreece/Kaptiono" target="_blank" rel="noopener">GitHub</a>
-        </span>
-        <span class="footer-link-divider" aria-hidden="true"></span>
-        <span class="footer-link-group footer-link-group-legal">
-          <a href="./privacy/">Privacy</a>
-          <a href="./cookies/">Cookies</a>
-          <a href="./terms/">Terms</a>
-          <button class="open-cookie-settings" type="button">Preferences</button>
-        </span>
-      </nav>
-      <div class="footer-meta footer-meta-mobile" aria-label="Kaptiono version">
-        <span>Kaptiono · Free · Local + Cloud AI</span>
-        <small>v1.0.0 · <a class="footer-meta-license" href="./THIRD_PARTY_NOTICES.md">Licenses</a></small>
-      </div>
-    </footer>
+    <footer class="kap-footer">
+  <div class="kap-footer-brand">
+    <a href="./" aria-label="Open Kaptiono"><img src="./assets/icons/icon-64.png" alt="" /><span><strong>Kaptiono</strong><small>v1.0.0</small></span></a>
+    <p>AI subtitles for creators. Local or Cloud AI. The original video stays on your device.</p>
+  </div>
+  <div class="kap-footer-links">
+    <div><b>Product</b><a href="./about/">About</a><a href="./about/#features">Features</a><a href="./about/#faq">FAQ</a><a href="./">Open Kaptiono</a></div>
+    <div><b>Project</b><button id="footerSupportBtn" type="button">Support</button><button id="footerRoadmapBtn" type="button">Roadmap</button><a href="https://github.com/Donacgreece/Kaptiono" target="_blank" rel="noopener">GitHub</a><a href="./THIRD_PARTY_NOTICES.md">Licenses</a></div>
+    <div><b>Privacy &amp; Legal</b><a href="./privacy/">Privacy</a><a href="./cookies/">Cookies</a><a href="./terms/">Terms</a><button class="open-cookie-settings" type="button">Preferences</button></div>
+    <div><b>Business</b><a class="kap-footer-partners" href="./partners/">Partners</a><a href="mailto:info@kaptiono.com">Contact</a></div>
+  </div>
+  <div class="kap-footer-bottom"><span>© 2026 Kaptiono · Free core · No watermark</span><span>Local + Cloud AI · <a href="./THIRD_PARTY_NOTICES.md">Licenses</a></span></div>
+</footer>
   </div>
   <script type="module" src="./app.js?v=1.0.0"></script>
 </body>

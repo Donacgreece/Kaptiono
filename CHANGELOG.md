@@ -1,5 +1,7 @@
 ## v1.0.0 - 2026-09-14
 
+- Added a dedicated Partners page for sponsorships and creator-focused commercial collaborations.
+- Unified the footer across the app, About, Partners and legal pages without removing access to product, project, legal, privacy, contact or licensing information.
 - first stable Kaptiono release
 - added an explicit PWA update modal with Update now and Later actions
 - service-worker upgrades now wait for user approval instead of silently taking control
