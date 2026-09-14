@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='0.5.46';
+const APP_VERSION='0.5.47';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -53,7 +53,7 @@ function detectInitialUiLang(){
     const saved=localStorage.getItem(LANG_PREF_KEY);
     const explicit=localStorage.getItem(LANG_EXPLICIT_KEY)==='1';
     if(explicit&&(saved==='el'||saved==='en'))return saved;
-    // Before v0.5.46 English could only be stored after a manual language choice.
+    // Before v0.5.47 English could only be stored after a manual language choice.
     if(saved==='en'){
       localStorage.setItem(LANG_EXPLICIT_KEY,'1');
       return 'en';
@@ -137,10 +137,9 @@ function updateTopbarPageNav(page){
   $('#supportNav').classList.toggle('hidden',detailPage);
   back.classList.toggle('hidden',!detailPage);
   if(detailPage){
-    const roadmap=page==='roadmap';
     back.textContent='←';
-    back.dataset.backTarget=roadmap?'support':'home';
-    back.setAttribute('aria-label',state.uiLang==='el'?(roadmap?'Πίσω στο Support':'Πίσω στο Kaptiono'):(roadmap?'Back to Support':'Back to Kaptiono'));
+    back.dataset.backTarget='home';
+    back.setAttribute('aria-label',state.uiLang==='el'?'Πίσω στο Kaptiono':'Back to Kaptiono');
   }
 }
 function showPage(page){

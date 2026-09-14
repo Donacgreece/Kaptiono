@@ -63,7 +63,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "const APP_VERSION='0.5.46'" app.js
+          grep -Fq "const APP_VERSION='0.5.47'" app.js
           test -s google6ca96312d74da820.html
           grep -Fxq 'google-site-verification: google6ca96312d74da820.html' google6ca96312d74da820.html
           grep -Fq 'extractAudio16kWithLibav' app.js

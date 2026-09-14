@@ -1,3 +1,9 @@
+## v0.5.47 - 2026-09-14
+
+- fixed Roadmap back navigation so it returns to the home page
+- removed the Roadmap CTA widget from Support
+- replaced the Auto Caption Position icon with a more consistent cross-platform symbol
+
 ## v0.5.46 - 2026-09-14
 
 - Changed first-visit language selection to follow the device/browser primary language.
