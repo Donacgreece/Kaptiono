@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='1.0.1';
+const APP_VERSION='1.0.0';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -53,7 +53,7 @@ function detectInitialUiLang(){
     const saved=localStorage.getItem(LANG_PREF_KEY);
     const explicit=localStorage.getItem(LANG_EXPLICIT_KEY)==='1';
     if(explicit&&(saved==='el'||saved==='en'))return saved;
-    // Before v1.0.1 English could only be stored after a manual language choice.
+    // Before v1.0.0 English could only be stored after a manual language choice.
     if(saved==='en'){
       localStorage.setItem(LANG_EXPLICIT_KEY,'1');
       return 'en';

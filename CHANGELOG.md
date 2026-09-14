@@ -1,11 +1,3 @@
-## v1.0.1 - 2026-09-14
-
-- added a dedicated responsive About/product landing page at `/about/`
-- replaced Contact with About in the app footer while keeping the four primary footer links
-- added bilingual EL/EN presentation content with device-language detection and remembered manual preference
-- added Local vs Cloud, creator workflow, privacy, device, FAQ and conversion sections with responsive custom graphics
-- added the About page to sitemap, llms.txt and the PWA application cache
-
 ## v1.0.0 - 2026-09-14
 
 - first stable Kaptiono release
@@ -14,6 +6,12 @@
 - updates are deferred while a video project or critical processing session is active
 - improved installed-PWA detection and persistent install-prompt suppression
 - added Chromium installed-related-app detection where supported and safer iOS install prompt behavior
+- added the dedicated responsive About/product landing page at `/about/`
+- replaced Contact with About in the app footer while keeping four primary footer links
+- added bilingual EL/EN About content with device-language detection and remembered manual preference
+- added Local vs Cloud, creator workflow, privacy, device, FAQ and conversion sections with responsive custom graphics
+- moved the product FAQ to About and removed the duplicate FAQ section from Support
+- added About to sitemap, llms.txt and the PWA application cache
 
 ## v0.5.48 - 2026-09-14
 

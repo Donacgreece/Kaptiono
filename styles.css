@@ -135,18 +135,6 @@ html,body{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media(max-width:620px){.install-banner{grid-template-columns:44px minmax(0,1fr) auto;width:calc(100% - 20px);bottom:max(10px,env(safe-area-inset-bottom));padding:10px;border-radius:18px}.install-banner>img{width:44px;height:44px}.install-copy strong{font-size:12px}.install-copy span{font-size:9px}.install-action{min-width:86px;height:40px;padding:0 12px}.app-modal{padding:12px}.app-modal-card{padding:22px 18px 18px;border-radius:24px}.app-modal-card h2{font-size:25px}.update-modal-actions{grid-template-columns:1fr}.update-modal-actions .ghost-btn{width:100%}}
 
 
-/* v0.5.3 clean Support layout */
-.support-faq{padding:clamp(22px,3vw,34px);display:grid;grid-template-columns:minmax(220px,.58fr) minmax(0,1.42fr);gap:30px;align-items:start}
-.support-faq-head h2{font-size:clamp(24px,2.2vw,32px);letter-spacing:-.035em;margin:8px 0 0;line-height:1.08}
-.support-faq-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.support-faq-list details{border:1px solid var(--line);border-radius:14px;background:#fbfcfa;overflow:hidden;min-height:72px}
-.support-faq-list summary{cursor:pointer;list-style:none;padding:16px 42px 16px 16px;font-size:11px;font-weight:900;line-height:1.45;position:relative;min-height:72px;display:flex;align-items:center}
-.support-faq-list summary::-webkit-details-marker{display:none}
-.support-faq-list summary:after{content:'+';position:absolute;right:15px;top:50%;transform:translateY(-50%);width:24px;height:24px;border-radius:8px;background:#eef4dc;color:#617c14;display:grid;place-items:center;font-size:15px;font-weight:900}
-.support-faq-list details[open] summary:after{content:'−'}
-.support-faq-list p{margin:0;padding:0 16px 16px;color:var(--muted);font-size:11px;line-height:1.6}
-@media(max-width:900px){.support-faq{grid-template-columns:1fr;gap:18px}.support-faq-list{grid-template-columns:1fr 1fr}}
-@media(max-width:620px){.support-faq{padding:18px;gap:14px}.support-faq-list{grid-template-columns:1fr;gap:8px}.support-faq-list summary{min-height:64px;padding:14px 40px 14px 14px}.support-faq-list p{padding:0 14px 14px}}
 
 
 /* v0.5.7 staged creator-friendly processing progress */

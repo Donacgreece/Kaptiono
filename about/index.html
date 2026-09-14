@@ -28,9 +28,9 @@
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="../manifest.webmanifest" />
-  <link rel="stylesheet" href="../styles.css?v=1.0.1" />
-  <link rel="stylesheet" href="./about.css?v=1.0.1" />
-  <script src="../consent.js?v=1.0.1"></script>
+  <link rel="stylesheet" href="../styles.css?v=1.0.0" />
+  <link rel="stylesheet" href="./about.css?v=1.0.0" />
+  <script src="../consent.js?v=1.0.0"></script>
   <script type="application/ld+json">
   {
     "@context":"https://schema.org",
@@ -57,6 +57,17 @@
           "No watermark",
           "Mobile and desktop PWA experience"
         ]
+      },
+      {
+        "@type":"FAQPage",
+        "mainEntity":[
+          {"@type":"Question","name":"Does my video get uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The original video stays on your device. In Local mode the audio stays local too. In Cloud High Accuracy, only the audio required for transcription is sent."}},
+          {"@type":"Question","name":"Is Kaptiono free?","acceptedAnswer":{"@type":"Answer","text":"The core Local workflow remains free and exports do not carry a watermark."}},
+          {"@type":"Question","name":"Do I need an account?","acceptedAnswer":{"@type":"Answer","text":"Not for the core workflow. You can open Kaptiono and start with a video without mandatory sign-up."}},
+          {"@type":"Question","name":"Does it work on mobile?","acceptedAnswer":{"@type":"Answer","text":"Yes. Kaptiono is designed for mobile and desktop, with a PWA install flow and dedicated attention to Safari and iPhone compatibility."}},
+          {"@type":"Question","name":"What can I export?","acceptedAnswer":{"@type":"Answer","text":"You can download SRT, transcript and video with burned-in captions. Social Compatible mode is available for better social-platform compatibility."}},
+          {"@type":"Question","name":"Which video formats are supported?","acceptedAnswer":{"@type":"Answer","text":"The core workflow supports MP4, MOV, M4V and WebM, with a compatibility fallback for difficult Safari audio cases."}}
+        ]
       }
     ]
   }
@@ -78,7 +89,7 @@
         <button type="button" data-lang="el">EL</button>
         <button type="button" data-lang="en">EN</button>
       </div>
-      <a class="about-open-app" href="../"><span data-el="Άνοιγμα Kaptiono" data-en="Open Kaptiono">Open Kaptiono</span><b>→</b></a>
+      <a class="about-open-app" href="../" aria-label="Back to Kaptiono"><b aria-hidden="true">←</b></a>
     </div>
   </header>
 
@@ -263,7 +274,7 @@
   </main>
 
   <footer class="about-footer">
-    <div class="about-footer-brand"><a href="../"><img src="../assets/icons/icon-64.png" alt="" /><span><strong>Kaptiono</strong><small>v1.0.1</small></span></a><p data-el="AI subtitles για creators. Local ή Cloud AI." data-en="AI subtitles for creators. Local or Cloud AI.">AI subtitles for creators. Local or Cloud AI.</p></div>
+    <div class="about-footer-brand"><a href="../"><img src="../assets/icons/icon-64.png" alt="" /><span><strong>Kaptiono</strong><small>v1.0.0</small></span></a><p data-el="AI subtitles για creators. Local ή Cloud AI." data-en="AI subtitles for creators. Local or Cloud AI.">AI subtitles for creators. Local or Cloud AI.</p></div>
     <div class="about-footer-links">
       <div><b data-el="Προϊόν" data-en="Product">Product</b><a href="../" data-el="Άνοιγμα Kaptiono" data-en="Open Kaptiono">Open Kaptiono</a><a href="#features" data-el="Δυνατότητες" data-en="Features">Features</a><a href="#faq">FAQ</a></div>
       <div><b data-el="Απόρρητο" data-en="Privacy">Privacy</b><a href="../privacy/">Privacy</a><a href="../cookies/">Cookies</a><button class="open-cookie-settings" type="button" data-el="Preferences" data-en="Preferences">Preferences</button></div>
@@ -272,6 +283,6 @@
     <div class="about-footer-bottom"><span>© 2026 Kaptiono</span><a href="../THIRD_PARTY_NOTICES.md">Licenses</a></div>
   </footer>
 
-  <script src="./about.js?v=1.0.1"></script>
+  <script src="./about.js?v=1.0.0"></script>
 </body>
 </html>
