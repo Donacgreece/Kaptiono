@@ -70,7 +70,7 @@ jobs:
           grep -Fq 'KAPTIONO_LIBAV_BASE' app.js
           grep -Fq 'AUDIO_EXTRACTION_FAILED' app.js
           grep -Fq 'Third-party software and media compatibility' terms/index.html
-          grep -Fq 'PolyForm-Noncommercial-1.0.1' LICENSE
+          grep -Fq 'PolyForm-Noncommercial-1.0.0' LICENSE
           grep -Fq 'Safari/WebKit LibAV audio fallback' LICENSE_SCOPE.md
           grep -Fq 'libav.js / FFmpeg WebAssembly audio fallback' THIRD_PARTY_NOTICES.md
           grep -Fq 'LGPL' NOTICE
