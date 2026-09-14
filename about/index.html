@@ -9,21 +9,26 @@
   <meta name="application-name" content="Kaptiono" />
   <meta name="author" content="Kaptiono" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-  <meta name="description" content="Meet Kaptiono, a privacy-first AI subtitle tool for creators. Generate, edit, style and export captions with Local Whisper or optional Cloud High Accuracy." />
-  <meta name="keywords" content="Kaptiono, AI subtitles, subtitle generator, caption generator, local AI, Whisper subtitles, video captions, no watermark, creator tools" />
+  <meta name="description" content="Explore Kaptiono, a privacy-first AI subtitle generator with Local Whisper, optional Cloud High Accuracy, caption editing, mobile PWA support and no-watermark export." />
   <link rel="canonical" href="https://kaptiono.com/about/" />
   <link rel="describedby" href="https://kaptiono.com/llms.txt" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kaptiono" />
-  <meta property="og:title" content="Kaptiono · AI subtitles built for creators" />
-  <meta property="og:description" content="Local AI when privacy matters. Cloud High Accuracy when precision matters. Edit and export captions without a watermark." />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale:alternate" content="el_GR" />
+  <meta property="og:title" content="About Kaptiono | Local AI Subtitles for Creators" />
+  <meta property="og:description" content="See how Kaptiono combines Local Whisper, optional Cloud High Accuracy, caption editing, privacy-first processing and no-watermark export." />
   <meta property="og:url" content="https://kaptiono.com/about/" />
   <meta property="og:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Kaptiono AI subtitle generator product overview" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Kaptiono · AI subtitles built for creators" />
-  <meta name="twitter:description" content="Generate, edit, style and export captions with Local Whisper or optional Cloud High Accuracy." />
+  <meta name="twitter:title" content="About Kaptiono | Local AI Subtitles for Creators" />
+  <meta name="twitter:description" content="Local Whisper, optional Cloud High Accuracy, caption editing, privacy-first processing and no-watermark export." />
   <meta name="twitter:image" content="https://kaptiono.com/assets/share/kaptiono-twitter-1200x630.png" />
-  <title>Kaptiono · AI subtitles built for creators</title>
+  <meta name="twitter:image:alt" content="Kaptiono AI subtitle generator product overview" />
+  <title>About Kaptiono | Local AI Subtitles for Creators</title>
   <link rel="icon" href="../favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png" />
@@ -33,45 +38,128 @@
   <link rel="stylesheet" href="./about.css?v=1.0.0" />
   <script src="../consent.js?v=1.0.0"></script>
   <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@graph":[
-      {
-        "@type":"AboutPage",
-        "name":"About Kaptiono",
-        "url":"https://kaptiono.com/about/",
-        "description":"Product overview of Kaptiono, a privacy-first AI subtitle tool for creators.",
-        "isPartOf":{"@type":"WebSite","name":"Kaptiono","url":"https://kaptiono.com/"}
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://kaptiono.com/#organization",
+      "name": "Kaptiono",
+      "url": "https://kaptiono.com/",
+      "logo": "https://kaptiono.com/assets/icons/icon-512.png",
+      "email": "info@kaptiono.com",
+      "sameAs": [
+        "https://github.com/Donacgreece/Kaptiono"
+      ]
+    },
+    {
+      "@type": "AboutPage",
+      "@id": "https://kaptiono.com/about/#page",
+      "name": "About Kaptiono",
+      "url": "https://kaptiono.com/about/",
+      "description": "Product overview of Kaptiono, a privacy-first AI subtitle generator and caption editor for creators.",
+      "isPartOf": {
+        "@id": "https://kaptiono.com/#website"
       },
-      {
-        "@type":"SoftwareApplication",
-        "name":"Kaptiono",
-        "url":"https://kaptiono.com/",
-        "applicationCategory":"MultimediaApplication",
-        "operatingSystem":"Web Browser, Android, iOS, Windows, macOS",
-        "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
-        "featureList":[
-          "Local Whisper subtitle generation",
-          "Optional Cloud High Accuracy transcription",
-          "Caption editing and styling",
-          "SRT and burned-in video export",
-          "No watermark",
-          "Mobile and desktop PWA experience"
-        ]
+      "about": {
+        "@id": "https://kaptiono.com/#app"
       },
-      {
-        "@type":"FAQPage",
-        "mainEntity":[
-          {"@type":"Question","name":"Does my video get uploaded to a server?","acceptedAnswer":{"@type":"Answer","text":"No. The original video stays on your device. In Local mode the audio stays local too. In Cloud High Accuracy, only the audio required for transcription is sent."}},
-          {"@type":"Question","name":"Is Kaptiono free?","acceptedAnswer":{"@type":"Answer","text":"The core Local workflow remains free and exports do not carry a watermark."}},
-          {"@type":"Question","name":"Do I need an account?","acceptedAnswer":{"@type":"Answer","text":"Not for the core workflow. You can open Kaptiono and start with a video without mandatory sign-up."}},
-          {"@type":"Question","name":"Does it work on mobile?","acceptedAnswer":{"@type":"Answer","text":"Yes. Kaptiono is designed for mobile and desktop, with a PWA install flow and dedicated attention to Safari and iPhone compatibility."}},
-          {"@type":"Question","name":"What can I export?","acceptedAnswer":{"@type":"Answer","text":"You can download SRT, transcript and video with burned-in captions. Social Compatible mode is available for better social-platform compatibility."}},
-          {"@type":"Question","name":"Which video formats are supported?","acceptedAnswer":{"@type":"Answer","text":"The core workflow supports MP4, MOV, M4V and WebM, with a compatibility fallback for difficult Safari audio cases."}}
-        ]
+      "dateModified": "2026-09-14"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://kaptiono.com/#website",
+      "name": "Kaptiono",
+      "url": "https://kaptiono.com/",
+      "publisher": {
+        "@id": "https://kaptiono.com/#organization"
       }
-    ]
-  }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://kaptiono.com/#app",
+      "name": "Kaptiono",
+      "url": "https://kaptiono.com/",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web Browser, Android, iOS, Windows, macOS",
+      "softwareVersion": "1.0.0",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://kaptiono.com/#organization"
+      },
+      "screenshot": [
+        "https://kaptiono.com/assets/screenshots/about-desktop.png",
+        "https://kaptiono.com/assets/screenshots/about-mobile.png"
+      ],
+      "featureList": [
+        "Local Whisper subtitle generation",
+        "Optional Cloud High Accuracy transcription",
+        "Caption editing and styling",
+        "SRT and burned-in video export",
+        "No watermark",
+        "Mobile and desktop PWA experience"
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does my video get uploaded to a server?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The original video stays on your device. In Local mode the audio stays local too. In Cloud High Accuracy, only the audio required for transcription is sent."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is Kaptiono free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The core Local workflow remains free and exports do not carry a watermark."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do I need an account?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Not for the core workflow. You can open Kaptiono and start with a video without mandatory sign-up."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does it work on mobile?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Kaptiono is designed for mobile and desktop, with a PWA install flow and dedicated attention to Safari and iPhone compatibility."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What can I export?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You can download SRT, transcript and video with burned-in captions. Social Compatible mode is available for better social-platform compatibility."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which video formats are supported?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The core workflow supports MP4, MOV, M4V and WebM, with a compatibility fallback for difficult Safari audio cases."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
 </head>
 <body class="about-body">

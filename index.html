@@ -12,19 +12,15 @@
   <meta name="apple-mobile-web-app-title" content="Kaptiono" />
   <meta name="application-name" content="Kaptiono" />
   <meta name="author" content="Kaptiono" />
-  <meta name="description" content="Kaptiono is an AI subtitle generator for creators with local processing and an optional Cloud High Accuracy mode. The original video stays on your device, with no watermark exports." />
-  <meta name="keywords" content="Kaptiono, AI subtitles, subtitle generator, video captions, local AI, browser captions, caption editor, no upload subtitles, no watermark captions, Whisper subtitles" />
+  <meta name="description" content="Generate, edit and export AI subtitles in your browser with Local Whisper or optional Cloud High Accuracy. The original video stays on your device and exports have no watermark." />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <link rel="canonical" href="https://kaptiono.com/" />
-  <link rel="alternate" hreflang="el" href="https://kaptiono.com/" />
-  <link rel="alternate" hreflang="en" href="https://kaptiono.com/en" />
-  <link rel="alternate" hreflang="x-default" href="https://kaptiono.com/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Kaptiono" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="el_GR" />
-  <meta property="og:title" content="Kaptiono · AI subtitles for creators" />
-  <meta property="og:description" content="Create captions with local AI or optional Cloud High Accuracy while keeping the original video on your device." />
+  <meta property="og:title" content="Kaptiono | Free AI Subtitle Generator with Local Whisper" />
+  <meta property="og:description" content="Generate, edit and export captions with Local Whisper or optional Cloud High Accuracy. Original video stays on your device. No watermark." />
   <meta property="og:url" content="https://kaptiono.com/" />
   <meta property="og:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
   <meta property="og:image:secure_url" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
@@ -33,11 +29,11 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Kaptiono social preview card showing the brand icon and the message Local AI subtitles for creators." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Kaptiono · AI subtitles for creators" />
-  <meta name="twitter:description" content="Create captions with local AI or optional Cloud High Accuracy while keeping the original video on your device." />
+  <meta name="twitter:title" content="Kaptiono | Free AI Subtitle Generator with Local Whisper" />
+  <meta name="twitter:description" content="Generate, edit and export captions with Local Whisper or optional Cloud High Accuracy. Original video stays on your device. No watermark." />
   <meta name="twitter:image" content="https://kaptiono.com/assets/share/kaptiono-og-1200x630.png" />
   <meta name="twitter:image:alt" content="Kaptiono social preview card with brand icon and product message." />
-  <title>Kaptiono · AI subtitles for creators</title>
+  <title>Kaptiono | Free AI Subtitle Generator with Local Whisper</title>
   <link rel="icon" href="./favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png" />
   <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png" />
@@ -47,70 +43,68 @@
   <link rel="stylesheet" href="./footer.css?v=1.0.0" />
   <script src="./consent.js?v=1.0.0"></script>
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "name": "Kaptiono",
-        "url": "https://kaptiono.com/",
-        "description": "AI subtitle generator for creators with local and optional cloud transcription.",
-        "inLanguage": ["en", "el"]
-      },
-      {
-        "@type": "SoftwareApplication",
-        "name": "Kaptiono",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser, Android, iOS, Windows, macOS",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "image": "https://kaptiono.com/assets/share/kaptiono-og-1200x630.png",
-        "url": "https://kaptiono.com/",
-        "description": "Kaptiono helps creators generate subtitles with local AI or optional cloud transcription while keeping the original video on the device.",
-        "inLanguage": ["en", "el"],
-        "featureList": [
-          "Local AI subtitle generation",
-          "Optional Cloud High Accuracy transcription",
-          "Browser-based caption editing",
-          "No upload video processing",
-          "No watermark exports",
-          "Desktop and mobile friendly workflow"
-        ]
-      },
-      {
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "Does Kaptiono upload my video to a server?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The original video stays on the device. Local models process audio on-device. If Cloud High Accuracy is selected, only extracted audio is sent for transcription."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is Kaptiono for?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Kaptiono is built for creators who want AI subtitles, quick editing and clean exports for social and long-form video workflows."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Which devices can use Kaptiono?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Kaptiono is designed to work in modern desktop and mobile browsers, and it can also be packaged as a desktop or app-like experience."
-            }
-          }
-        ]
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://kaptiono.com/#organization",
+      "name": "Kaptiono",
+      "url": "https://kaptiono.com/",
+      "logo": "https://kaptiono.com/assets/icons/icon-512.png",
+      "email": "info@kaptiono.com",
+      "sameAs": [
+        "https://github.com/Donacgreece/Kaptiono"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://kaptiono.com/#website",
+      "name": "Kaptiono",
+      "url": "https://kaptiono.com/",
+      "description": "Privacy-first AI subtitle generator with Local Whisper, optional Cloud High Accuracy and no-watermark exports.",
+      "publisher": {
+        "@id": "https://kaptiono.com/#organization"
       }
-    ]
-  }
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://kaptiono.com/#app",
+      "name": "Kaptiono",
+      "url": "https://kaptiono.com/",
+      "applicationCategory": "MultimediaApplication",
+      "applicationSubCategory": "AI subtitle generator and caption editor",
+      "operatingSystem": "Web Browser, Android, iOS, Windows, macOS",
+      "softwareVersion": "1.0.0",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@id": "https://kaptiono.com/#organization"
+      },
+      "image": "https://kaptiono.com/assets/share/kaptiono-og-1200x630.png",
+      "screenshot": [
+        "https://kaptiono.com/assets/screenshots/about-desktop.png",
+        "https://kaptiono.com/assets/screenshots/about-mobile.png"
+      ],
+      "description": "Generate, edit, style and export AI subtitles with Local Whisper or optional Cloud High Accuracy while keeping the original video on the device.",
+      "featureList": [
+        "Local Whisper subtitle generation",
+        "Optional Cloud High Accuracy transcription",
+        "Browser-based caption editing and styling",
+        "SRT and TXT export",
+        "Burned-in video export",
+        "Social-compatible export",
+        "No watermark",
+        "Mobile and desktop PWA support"
+      ],
+      "dateModified": "2026-09-14"
+    }
+  ]
+}
   </script>
 </head>
 <body>

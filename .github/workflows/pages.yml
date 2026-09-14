@@ -78,6 +78,24 @@ jobs:
           test -s THIRD_PARTY_LICENSES/LGPL-2.1.txt
           test -s THIRD_PARTY_LICENSES/LIBAVJS-0BSD.txt
           test -s THIRD_PARTY_LICENSES/EMFIBERTHREADS-0BSD.txt
+          test -s README.md
+          test -s SECURITY.md
+          test -s CONTRIBUTING.md
+          test -s RELEASE_PROCESS.md
+          test -s RELEASE_NOTES_v1.0.0.md
+          test -s assets/screenshots/about-desktop.png
+          test -s assets/screenshots/about-mobile.png
+          test -s about/index.html
+          test -s partners/index.html
+          grep -Fq 'https://kaptiono.com/about/' sitemap.xml
+          grep -Fq 'https://kaptiono.com/partners/' sitemap.xml
+          grep -Fq 'https://kaptiono.com/privacy/' sitemap.xml
+          grep -Fq 'https://kaptiono.com/cookies/' sitemap.xml
+          grep -Fq 'https://kaptiono.com/terms/' sitemap.xml
+          ! grep -Fq 'https://kaptiono.com/en' index.html
+          ! grep -Fq '"@type": "FAQPage"' index.html
+          grep -Fq '"@type": "FAQPage"' about/index.html
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('sitemap.xml')"
 
       - name: Assemble Pages artifact
         shell: bash

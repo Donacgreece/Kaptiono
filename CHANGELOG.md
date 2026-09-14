@@ -1,20 +1,50 @@
+# Changelog
+
 ## v1.0.0 - 2026-09-14
 
-- Added a dedicated Partners page for sponsorships and creator-focused commercial collaborations.
-- Unified the footer across the app, About, Partners and legal pages without removing access to product, project, legal, privacy, contact or licensing information.
-- first stable Kaptiono release
-- added an explicit PWA update modal with Update now and Later actions
-- service-worker upgrades now wait for user approval instead of silently taking control
-- updates are deferred while a video project or critical processing session is active
-- improved installed-PWA detection and persistent install-prompt suppression
-- added Chromium installed-related-app detection where supported and safer iOS install prompt behavior
-- added the dedicated responsive About/product landing page at `/about/`
-- replaced Contact with About in the app footer while keeping four primary footer links
-- added bilingual EL/EN About content with device-language detection and remembered manual preference
-- added Local vs Cloud, creator workflow, privacy, device, FAQ and conversion sections with responsive custom graphics
-- moved the product FAQ to About and removed the duplicate FAQ section from Support
-- added About to sitemap, llms.txt and the PWA application cache
-- refined the About device showcase on desktop with a better-proportioned monitor mockup and Dynamic Island-style iPhone mockups
+Kaptiono v1.0.0 is the first stable production release.
+
+### Product
+
+- Added Local Whisper transcription with Small, Base and Tiny models.
+- Added optional Cloud High Accuracy transcription using Whisper Large v3 Turbo with live quota awareness and preflight checks.
+- Added Caption Studio with live preview, creator presets and manual typography, color, position, flow, motion and effect controls.
+- Added SRT, TXT, burned-in video, Social Compatible and Fast Export workflows.
+- Extended caption rotation to the full -90 degree to +90 degree range.
+- Added Safari and WebKit audio compatibility fallback using a separate LibAV / FFmpeg WebAssembly runtime.
+
+### PWA and device experience
+
+- Added mobile and desktop PWA support with install-state handling.
+- Added an explicit update flow with Update now and Later actions instead of silent service-worker takeover.
+- Deferred updates while a video project or critical processing session is active.
+- Added automatic EL/EN interface selection based on device language while preserving explicit user choices.
+- Standardized Roadmap iconography and navigation across mobile and desktop.
+
+### Public site and business pages
+
+- Added the responsive About page at `/about/` with product overview, Local versus Cloud explanation, device presentation and FAQ.
+- Added the Partners page at `/partners/` for sponsorships and creator-focused commercial collaborations.
+- Unified footer navigation across the application, About, Partners and legal pages without removing product, project, legal, privacy, contact or licensing links.
+- Kept the product FAQ on About and removed the duplicate FAQ from Support.
+
+### Privacy, legal and compliance
+
+- Added bilingual Privacy Policy, Cookie Policy and Terms of Use pages.
+- Added consent-aware Google Analytics behavior and persistent privacy preferences.
+- Added third-party notices, license scope documentation, source-offer information, runtime replacement guidance and codec patent notice for the LibAV / FFmpeg compatibility runtime.
+- Kept the original video on-device in the core workflow; Cloud High Accuracy sends only extracted audio when explicitly selected.
+
+### Search, discovery and repository
+
+- Added Google Search Console verification.
+- Updated canonical metadata, Open Graph, Twitter cards and structured data for the production app, About and Partners pages.
+- Removed invalid language-alternate metadata for URLs that do not exist.
+- Kept FAQ structured data only on the page where the FAQ content is visible.
+- Updated `sitemap.xml` with all public production pages and accurate `lastmod` dates.
+- Updated `robots.txt` and `llms.txt` discovery references.
+- Added a production-focused README, repository screenshots, contribution guidance, security reporting instructions and a documented release process.
+- Added release notes, immutable-tag guidance, ZIP archive and SHA-256 checksum workflow for production releases.
 
 ## v0.5.48 - 2026-09-14
 
@@ -41,42 +71,35 @@
 - Added the Google Search Console HTML verification file at the site root for domain ownership verification.
 - No UI, captioning, export, Cloud, Local AI or layout behavior changed.
 
-# Changelog
 
-## 0.5.44
+## v0.5.44
 
 - Reworked the mobile footer into two clear vertical groups, Kaptiono and Legal, instead of two rows of four links.
 - Kept Licenses in the existing version/meta line below the navigation.
 - Desktop footer layout is unchanged.
 - Homepage/first-viewport layout is unchanged; the footer remains below the fold and requires scrolling on mobile.
 
-## 0.5.43
+## v0.5.43
 
-- Standardized the top-right Back control as the same compact arrow-only button on desktop and mobile.
-- Support, Roadmap, Privacy, Cookies and Terms now share the same visual navigation treatment.
-- Destination behavior is unchanged and accessible labels still describe where the Back control leads.
+- Standardized the compact top-right Back control across Support, Roadmap, Privacy, Cookies and Terms.
+- Removed the large inline back buttons from Support and Roadmap on mobile and desktop.
+- Preserved accessible labels and page-specific navigation behavior.
 
-## 0.5.43
 
-- Support and Roadmap now use the same compact top-right back control as the Privacy, Cookies and Terms pages.
-- Removed the large inline back buttons from the Support and Roadmap cards on mobile and desktop.
-- Navigation behavior is unchanged: Support returns to Kaptiono, while Roadmap returns to Support.
-- This release is based directly on v0.5.41 and does not include the discarded SEO landing-page experiment.
-
-## 0.5.41
+## v0.5.41
 - Added a lazy local LibAV/FFmpeg WebAssembly fallback for Safari/WebKit AAC and ALAC audio decoding when Mediabunny/WebCodecs and native Web Audio both fail.
 - The fallback converts source audio locally to 16 kHz mono PCM/WAV for Whisper and Cloud audio extraction. The original video remains on-device.
 - Added a decode-focused LibAV build that disables GPL and nonfree FFmpeg modes, excludes AAC encoding, and rejects external GPL/nonfree codec libraries.
 - Added reproducible CI build guards, exact corresponding-source publication, runtime replacement instructions, third-party notices, LGPL/0BSD license copies, and a codec patent notice.
 - Updated Terms of Use with third-party software and media compatibility disclosures.
 
-## 0.5.40
+## v0.5.40
 - Added live Cloud High Accuracy daily availability in the AI model area.
 - Added Cloud quota preflight so a video is not started when the remaining daily Cloud time is insufficient.
 - Added server quota synchronization after each Cloud transcription and daily reset awareness.
 - Added support for the Cloudflare Worker D1 quota endpoint and audio-duration quota accounting.
 
-## 0.5.38
+## v0.5.38
 - Added a polished opt-in privacy banner with Accept Analytics, Reject optional and detailed privacy settings.
 - Google Analytics now stays unloaded until explicit Analytics consent is granted, with consent revocation available from the footer.
 - Removed unconditional Google AdSense loading so advertising tags do not run before a compliant advertising consent flow is available.
@@ -84,81 +107,81 @@
 - Reworked the footer into balanced primary and legal link groups, including persistent Privacy Preferences access.
 - Added Privacy, Cookies and Terms URLs to sitemap.xml and the new privacy/legal assets to the PWA application shell.
 
-## 0.5.37
+## v0.5.37
 - Clarified the Local AI download alternative as "Smaller Local model or Cloud".
 - The alternative action now returns the user to the model selector instead of silently switching models.
 - Keeps the alternative available for Tiny when Cloud is available, and adapts the label when Cloud quota is unavailable.
 
-## 0.5.36
+## v0.5.36
 - Added first-time confirmation before downloading a Local Whisper model.
 - Shows an approximate download size for Small, Base and Tiny before any model download starts.
 - Offers a smaller Local model directly from the confirmation dialog.
 - Skips the prompt when the selected model is already present in persistent browser cache.
 
-## 0.5.35
+## v0.5.35
 - Rebalanced the desktop roadmap to four items in every lane.
 - Made all roadmap cards and item rows symmetrical on desktop.
 - Folded the Full Offline Mode goal into the PWA offline foundation and moved Social Safe Zones to Exploring.
 
-## 0.5.34
+## v0.5.34
 - Added two user-selectable burned-in video export modes.
 - Social Compatible is the default and recommended H.264/AAC MP4 path for TikTok, Reels and Shorts.
 - Fast Export restores the quicker browser MediaRecorder path for users who prioritize export speed.
 - Export mode is synchronized across preview and Export tab, saved locally, and tracked separately in analytics events.
 
-## 0.5.33
+## v0.5.33
 - Replaced the primary real-time MediaRecorder export with deterministic Mediabunny/WebCodecs MP4 transcoding.
 - Burned-in exports now target H.264 video, AAC audio, constant 30/60 fps, 2-second keyframes and non-fragmented fast-start MP4 output for better TikTok/Reels/Shorts compatibility.
 - Social export preserves portrait videos up to 1080x1920 and landscape videos up to 1920x1080.
 - Kept the legacy MediaRecorder path as an automatic compatibility fallback when the social MP4 pipeline is unavailable.
 
-## 0.5.32
+## v0.5.32
 - Detects Cloudflare Workers AI daily quota exhaustion specifically via account-limited error 3036.
 - Automatically switches back to Whisper Small Local when the daily Cloud allocation is exhausted.
 - Disables the Cloud model until the next 00:00 UTC reset and re-enables it automatically afterwards.
 - Persists Cloud availability state locally across refreshes and restores it when the daily quota resets.
 
-## 0.5.31
+## v0.5.31
 - Removed the repeated privacy note from the phone homepage.
 - Rebalanced the phone viewport so the upload area fills the remaining space naturally.
 - Kept the footer below the initial viewport so it appears only after a small scroll.
 
-## 0.5.30
+## v0.5.30
 - Updated the homepage hero copy to the new Local or Cloud AI message.
 - Added mobile bilingual layout stabilization so switching EL/EN keeps text blocks at a consistent height and avoids visible page jumping.
 
-## 0.5.29
+## v0.5.29
 - Reworked the homepage hero copy to be shorter and more direct.
 - Kept the existing Google Analytics integration unchanged.
 
-## 0.5.28
+## v0.5.28
 - Removed the Privacy-first pill from the header for a cleaner top navigation.
 - Balanced the three Support principle cards so their copy has a similar visual length.
 - Kept the existing mobile and AI model selector refinements from v0.5.27.
 
-## 0.5.27
+## v0.5.27
 - Shortened the homepage privacy explanation for a cleaner three-line mobile layout.
 - Replaced the native AI model dropdown with a clearer custom picker so only LOCAL or CLOUD is bold and appears at the end.
 - Reordered models to put the recommended Local option first and Cloud High Accuracy second.
 
-## 0.5.26
+## v0.5.26
 - Restored a roomier mobile homepage layout without reducing heading sizes.
 - Rebalanced the desktop hero and upload area so both sides feel visually symmetrical.
 - Clarified AI model order and labeling with clearer LOCAL, CLOUD and RECOMMENDED wording.
 
-## 0.5.25
+## v0.5.25
 
 - Rebalanced the homepage so the full main experience fits inside the initial viewport on desktop and mobile.
 - Reduced the oversized video drop area without reducing mobile headline or body text sizes.
 - Tightened homepage spacing so scrolling is mainly reserved for the footer.
 
-## 0.5.24
+## v0.5.24
 - Shortened the Home privacy note for a cleaner mobile layout.
 - Greek copy now reads: **«Το video μένει στη συσκευή σου. Μόνο το audio αποστέλλεται στο Cloud mode.»**
 - Updated the matching English privacy note.
 - No transcription, Cloud High Accuracy, Local Whisper, export, styling, analytics, AdSense, PWA, licensing or other application behavior was changed.
 
-## 0.5.23
+## v0.5.23
 - Enabled Whisper Large v3 Turbo as a selectable **Cloud High Accuracy** model instead of a Coming Soon local model.
 - Added direct browser integration with the Kaptiono Cloudflare transcription Worker at `kaptiono-transcribe.donacgreece.workers.dev`.
 - Cloud mode keeps the original video on-device, extracts 16 kHz mono audio locally, converts it to WAV, and sends only that audio for transcription.
@@ -170,7 +193,7 @@
 - Enhanced remains Coming Soon and disabled.
 - Export, caption styling, word highlight, Voice Boost for local models, PWA behavior, licensing and AdSense behavior remain unchanged.
 
-## 0.5.21
+## v0.5.21
 - Refined the mobile footer only.
 - Moved Support, Roadmap, Contact and GitHub to the first mobile footer row.
 - Centered the mobile footer and increased link tap areas.

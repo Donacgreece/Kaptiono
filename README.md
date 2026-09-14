@@ -1,506 +1,349 @@
 <p align="center">
-  <img src="assets/icons/icon-192.png" width="112" height="112" alt="Kaptiono logo">
+  <a href="https://kaptiono.com/">
+    <img src="assets/icons/icon-192.png" width="104" height="104" alt="Kaptiono logo">
+  </a>
 </p>
 
 <h1 align="center">Kaptiono</h1>
 
 <p align="center">
-  <strong>AI subtitles for creators. Local by default, Cloud High Accuracy when you want it.</strong><br>
-  Generate, style and export captions in your browser while keeping the original video on your device.
+  <strong>Privacy-first AI subtitles for creators.</strong><br>
+  Local Whisper in the browser, optional Cloud High Accuracy, built-in caption editing and no-watermark export.
 </p>
 
 <p align="center">
-  <a href="https://kaptiono.com">
-    <img src="https://img.shields.io/badge/Website-kaptiono.com-B7FF32?style=for-the-badge&logo=googlechrome&logoColor=111111" alt="Kaptiono website">
-  </a>
-  <img src="https://img.shields.io/badge/AI-Whisper-111111?style=for-the-badge" alt="Whisper AI">
-  <img src="https://img.shields.io/badge/Processing-Local_%2B_Optional_Cloud-111111?style=for-the-badge" alt="Local plus optional cloud processing">
-  <img src="https://img.shields.io/badge/Watermark-None-111111?style=for-the-badge" alt="No watermark">
-  <a href="LICENSE">
-    <img src="https://img.shields.io/badge/License-PolyForm_Noncommercial_1.0.0-111111?style=for-the-badge" alt="PolyForm Noncommercial License 1.0.0">
-  </a>
+  <a href="https://kaptiono.com/"><img src="https://img.shields.io/badge/Website-kaptiono.com-111713" alt="Website"></a>
+  <a href="https://github.com/Donacgreece/Kaptiono/releases/latest"><img src="https://img.shields.io/badge/Release-v1.0.0-111713" alt="Latest release"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-111713" alt="License"></a>
+  <img src="https://img.shields.io/badge/Status-Stable-111713" alt="Stable status">
 </p>
 
 <p align="center">
-  <a href="https://kaptiono.com">
-    <img src="assets/share/kaptiono-og-1200x630.png" alt="Kaptiono - Local AI subtitles for creators" width="100%">
-  </a>
-</p>
-
-<p align="center">
-  <strong>🌐 <a href="https://kaptiono.com">Open Kaptiono</a></strong>
+  <a href="https://kaptiono.com/"><strong>Open Kaptiono</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://kaptiono.com/about/">Product overview</a>
+  &nbsp;·&nbsp;
+  <a href="https://kaptiono.com/partners/">Partners</a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/Donacgreece/Kaptiono/releases">Releases</a>
 </p>
 
 ---
 
-## What is Kaptiono?
+## Overview
 
-**Kaptiono** is a privacy-first captioning tool built for creators, editors and anyone who wants fast subtitles while keeping the original video on their own device.
+Kaptiono is a browser-based AI subtitle and caption editor designed for creators who want a fast workflow without sending the original video to an application server.
 
-The web app is local-first. A video is selected locally and audio is extracted in the browser. Local Whisper models can transcribe entirely on-device. An optional **Cloud High Accuracy** mode uses Whisper Large v3 Turbo through the Kaptiono Cloudflare Worker and sends only the extracted audio for transcription. Caption editing and export remain local.
+The core product combines:
 
-Kaptiono is designed around a simple idea:
+- Local Whisper transcription in the browser
+- Optional Cloud High Accuracy transcription
+- Caption editing and live preview
+- Creator-focused caption presets and manual styling
+- SRT and TXT export
+- Burned-in video export
+- Social-compatible video export
+- Mobile and desktop PWA support
+- No mandatory account for the core workflow
+- No watermark on exported captions or video
 
-> **Your video should not need to leave your device just to get subtitles.**
+Production application: **https://kaptiono.com/**
 
-The project is currently being developed as a web/PWA experience with a shared product direction for desktop and mobile.
+Current stable release: **v1.0.0**
 
----
+## Product screenshots
 
-## Why Kaptiono?
+### Desktop product presentation
 
-Most online subtitle tools are built around uploading a video to somebody else's infrastructure. Kaptiono takes a different approach.
+<p align="center">
+  <img src="assets/screenshots/about-desktop.png" alt="Kaptiono desktop and mobile product presentation" width="100%">
+</p>
 
-| | Kaptiono |
-|---|---|
-| 🎬 Video processing | Local on the user's device |
-| ☁️ Mandatory video upload | **No** |
-| ☁️ Optional cloud transcription | **Yes, audio only when selected** |
-| 🤖 Speech recognition | Whisper AI |
-| 📝 Caption editing | Built-in Caption Studio |
-| 🎨 Caption styling | Presets + manual controls |
-| 💧 Watermark | **None** |
-| 📱 Mobile support | Responsive web app / PWA |
-| 💻 Desktop support | Modern desktop browsers |
-| 🌍 Interface | Greek + English |
-| 💸 Core web experience | Free |
+### Mobile product presentation
 
----
+<p align="center">
+  <img src="assets/screenshots/about-mobile.png" alt="Kaptiono mobile product presentation" width="390">
+</p>
 
-## Core features
+## Processing modes
 
-### 🤖 Local + Cloud AI transcription
+### Local AI
 
-Kaptiono uses **Whisper** for automatic speech recognition.
+Local Whisper models run on the user's device. The original video, extracted audio, transcription and editing workflow remain local.
 
-The current web build includes:
+Available local models include:
 
-- **Whisper Small** as the recommended local high-quality model
-- Whisper Base as a lighter local alternative
-- Whisper Tiny for fast local testing
-- **Whisper Large v3 Turbo · Cloud · High Accuracy** as an optional online mode
-- Explicit language selection plus Auto Detect
-- Greek, English, Spanish, French, German and Italian language selections
-- Word timestamps used by the caption editor
+- Whisper Small, recommended for local quality
+- Whisper Base, lighter local option
+- Whisper Tiny, fastest local option
 
-Local models keep transcription on-device. Cloud High Accuracy requires internet and sends only extracted audio to the Kaptiono transcription service. The original video is not uploaded.
+### Cloud High Accuracy
 
-### 🎨 Caption Studio
+Cloud High Accuracy uses Whisper Large v3 Turbo through the Kaptiono Cloud transcription service. Only the extracted audio required for transcription is sent. The original video is not uploaded.
 
-Captions are not just generated and exported. They can be styled directly in Kaptiono with live preview.
+Cloud availability is quota-aware and the application can prevent a transcription from starting when the remaining cloud allowance is insufficient for the selected video.
 
-Current controls include:
+## Caption Studio
 
-- Font family
-- Font size
-- Bold
-- Italic
-- Uppercase
-- Letter spacing
-- Scale
-- Text color
-- Highlight color
-- Outline color and width
-- Background color
-- Text opacity
-- Caption position
-- Caption width
-- Alignment
-- Rotation
-- Words per caption
-- Maximum lines
-- Caption speed
-- Animation
-- Fade timing
-- Word-by-word highlight
-- Shadow
-- Background box
-- Box opacity
-- Box padding
+Kaptiono includes a browser-based caption editor with live preview. The current stable build supports controls for:
 
-### ✨ Caption presets
+- Font family, size and weight
+- Italic and uppercase styling
+- Letter spacing and scale
+- Text, highlight, outline and background colors
+- Text opacity and outline width
+- Horizontal and vertical position
+- Caption width and alignment
+- Rotation from -90 degrees to +90 degrees
+- Words per caption and maximum lines
+- Caption speed and segmentation
+- Animation, fade timing and word highlight
+- Shadow, background box, opacity and padding
+- Creator-focused style presets
 
-Kaptiono includes creator-focused presets such as:
+## Export
 
-- Viral Bold
-- Creator Yellow
-- Clean
-- Karaoke
-- Podcast
-- Gaming
-- News
-- Minimal
+Kaptiono supports:
 
-Presets can be used as a starting point and then customized manually.
-
-### 🎥 Live preview
-
-The main video player doubles as the live caption preview.
-
-Changes made in Caption Studio are reflected directly on the video preview, including typography, position, colors, layout and caption flow.
-
-### 📦 Export
-
-Depending on browser capabilities, Kaptiono supports:
-
-- Burned-in caption video export
-- MP4 or WebM output where supported by the browser
 - SRT subtitle export
 - TXT transcript export
+- Burned-in caption video export
+- Social Compatible export for TikTok, Reels and Shorts workflows
+- Fast Export for quicker browser-native rendering
 
-Video export is performed locally on the device.
+Video rendering is performed locally on the device where browser capabilities allow it.
 
----
+## Privacy model
 
-## How it works
+Kaptiono is designed around a local-first architecture.
 
-```text
-Local video file
-      │
-      ▼
-Browser media pipeline
-      │
-      ▼
-Local audio extraction
-      │
-      ├── Local Whisper (Small / Base / Tiny)
-      │
-      └── Optional Cloud High Accuracy (audio only)
-      │
-      ▼
-Whisper transcription
-      │
-      ▼
-Word timestamps + caption segmentation
-      │
-      ▼
-Caption Studio
-      │
-      ├── Live preview
-      ├── Caption styling
-      ├── Caption reflow
-      └── Manual editing
-      │
-      ▼
-Local export
-```
-
-The original video is not sent to a Kaptiono processing backend. If Cloud High Accuracy is selected, only the extracted audio is sent for transcription.
-
----
-
-## Privacy-first architecture
-
-Privacy is one of the main reasons Kaptiono exists.
-
-### What stays local
-
-These remain on the user's device:
+### Stays on the device
 
 - Original video
+- Local audio extraction
 - Caption editing state
 - Caption text and timing after transcription
-- Rendered/exported video
+- Video rendering and export
+- Local Whisper inference when a Local model is selected
 
-With Local Whisper models, extracted audio and transcription also remain on-device. With **Cloud High Accuracy**, the extracted audio is sent to the Kaptiono transcription service only for the selected transcription request.
+### Cloud High Accuracy
 
-### What is downloaded from the internet
+When Cloud High Accuracy is explicitly selected, only extracted audio required for transcription is sent through the Kaptiono Cloud service. The original video is not sent.
 
-The browser may download:
+Analytics is optional and controlled by consent. It is not intended to receive video, audio, file names, transcript text or caption text.
 
-- Kaptiono application files
-- AI model files
-- Required web libraries
+See the public policies:
 
-### Analytics
+- https://kaptiono.com/privacy/
+- https://kaptiono.com/cookies/
+- https://kaptiono.com/terms/
 
-Kaptiono uses Google Analytics for anonymous product traffic and usage metrics.
+## Safari and WebKit audio compatibility
 
-Analytics is **not intended to receive**:
+Kaptiono uses a layered audio extraction path:
 
-- Video files
-- Audio
-- File names
-- Transcript text
-- Caption text
+1. Mediabunny / WebCodecs
+2. Native Web Audio
+3. Lazy LibAV / FFmpeg WebAssembly fallback when browser decoding fails
 
-The AI processing workflow remains separate from analytics.
+The LibAV fallback is intended for difficult AAC and ALAC cases on Safari and WebKit. It performs decoding locally and produces the PCM audio required for transcription.
 
----
+The LibAV / FFmpeg runtime is distributed as a separate third-party component and is not relicensed under the Kaptiono PolyForm license. See:
+
+- `THIRD_PARTY_NOTICES.md`
+- `LICENSE_SCOPE.md`
+- `THIRD_PARTY_SOURCE_OFFER.md`
+- `LIBAV_RUNTIME_REPLACEMENT.md`
+- `LEGAL_COMPLIANCE_LIBAV_AUDIO.md`
+- `PATENT_NOTICE.md`
 
 ## Progressive Web App
 
-Kaptiono can be used as an app-like experience from a supported browser.
+Kaptiono can be installed as a PWA on supported browsers and devices.
 
-### Android
+The stable release includes:
 
-On supported Android browsers, Kaptiono can show the native PWA installation prompt.
+- Standalone PWA operation
+- Install-state handling
+- iOS Add to Home Screen guidance
+- User-visible application update flow
+- Update deferral while active work is in progress
+- Version-aware service worker caching
 
-Once installed, it can:
+## Browser and device targets
 
-- Open from the home screen
-- Run in a standalone app window
-- Receive application updates from new deployments
-- Reuse supported browser caches for application and AI assets
+Kaptiono targets current modern browsers on:
 
-### iPhone / iPad
+| Platform | Intended support |
+| --- | --- |
+| Chrome / Windows | Supported and recommended |
+| Edge / Windows | Supported and recommended |
+| Chrome / Android | Supported |
+| Safari / iPhone and iPad | Supported with compatibility safeguards |
+| Safari / macOS | Supported with compatibility safeguards |
+| Other modern browsers | Capability-dependent |
 
-On iOS, installation is performed through Safari:
-
-1. Open Kaptiono in Safari
-2. Tap **Share**
-3. Choose **Add to Home Screen**
-4. Tap **Add**
-
-Kaptiono includes an in-app guide for this flow.
-
-> Full PWA functionality, service workers and persistent browser caches require HTTPS.
-
----
-
-## Browser support
-
-Kaptiono targets modern browsers with the media and AI capabilities required for local processing.
-
-| Platform | Status |
-|---|---|
-| Chrome / Windows | Recommended |
-| Edge / Windows | Recommended |
-| Chrome / Android | Supported / actively tested |
-| Safari / iPhone & iPad | Experimental / actively tested |
-| Safari / macOS | Experimental |
-| Firefox | Compatibility depends on required browser APIs |
-
-Performance depends heavily on the device, browser, available memory and selected Whisper model.
-
-A high-quality model such as Whisper Small can require significantly more memory and processing time than Base or Tiny.
-
----
+Local AI performance depends on device memory, CPU/GPU capabilities, browser support and selected Whisper model.
 
 ## Input formats
 
-The current web interface accepts common video formats including:
+The application accepts common video formats including:
 
-```text
-MP4
-MOV
-M4V
-WebM
-```
+- MP4
+- MOV
+- M4V
+- WebM
 
-Actual decoding support can vary by browser and device codec support.
-
----
+Actual decoding support can vary by browser, operating system and codec availability.
 
 ## Technology
 
-Kaptiono Web is intentionally built as a static, browser-first application.
+Kaptiono is a static browser-first application built with:
 
-Current technology includes:
-
-- HTML
-- CSS
-- JavaScript
+- HTML, CSS and JavaScript
 - Progressive Web App APIs
 - Web Workers
 - Whisper / Transformers.js
-- ONNX / WASM inference
-- Cloudflare Workers AI for optional Cloud High Accuracy transcription
+- ONNX / WebAssembly
+- Browser media APIs and Web Audio
 - Mediabunny
-- Web Audio / browser media APIs
-- Canvas-based caption rendering
-- MediaRecorder / browser-native export where supported
+- LibAV / FFmpeg WebAssembly compatibility fallback
+- Cloudflare Workers AI for optional Cloud High Accuracy
 - GitHub Pages
 - GitHub Actions
 
-Local captioning does not require an application server. The optional Cloud High Accuracy mode calls the Kaptiono Cloudflare Worker for audio transcription.
+## Public site structure
 
----
+| URL | Purpose |
+| --- | --- |
+| https://kaptiono.com/ | Production application |
+| https://kaptiono.com/about/ | Product overview, features, privacy and FAQ |
+| https://kaptiono.com/partners/ | Sponsorship and partnership information |
+| https://kaptiono.com/privacy/ | Privacy policy |
+| https://kaptiono.com/cookies/ | Cookie policy |
+| https://kaptiono.com/terms/ | Terms of use |
+
+The repository also publishes `robots.txt`, `sitemap.xml` and `llms.txt` for discovery and crawler guidance.
+
+## Search and discovery
+
+The production site includes:
+
+- Canonical URLs
+- Search-engine crawl directives
+- XML sitemap with public production URLs
+- Open Graph metadata
+- Twitter card metadata
+- Structured data for the website, application, organization and relevant page types
+- Search Console verification
+- `llms.txt`
+- Social preview artwork
+- Crawlable internal links across product, legal and partnership pages
+
+Sitemap: https://kaptiono.com/sitemap.xml
 
 ## Deployment
 
-The web app is deployed as a static site through GitHub Pages.
-
-Production website:
-
-### **[https://kaptiono.com](https://kaptiono.com)**
-
-The repository includes a GitHub Actions workflow that deploys updates from the `main` branch.
+Production is deployed from the `main` branch through GitHub Actions and GitHub Pages.
 
 ```text
-git push
-   │
-   ▼
-GitHub Actions
-   │
-   ▼
-GitHub Pages
-   │
-   ▼
-kaptiono.com
+main
+  -> GitHub Actions validation
+  -> LibAV runtime build or restore
+  -> GitHub Pages artifact
+  -> kaptiono.com
 ```
 
-The PWA includes version-aware update logic so installed clients can move to newer application versions as releases are deployed.
+The deployment workflow validates the application version, Search Console verification, licensing files and LibAV compatibility artifacts before publishing.
 
----
+## Release policy
 
-## SEO & sharing
+Kaptiono follows semantic versioning for production releases.
 
-Kaptiono includes production-oriented metadata for search engines and social platforms:
+- Patch releases: bug fixes and small production corrections
+- Minor releases: backward-compatible product improvements
+- Major releases: significant product or compatibility changes
 
-- Canonical URL
-- Open Graph metadata
-- Twitter/X large image card
-- Structured data
-  - `WebSite`
-  - `SoftwareApplication`
-  - `FAQPage`
-- `robots.txt`
-- `sitemap.xml`
-- `llms.txt`
-- Share thumbnail
-- PWA manifest
-- Mobile icons
-- Apple touch icon
+A production release should have:
 
-Social/share artwork:
+- A committed version in `version.json`
+- A Git tag such as `v1.0.0`
+- A GitHub Release using the same tag
+- A ZIP archive of the release source
+- A SHA-256 checksum for the archive
+- Release notes in the repository and GitHub Release
 
-```text
-assets/share/kaptiono-og-1200x630.png
+Published release tags should be treated as immutable. If code changes after a release tag has been published, the next production release should use a new semantic version instead of moving the existing tag.
+
+See `RELEASE_PROCESS.md` for the release and rollback procedure.
+
+## Rollback
+
+Every production GitHub Release contains an immutable tag and archive. To restore a previous release, check out the required release tag, validate it, and deploy that tagged source.
+
+Example:
+
+```bash
+git fetch --tags
+git checkout v1.0.0
 ```
 
----
+For normal development, return to `main` after inspection or rollback work.
 
-## Project status
+## Repository topics
 
-Kaptiono Web is under active development.
-
-The focus is currently on making the browser implementation reliable across desktop and mobile before treating it as a fully mature production editor.
-
-Areas being actively improved include:
-
-- Browser compatibility
-- iPhone/iPad reliability
-- Local AI performance
-- Cloud High Accuracy reliability
-- Whisper model loading
-- Better multilingual transcription
-- Faster rendering
-- MP4 export compatibility
-- PWA installation and updates
-- Mobile editor ergonomics
-
----
-
-## Roadmap
-
-Planned directions include:
-
-- ⚡ Faster local transcription
-- 🧠 Better quality/performance model selection
-- 🎬 More reliable MP4 export
-- 📱 Stronger Android and iOS PWA experience
-- ✍️ Better caption editing
-- 🎨 More caption presets
-- 🔤 Additional typography options
-- 🧩 Better creator workflows
-- 💾 Improved local project persistence
-- 🖥️ Continued desktop experience development
-
-Features are added only when they are stable enough for real creator workflows.
-
----
+The repository is intended to be discoverable around AI subtitles, Whisper, local AI, creator tools, PWA and browser-based caption workflows. Repository topics are maintained as part of the release publishing script.
 
 ## License
 
-Kaptiono is **source available** under the **PolyForm Noncommercial License 1.0.0**.
+Kaptiono is source available under the **PolyForm Noncommercial License 1.0.0**.
 
-You may use, study, modify and redistribute the software for purposes permitted by that license. **Commercial use is not granted by the public license.** If you want to use Kaptiono or its source code commercially, a separate commercial license may be available. Contact **info@kaptiono.com**.
+Commercial use is not granted by the public license. A separate commercial arrangement may be available for appropriate use cases.
 
-The software license does **not** grant rights to use the **Kaptiono** name, logo, icon or brand identity for another product or service.
+The public software license does not grant rights to use the Kaptiono name, logo, icon or brand identity for another product or service.
 
 See:
 
-- [`LICENSE`](LICENSE) for the software license notice and official PolyForm terms
-- [`TRADEMARKS.md`](TRADEMARKS.md) for the Kaptiono brand policy
+- `LICENSE`
+- `TRADEMARKS.md`
+- `LICENSE_SCOPE.md`
 
-Kaptiono should therefore be described as **source available**, not OSI open source.
+Kaptiono should be described as source available, not OSI open source.
 
----
+## Security and responsible reporting
 
-## Contact
+Please do not publish sensitive security issues, private video content, transcripts, credentials or personal data in public issues.
 
-For feedback, bug reports, partnerships, creator collaborations, or commercial licensing:
+For security-sensitive reports, see `SECURITY.md`.
 
-**info@kaptiono.com**
+## Contributing and bug reports
 
-Official website: **https://kaptiono.com**
+For contribution and testing guidance, see `CONTRIBUTING.md`.
 
-Product overview: **https://kaptiono.com/about/**
+Useful bug reports include:
 
----
-
-## Support Kaptiono
-
-Kaptiono is being developed with the goal of keeping the core creator experience free.
-
-If the project is useful to you and you would like to support continued development, testing and new features, donations are optional.
-
-<p align="center">
-  <a href="https://www.paypal.com/paypalme/DimitrisGalatsanos">
-    <img src="https://img.shields.io/badge/Support_Kaptiono-Donate_via_PayPal-B7FF32?style=for-the-badge&logo=paypal&logoColor=111111" alt="Support Kaptiono via PayPal">
-  </a>
-</p>
-
----
-
-## Feedback & testing
-
-Kaptiono Web is still evolving, so real-world testing is especially valuable.
-
-Useful reports include:
-
-- Browser and browser version
+- Browser and version
 - Operating system
 - Device model
-- Video format
-- Approximate video duration
-- Whisper model selected
-- What happened
-- What you expected to happen
+- Video format and approximate duration
+- Selected Whisper model
+- Expected behavior
+- Actual behavior
 
-Please do **not** include private video content, transcripts or other sensitive material in public bug reports.
+Do not attach private video, audio, transcripts or other sensitive user material to a public issue.
 
----
+## Partnerships and contact
 
-## Philosophy
+Partnership information: https://kaptiono.com/partners/
 
-Kaptiono is being built around four principles:
+General contact: **info@kaptiono.com**
 
-**Local. Private. Simple. Creator-first.**
-
-No mandatory upload.  
-No mandatory account for the core workflow.  
-No watermark.  
-No unnecessary complexity.
+GitHub: https://github.com/Donacgreece/Kaptiono
 
 ---
 
 <p align="center">
   <strong>Kaptiono</strong><br>
-  Local AI subtitles for creators.<br><br>
-  <a href="https://kaptiono.com">kaptiono.com</a>
+  Local or Cloud AI subtitles for creators.<br>
+  https://kaptiono.com/
 </p>
-
-
-## Safari / WebKit audio compatibility
-
-Kaptiono uses a layered local audio-extraction path. It first tries Mediabunny/WebCodecs, then native Web Audio, and only if both fail it lazily loads a separate LibAV/FFmpeg WebAssembly fallback. The fallback is intended for Safari/WebKit AAC/ALAC decoding issues and converts the audio locally to 16 kHz mono PCM for transcription. The original video is not uploaded by this fallback.
-
-The LibAV/FFmpeg runtime is distributed as a separate replaceable third-party component and is not relicensed under the Kaptiono PolyForm license. See `THIRD_PARTY_NOTICES.md`, `LICENSE_SCOPE.md`, `THIRD_PARTY_SOURCE_OFFER.md`, `LIBAV_RUNTIME_REPLACEMENT.md`, `LEGAL_COMPLIANCE_LIBAV_AUDIO.md` and `PATENT_NOTICE.md`.
-
-
-### Public product pages
-
-- https://kaptiono.com/about/ — product overview and FAQ
-- https://kaptiono.com/partners/ — partnership and sponsorship opportunities
