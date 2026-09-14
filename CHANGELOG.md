@@ -1,3 +1,8 @@
+## v0.5.48 - 2026-09-14
+
+- unified all Roadmap icons to a single matching icon set
+- normalized Roadmap icon size for desktop and mobile
+
 ## v0.5.47 - 2026-09-14
 
 - fixed Roadmap back navigation so it returns to the home page
