@@ -7,6 +7,7 @@ The original video stays on the user's device. Local models process audio on-dev
 ## Product
 
 - [Kaptiono](https://kaptiono.com/): Main web application for AI subtitle generation, editing, styling and export.
+- [About Kaptiono](https://kaptiono.com/about/): Product overview covering Local and Cloud AI, privacy, creator workflow, exports and supported devices.
 
 ## Privacy and legal
 

@@ -1,6 +1,6 @@
-const CACHE='kaptiono-web-v1.0.0';
+const CACHE='kaptiono-web-v1.0.1';
 const SHELL=[
-  './','./index.html','./styles.css?v=1.0.0','./app.js?v=1.0.0','./consent.js?v=1.0.0','./legal.js?v=1.0.0','./whisper-worker.js?v=1.0.0','./manifest.webmanifest',
+  './','./index.html','./styles.css?v=1.0.1','./app.js?v=1.0.1','./consent.js?v=1.0.1','./legal.js?v=1.0.1','./whisper-worker.js?v=1.0.1','./manifest.webmanifest','./about/','./about/index.html','./about/about.css?v=1.0.1','./about/about.js?v=1.0.1',
   './privacy/','./cookies/','./terms/','./NOTICE','./LICENSE_SCOPE.md','./THIRD_PARTY_NOTICES.md','./PATENT_NOTICE.md','./THIRD_PARTY_SOURCE_OFFER.md','./LIBAV_RUNTIME_REPLACEMENT.md',
   './assets/icons/icon-64.png','./assets/icons/icon-192.png','./assets/icons/icon-512.png',
   './assets/icons/apple-touch-icon.png','./assets/icons/favicon-32x32.png','./assets/icons/favicon-16x16.png',

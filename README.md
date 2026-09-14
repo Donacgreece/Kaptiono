@@ -436,6 +436,8 @@ For feedback, bug reports, partnerships, creator collaborations, or commercial l
 
 Official website: **https://kaptiono.com**
 
+Product overview: **https://kaptiono.com/about/**
+
 ---
 
 ## Support Kaptiono
