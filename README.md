@@ -51,19 +51,15 @@ Production application: **https://kaptiono.com/**
 
 Current stable release: **v1.0.0**
 
-## Product screenshots
-
-### Desktop product presentation
+## Product showcase
 
 <p align="center">
-  <img src="assets/screenshots/about-desktop.png" alt="Kaptiono desktop and mobile product presentation" width="100%">
+  <a href="https://kaptiono.com/">
+    <img src="assets/screenshots/kaptiono-product-showcase.png" alt="Kaptiono AI subtitle generator shown on desktop and mobile" width="100%">
+  </a>
 </p>
 
-### Mobile product presentation
-
-<p align="center">
-  <img src="assets/screenshots/about-mobile.png" alt="Kaptiono mobile product presentation" width="390">
-</p>
+The showcase reflects the current Kaptiono v1.0.0 experience across desktop and mobile.
 
 ## Processing modes
 

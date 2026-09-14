@@ -83,8 +83,10 @@ jobs:
           test -s CONTRIBUTING.md
           test -s RELEASE_PROCESS.md
           test -s RELEASE_NOTES_v1.0.0.md
-          test -s assets/screenshots/about-desktop.png
-          test -s assets/screenshots/about-mobile.png
+          test -s assets/screenshots/kaptiono-product-showcase.png
+          test -s assets/share/kaptiono-social-v1-1200x630.png
+          grep -Fq 'kaptiono-social-v1-1200x630.png' index.html
+          grep -Fq 'kaptiono-product-showcase.png' README.md
           test -s about/index.html
           test -s partners/index.html
           grep -Fq 'https://kaptiono.com/about/' sitemap.xml

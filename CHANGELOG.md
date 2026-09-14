@@ -2,6 +2,7 @@
 
 ## v1.0.0 - 2026-09-14
 
+- Updated README and social sharing artwork to use the current desktop and mobile Kaptiono product showcase.
 Kaptiono v1.0.0 is the first stable production release.
 
 ### Product

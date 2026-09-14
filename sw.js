@@ -4,7 +4,7 @@ const SHELL=[
   './privacy/','./cookies/','./terms/','./NOTICE','./LICENSE_SCOPE.md','./THIRD_PARTY_NOTICES.md','./PATENT_NOTICE.md','./THIRD_PARTY_SOURCE_OFFER.md','./LIBAV_RUNTIME_REPLACEMENT.md',
   './assets/icons/icon-64.png','./assets/icons/icon-192.png','./assets/icons/icon-512.png',
   './assets/icons/apple-touch-icon.png','./assets/icons/favicon-32x32.png','./assets/icons/favicon-16x16.png',
-  './assets/share/kaptiono-og-1200x630.png','./robots.txt','./sitemap.xml','./llms.txt'
+  './assets/share/kaptiono-social-v1-1200x630.png','./robots.txt','./sitemap.xml','./llms.txt'
 ];
 
 self.addEventListener('install',event=>{
