@@ -1168,3 +1168,31 @@ body.modal-open{overflow:hidden}
     justify-content:center;
   }
 }
+/* v1.0.0 editor symmetry + stable mobile upload content */
+@media(min-width:901px){
+  .editor-layout{align-items:stretch}
+  .preview-card,.studio-card{height:100%;align-self:stretch}
+}
+
+@media(max-width:620px){
+  .dropzone.home-panel{justify-content:center;gap:0}
+  .dropzone.home-panel .upload-icon{flex:none;margin:0 0 22px}
+  .dropzone.home-panel strong[data-i18n="chooseVideo"]{
+    min-height:28px;
+    margin:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1.2;
+    text-align:center;
+  }
+  .dropzone.home-panel small[data-i18n="dropHint"]{
+    min-height:22px;
+    margin:14px 0 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1.25;
+    text-align:center;
+  }
+}

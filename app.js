@@ -70,7 +70,7 @@ const video=$('#video');
 
 function stabilizeMobileI18nLayout(){
   const mobile=window.matchMedia?.('(max-width: 900px)').matches;
-  const nodes=$$('[data-i18n]');
+  const nodes=$$('.hero-copy [data-i18n="heroTitle"], .hero-copy [data-i18n="heroText"]');
   if(!mobile){
     nodes.forEach(el=>{el.classList.remove('i18n-stable');el.style.removeProperty('--i18n-stable-height')});
     return;
