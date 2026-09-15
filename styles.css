@@ -778,25 +778,34 @@ html.app-ready .app-splash{opacity:0;visibility:hidden;pointer-events:none}
 .model-setting{position:relative;overflow:visible}
 .model-native-select{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;overflow:hidden!important}
 .model-picker{position:relative;width:100%;z-index:8}
-.model-picker-button{width:100%;min-height:42px;border:1px solid #dbe0db;border-radius:11px;background:#f8f9f7;padding:0 12px;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;cursor:pointer;color:var(--ink);font-size:12px;font-weight:400}
+.model-picker-button{width:100%;min-height:42px;border:1px solid #dbe0db;border-radius:11px;background:#f8f9f7;padding:0 11px 0 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;cursor:pointer;color:var(--ink);font-size:12px;font-weight:400}
 .model-picker-copy{min-width:0;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.model-picker-copy .model-name,.model-picker-copy .model-meta{font-weight:400}
-.model-picker-copy .model-engine{font-weight:900}
-.model-separator{font-weight:400;color:#6f7771}
+.model-picker-copy .model-name{font-weight:500}
+.model-picker-actions{display:flex;align-items:center;gap:8px;flex:none}
+.model-picker-actions .model-engine{display:inline-flex;align-items:center;min-height:22px;padding:3px 7px;border-radius:999px;background:#eef4dc;color:#51631b;font-size:9px;line-height:1;font-weight:900;letter-spacing:.08em}
 .model-picker-chevron{flex:none;font-size:18px;line-height:1;transform:translateY(-1px);transition:transform .16s ease}
 .model-picker.open .model-picker-chevron{transform:rotate(180deg) translateY(1px)}
-.model-picker-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:120;border:1px solid #aeb5af;border-radius:12px;background:#fff;box-shadow:0 16px 38px rgba(16,24,18,.16);padding:6px;overflow:hidden}
-.model-picker-option{width:100%;min-height:42px;border:0;border-radius:8px;background:#fff;padding:9px 10px;text-align:left;cursor:pointer;color:var(--ink);font-size:12px;font-weight:400;line-height:1.35}
-.model-picker-option span{font-weight:400}
-.model-picker-option strong{font-weight:900}
+.model-picker-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:120;border:1px solid #aeb5af;border-radius:13px;background:#fff;box-shadow:0 16px 38px rgba(16,24,18,.16);padding:6px;overflow:hidden}
+.model-picker-group{display:grid;gap:2px}
+.model-picker-group+.model-picker-group{margin-top:6px;padding-top:7px;border-top:1px solid #e7eae6}
+.model-picker-group-title{padding:5px 9px 4px;color:#7b837d;font-size:9px;line-height:1;font-weight:900;letter-spacing:.16em}
+.model-picker-option{width:100%;min-height:42px;border:0;border-radius:8px;background:#fff;padding:8px 9px;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;cursor:pointer;color:var(--ink);font-size:12px;font-weight:400;line-height:1.25}
+.model-option-name{min-width:0;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.model-option-meta{flex:none;display:inline-flex;align-items:center;min-height:22px;padding:3px 7px;border-radius:999px;background:#f1f3ef;color:#6b736d;font-size:9px;line-height:1;font-weight:800;white-space:nowrap}
 .model-picker-option:hover,.model-picker-option:focus-visible{background:#f4f6f1;outline:none}
 .model-picker-option.active{background:#eef4dc}
+.model-picker-option.active .model-option-meta{background:#dfeab8;color:#50621a}
+.model-picker-group-cloud .model-option-meta{background:#eef1ef;color:#5e6660}
 #modelHint{margin-top:1px}
 
 @media(max-width:620px){
   .hero-copy p[data-i18n="heroText"]{max-width:500px;line-height:1.42}
-  .model-picker-button,.model-picker-option{font-size:16px}
-  .model-picker-menu{position:absolute}
+  .model-picker-button{min-height:46px;font-size:16px}
+  .model-picker-actions .model-engine{min-height:24px;padding:4px 8px;font-size:10px}
+  .model-picker-menu{position:absolute;padding:7px}
+  .model-picker-group-title{padding:6px 10px 5px;font-size:10px}
+  .model-picker-option{min-height:50px;padding:9px 10px;font-size:15px}
+  .model-option-meta{min-height:24px;padding:4px 8px;font-size:10px}
 }
 
 

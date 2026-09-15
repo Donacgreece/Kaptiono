@@ -340,14 +340,28 @@
                 <div class="setting model-setting"><span data-i18n="aiModel">AI model</span>
                   <div id="modelPicker" class="model-picker">
                     <button id="modelPickerButton" class="model-picker-button" type="button" aria-haspopup="listbox" aria-expanded="false">
-                      <span class="model-picker-copy"><span class="model-name">Whisper Small</span><span class="model-separator"> · </span><span class="model-meta">Recommended</span><span class="model-separator"> · </span><strong class="model-engine">LOCAL</strong></span>
-                      <span class="model-picker-chevron">⌄</span>
+                      <span class="model-picker-copy"><span class="model-name">Whisper Small</span></span>
+                      <span class="model-picker-actions"><strong class="model-engine">LOCAL</strong><span class="model-picker-chevron">⌄</span></span>
                     </button>
                     <div id="modelPickerMenu" class="model-picker-menu hidden" role="listbox" aria-label="AI model">
-                      <button type="button" class="model-picker-option active" role="option" aria-selected="true" data-model-value="onnx-community/whisper-small_timestamped"><span>Whisper Small</span><span class="model-separator"> · </span><span class="model-meta">Recommended</span><span class="model-separator"> · </span><strong>LOCAL</strong></button>
-                      <button type="button" class="model-picker-option" role="option" aria-selected="false" data-model-value="cloudflare/whisper-large-v3-turbo"><span>Whisper Large v3 Turbo</span><span class="model-separator"> · </span><span class="model-meta">High Accuracy</span><span class="model-separator"> · </span><strong>CLOUD</strong></button>
-                      <button type="button" class="model-picker-option" role="option" aria-selected="false" data-model-value="onnx-community/whisper-base_timestamped"><span>Whisper Base</span><span class="model-separator"> · </span><span class="model-meta">Balanced</span><span class="model-separator"> · </span><strong>LOCAL</strong></button>
-                      <button type="button" class="model-picker-option" role="option" aria-selected="false" data-model-value="onnx-community/whisper-tiny_timestamped"><span>Whisper Tiny</span><span class="model-separator"> · </span><span class="model-meta">Fast test</span><span class="model-separator"> · </span><strong>LOCAL</strong></button>
+                      <div class="model-picker-group" role="group" aria-label="Local AI models">
+                        <div class="model-picker-group-title">LOCAL AI</div>
+                        <button type="button" class="model-picker-option active" role="option" aria-selected="true" data-model-value="onnx-community/whisper-small_timestamped">
+                          <span class="model-option-name">Whisper Small</span><span class="model-option-meta model-meta">Recommended</span>
+                        </button>
+                        <button type="button" class="model-picker-option" role="option" aria-selected="false" data-model-value="onnx-community/whisper-base_timestamped">
+                          <span class="model-option-name">Whisper Base</span><span class="model-option-meta model-meta">Balanced</span>
+                        </button>
+                        <button type="button" class="model-picker-option" role="option" aria-selected="false" data-model-value="onnx-community/whisper-tiny_timestamped">
+                          <span class="model-option-name">Whisper Tiny</span><span class="model-option-meta model-meta">Fast test</span>
+                        </button>
+                      </div>
+                      <div class="model-picker-group model-picker-group-cloud" role="group" aria-label="Cloud AI models">
+                        <div class="model-picker-group-title">CLOUD AI</div>
+                        <button type="button" class="model-picker-option" role="option" aria-selected="false" data-model-value="cloudflare/whisper-large-v3-turbo">
+                          <span class="model-option-name">Whisper Large v3 Turbo</span><span class="model-option-meta model-meta">High Accuracy</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                   <select id="modelSelect" class="model-native-select" tabindex="-1" aria-hidden="true">

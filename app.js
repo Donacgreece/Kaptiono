@@ -858,7 +858,6 @@ function syncModelPicker(){
   if(!select||!button||!menu)return;
   const model=modelLabels[select.value]||modelLabels[DEFAULT_LOCAL_MODEL_VALUE];
   button.querySelector('.model-name').textContent=model.name;
-  button.querySelector('.model-meta').textContent=model.meta;
   button.querySelector('.model-engine').textContent=model.engine;
   menu.querySelectorAll('.model-picker-option').forEach(option=>{
     const active=option.dataset.modelValue===select.value;
