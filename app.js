@@ -851,6 +851,32 @@ function isCloudInsufficientResponse(result){
   const code=String(result?.code||result?.error?.code||'');
   return code==='KAPTIONO_CLOUD_QUOTA_INSUFFICIENT';
 }
+function positionDesktopPickerMenu(button,menu){
+  if(!button||!menu)return;
+  const desktop=window.matchMedia?.('(min-width: 901px)').matches;
+  menu.classList.toggle('picker-portal',!!desktop);
+  if(!desktop){
+    menu.style.removeProperty('--picker-left');
+    menu.style.removeProperty('--picker-top');
+    menu.style.removeProperty('--picker-width');
+    return;
+  }
+  const rect=button.getBoundingClientRect();
+  const gap=7;
+  const viewportPadding=12;
+  const width=Math.max(260,rect.width);
+  let left=Math.min(Math.max(viewportPadding,rect.left),window.innerWidth-width-viewportPadding);
+  let top=rect.bottom+gap;
+  menu.style.setProperty('--picker-left',`${Math.round(left)}px`);
+  menu.style.setProperty('--picker-top',`${Math.round(top)}px`);
+  menu.style.setProperty('--picker-width',`${Math.round(width)}px`);
+}
+function refreshOpenPickerPositions(){
+  const modelButton=$('#modelPickerButton'),modelMenu=$('#modelPickerMenu');
+  const languageButton=$('#languagePickerButton'),languageMenu=$('#languagePickerMenu');
+  if(modelButton?.getAttribute('aria-expanded')==='true')positionDesktopPickerMenu(modelButton,modelMenu);
+  if(languageButton?.getAttribute('aria-expanded')==='true')positionDesktopPickerMenu(languageButton,languageMenu);
+}
 function syncModelPicker(){
   const select=$('#modelSelect');
   const button=$('#modelPickerButton');
@@ -869,9 +895,11 @@ function setModelPickerOpen(open){
   const button=$('#modelPickerButton');
   const menu=$('#modelPickerMenu');
   if(!button||!menu)return;
+  if(open)positionDesktopPickerMenu(button,menu);
   menu.classList.toggle('hidden',!open);
   button.setAttribute('aria-expanded',open?'true':'false');
   $('#modelPicker')?.classList.toggle('open',open);
+  if(!open){menu.classList.remove('picker-portal');menu.style.removeProperty('--picker-left');menu.style.removeProperty('--picker-top');menu.style.removeProperty('--picker-width')}
 }
 $('#modelPickerButton')?.addEventListener('click',()=>{
   const open=$('#modelPickerButton')?.getAttribute('aria-expanded')!=='true';
@@ -935,9 +963,11 @@ function setLanguagePickerOpen(open){
   const button=$('#languagePickerButton');
   const menu=$('#languagePickerMenu');
   if(!button||!menu)return;
+  if(open)positionDesktopPickerMenu(button,menu);
   menu.classList.toggle('hidden',!open);
   button.setAttribute('aria-expanded',open?'true':'false');
   $('#languagePicker')?.classList.toggle('open',open);
+  if(!open){menu.classList.remove('picker-portal');menu.style.removeProperty('--picker-left');menu.style.removeProperty('--picker-top');menu.style.removeProperty('--picker-width')}
 }
 $('#languagePickerButton')?.addEventListener('click',()=>{
   const open=$('#languagePickerButton')?.getAttribute('aria-expanded')!=='true';
@@ -956,6 +986,8 @@ document.addEventListener('click',event=>{
 document.addEventListener('keydown',event=>{
   if(event.key==='Escape'){setModelPickerOpen(false);setLanguagePickerOpen(false)}
 });
+window.addEventListener('resize',refreshOpenPickerPositions);
+window.addEventListener('scroll',refreshOpenPickerPositions,true);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){refreshCloudAvailability();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})}});
 window.addEventListener('focus',()=>{refreshCloudAvailability();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})});
 $('#modelSelect').addEventListener('change',()=>{syncModelPicker();updateModelHint();updateCompatibilityNote();updateProcessingModeLabel();renderCloudQuotaStatus();if(isCloudModelSelected())fetchCloudQuotaStatus({force:true})});
