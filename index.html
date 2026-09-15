@@ -341,7 +341,7 @@
                   <div id="modelPicker" class="model-picker">
                     <button id="modelPickerButton" class="model-picker-button" type="button" aria-haspopup="listbox" aria-expanded="false">
                       <span class="model-picker-copy"><span class="model-name">Whisper Small</span></span>
-                      <span class="model-picker-actions"><strong class="model-engine">LOCAL</strong><span class="model-picker-chevron">⌄</span></span>
+                      <span class="model-picker-actions"><strong class="model-engine">LOCAL</strong><span class="picker-chevron" aria-hidden="true"></span></span>
                     </button>
                     <div id="modelPickerMenu" class="model-picker-menu hidden" role="listbox" aria-label="AI model">
                       <div class="model-picker-group" role="group" aria-label="Local AI models">
@@ -371,9 +371,16 @@
                     <option value="onnx-community/whisper-tiny_timestamped">Whisper Tiny · Fast test · LOCAL</option>
                   </select>
                   <small id="modelHint">·</small><div id="cloudQuotaStatus" class="cloud-quota-status hidden" role="status" aria-live="polite"><i></i><span>Cloud quota</span></div></div>
-                <label class="setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span><select id="languageSelect">
-                  <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
-                </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></label>
+                <div class="setting language-setting"><span data-i18n="speechLanguage">Γλώσσα ομιλίας</span>
+                  <div id="languagePicker" class="language-picker">
+                    <button id="languagePickerButton" class="language-picker-button" type="button" aria-haspopup="listbox" aria-expanded="false">
+                      <span class="language-picker-label">Ελληνικά</span><span class="picker-chevron" aria-hidden="true"></span>
+                    </button>
+                    <div id="languagePickerMenu" class="language-picker-menu hidden" role="listbox" aria-label="Speech language"></div>
+                  </div>
+                  <select id="languageSelect" class="model-native-select" tabindex="-1" aria-hidden="true">
+                    <option value="greek">Ελληνικά</option><option value="english">English</option><option value="auto" data-i18n="autoDetect">Αυτόματη ανίχνευση</option><option value="spanish">Español</option><option value="french">Français</option><option value="german">Deutsch</option><option value="italian">Italiano</option>
+                  </select><small data-i18n="languageHint">Η ρητή επιλογή γλώσσας βελτιώνει πολύ τα σύντομα clips.</small></div>
               </div>
 
               <div id="enhancedOption" class="enhanced-option enhanced-coming-soon" aria-disabled="true">
