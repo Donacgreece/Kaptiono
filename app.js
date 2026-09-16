@@ -148,6 +148,13 @@ function showPage(page){
   $('#workspace').classList.toggle('hidden',page!=='workspace');
   $('#supportPage').classList.toggle('hidden',page!=='support');
   $('#roadmapPage').classList.toggle('hidden',page!=='roadmap');
+  const pageTitles={
+    home:'Kaptiono - Free AI Subtitle Generator with Local Whisper',
+    workspace:'Kaptiono - Caption Studio',
+    support:'Kaptiono - Support',
+    roadmap:'Kaptiono - Roadmap'
+  };
+  if(pageTitles[page])document.title=pageTitles[page];
   updateTopbarPageNav(page);
   window.scrollTo({top:0,behavior:'smooth'});
   updateEnhancedUi();
@@ -155,9 +162,9 @@ function showPage(page){
   updateCompatibilityNote();
   stabilizeMobileI18nLayout();
 }
-function goHome(){showPage('home');trackVirtualPage('/','Kaptiono · Home')}
-function goSupport(){showPage('support');trackVirtualPage('/support','Kaptiono · Support')}
-function goRoadmap(){showPage('roadmap');trackVirtualPage('/roadmap','Kaptiono · Roadmap');trackEvent('roadmap_opened')}
+function goHome(){showPage('home');trackVirtualPage('/','Kaptiono - Home')}
+function goSupport(){showPage('support');trackVirtualPage('/support','Kaptiono - Support')}
+function goRoadmap(){showPage('roadmap');trackVirtualPage('/roadmap','Kaptiono - Roadmap');trackEvent('roadmap_opened')}
 $('#brandHome').addEventListener('click',goHome);
 $('#supportNav').addEventListener('click',goSupport);
 $('#pageBackNav')?.addEventListener('click',()=>$('#pageBackNav').dataset.backTarget==='support'?goSupport():goHome());
@@ -169,7 +176,7 @@ function loadFile(file){
   trackEvent('video_selected',{file_type:(file.type||'unknown').split('/').pop()||'unknown'});
   if(!file.type.startsWith('video/')&&!/\.(mp4|mov|m4v|webm)$/i.test(file.name)){alert(isGreekUI()?'Διάλεξε αρχείο video.':'Choose a video file.');return}
   if(state.url)URL.revokeObjectURL(state.url);state.file=file;state.url=URL.createObjectURL(file);state.sourceWords=[];state.captions=[];state.currentCaptionKey='';
-  video.src=state.url;video.load();$('#videoLoading').classList.remove('hidden');$('#startCard').classList.add('hidden');$('#supportPage').classList.add('hidden');$('#workspace').classList.remove('hidden');$('#systemFile').textContent=`${file.name} · ${bytes(file.size)}`;$('#captionEditor').classList.add('hidden');$('#emptyCaptions').classList.remove('hidden');$('#captionCountBadge').textContent='0 captions';updateExportButtons();
+  video.src=state.url;video.load();$('#videoLoading').classList.remove('hidden');$('#startCard').classList.add('hidden');$('#supportPage').classList.add('hidden');$('#workspace').classList.remove('hidden');document.title='Kaptiono - Caption Studio';$('#systemFile').textContent=`${file.name} · ${bytes(file.size)}`;$('#captionEditor').classList.add('hidden');$('#emptyCaptions').classList.remove('hidden');$('#captionCountBadge').textContent='0 captions';updateExportButtons();
   const defaultModel='onnx-community/whisper-small_timestamped';$('#modelSelect').value=defaultModel;syncModelPicker?.();$('#languageSelect').value=state.uiLang==='el'?'greek':'english';syncLanguagePicker?.();updateModelHint();updateCompatibilityNote();
   $('#workspace').scrollIntoView({behavior:'smooth',block:'start'});
 }

@@ -14,8 +14,8 @@
     return getDeviceLang();
   };
   const titles={
-    el:'Kaptiono · AI υπότιτλοι για creators',
-    en:'Kaptiono · AI subtitles built for creators'
+    el:'Kaptiono - AI υπότιτλοι για creators',
+    en:'Kaptiono - AI subtitles built for creators'
   };
   const descriptions={
     el:'Γνώρισε το Kaptiono, ένα privacy-first εργαλείο AI υποτίτλων για creators με Local Whisper, προαιρετικό Cloud High Accuracy, editing και export χωρίς watermark.',
