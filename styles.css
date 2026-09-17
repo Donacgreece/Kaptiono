@@ -1196,3 +1196,9 @@ body.modal-open{overflow:hidden}
     text-align:center;
   }
 }
+
+/* Roadmap support note: mobile only. */
+@media (min-width:901px){
+  #roadmapPage .roadmap-support-note{display:none!important}
+  #roadmapPage .roadmap-hero-grid{grid-template-columns:minmax(0,1fr)}
+}
