@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='1.0.0';
+const APP_VERSION='1.0.1';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -65,7 +65,7 @@ function detectInitialUiLang(){
 function rememberUiLang(lang){
   try{localStorage.setItem(LANG_PREF_KEY,lang);localStorage.setItem(LANG_EXPLICIT_KEY,'1')}catch{}
 }
-const state={file:null,url:null,sourceWords:[],captions:[],uiLang:detectInitialUiLang(),style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,exportMode:(localStorage.getItem('kaptiono-export-mode')==='fast'?'fast':'social'),enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null,cloudQuotaTimer:null,cloudQuota:null,cloudQuotaLoading:false,cloudQuotaLastFetch:0};
+const state={file:null,url:null,sourceWords:[],captions:[],uiLang:detectInitialUiLang(),style:{...presets.yellow},preset:'yellow',worker:null,startedAt:0,currentCaptionKey:'',exporting:false,watchdog:null,lastWorkerActivity:0,workerStage:'idle',workerStartedAt:0,progressValue:0,progressTarget:0,progressRaf:0,progressTicker:null,modelFirstRun:false,exportStage:'idle',exportPct:null,exportMode:(localStorage.getItem('kaptiono-export-mode')==='fast'?'fast':'social'),enhanced:false,enhanceWorker:null,pendingEnhanceWords:null,enhanceFirstRun:false,previewFrameHandle:0,previewFrameMode:'',previewCaptionIndex:-1,previewActiveWordIndex:-1,voiceRetry:false,voiceRetryImproved:false,cloudAbortController:null,cloudQuotaTimer:null,cloudQuota:null,cloudQuotaLoading:false,cloudQuotaLastFetch:0};
 const video=$('#video');
 
 function stabilizeMobileI18nLayout(){
@@ -1071,10 +1071,45 @@ function updateCompatibilityNote(){
 }
 enforceComingSoonModels();updateCompatibilityNote();updateModelHint();updateEnhancedUi();updateProcessingModeLabel();
 
-function destroyWorker(){if(state.watchdog){clearInterval(state.watchdog);state.watchdog=null}if(state.worker){state.worker.terminate();state.worker=null}}
+function destroyWorker(){
+  if(state.watchdog){clearInterval(state.watchdog);state.watchdog=null}
+  if(state.worker){state.worker.terminate();state.worker=null}
+  state.workerStage='idle';
+  state.workerStartedAt=0;
+}
 function touchWorker(){state.lastWorkerActivity=Date.now()}
-function createWorker(){destroyWorker();state.worker=new Worker(`./whisper-worker.js?v=${encodeURIComponent(APP_VERSION)}`,{type:'module'});state.worker.onmessage=e=>{touchWorker();onWorkerMessage(e)};state.worker.onerror=e=>{destroyWorker();failProgress(e.message||'Worker error');$('#generateBtn').disabled=false};touchWorker();return state.worker}
-function startWatchdog(){if(state.watchdog)clearInterval(state.watchdog);state.watchdog=setInterval(()=>{if(!state.worker)return;const silent=Date.now()-state.lastWorkerActivity;if(silent>90000){destroyWorker();failProgress(isGreekUI()?'Το AI δεν απάντησε για 90 δευτερόλεπτα. Η διαδικασία σταμάτησε αντί να μείνει κολλημένη. Δοκίμασε Base ή Tiny και ξανά.':'The AI did not respond for 90 seconds. Processing was stopped instead of hanging indefinitely. Try Base or Tiny and retry.');$('#generateBtn').disabled=false}},5000)}
+function createWorker(){
+  destroyWorker();
+  state.workerStage='loading';
+  state.workerStartedAt=Date.now();
+  state.worker=new Worker(`./whisper-worker.js?v=${encodeURIComponent(APP_VERSION)}`,{type:'module'});
+  state.worker.onmessage=e=>{touchWorker();onWorkerMessage(e)};
+  state.worker.onerror=e=>{destroyWorker();failProgress(e.message||'Worker error');$('#generateBtn').disabled=false};
+  touchWorker();
+  return state.worker;
+}
+function startWatchdog(){
+  if(state.watchdog)clearInterval(state.watchdog);
+  state.watchdog=setInterval(()=>{
+    if(!state.worker)return;
+    const now=Date.now();
+    const silent=now-state.lastWorkerActivity;
+    const elapsed=state.workerStartedAt?now-state.workerStartedAt:0;
+    const transcribing=state.workerStage==='transcribing';
+    const silenceLimit=transcribing?10*60*1000:3*60*1000;
+    const absoluteLimit=transcribing?45*60*1000:15*60*1000;
+    if(silent<=silenceLimit&&(!elapsed||elapsed<=absoluteLimit))return;
+    destroyWorker();
+    failProgress(transcribing
+      ?(isGreekUI()
+        ?'Η local απομαγνητοφώνηση δεν έδωσε πρόοδο για μεγάλο χρονικό διάστημα και σταμάτησε με ασφάλεια. Δοκίμασε ξανά ή επίλεξε Base/Tiny σε πιο αργή συσκευή.'
+        :'Local transcription made no progress for an extended period and was stopped safely. Retry, or use Base/Tiny on a slower device.')
+      :(isGreekUI()
+        ?'Το Local AI δεν φόρτωσε έγκαιρα. Έλεγξε τη σύνδεση ή δοκίμασε Base/Tiny.'
+        :'Local AI did not load in time. Check your connection or try Base/Tiny.'));
+    $('#generateBtn').disabled=false;
+  },5000);
+}
 
 function selectedModelFriendlyName(){
   const value=$('#modelSelect')?.value||'';
@@ -1601,27 +1636,61 @@ function onWorkerMessage({data}){
     $('#systemAi').textContent=`${d.toUpperCase()} + Whisper`;
   }
   if(data.type==='transcribe-start'){
+    state.workerStage='transcribing';
+    state.workerStartedAt=Date.now();
     stopProgressDrift();
-    showProgress('transcribe',62);
-    startProgressDrift(state.enhanced?88:92,.32,700);
+    const chunks=Math.max(1,Number(data.chunkCount)||1);
+    showProgress('transcribe',62,chunks>1
+      ?(isGreekUI()
+        ?`Το Local AI θα επεξεργαστεί το audio σε ${chunks} μικρότερα τμήματα ώστε να παραμένει αξιόπιστο και σε πιο αργές συσκευές.`
+        :`Local AI will process the audio in ${chunks} smaller chunks for reliable transcription on slower devices.`)
+      :'');
+  }
+  if(data.type==='transcribe-chunk-start'){
+    state.workerStage='transcribing';
+    const count=Math.max(1,Number(data.chunkCount)||1);
+    const index=Math.max(1,Math.min(count,Number(data.chunkIndex)||1));
+    const done=Math.max(0,Math.round(Number(data.processedSeconds)||0));
+    const total=Math.max(done,Math.round(Number(data.totalSeconds)||0));
+    const retry=data.phase==='voice-retry';
+    const base=retry?94:62;
+    const span=retry?1.2:(state.enhanced?28:32);
+    const p=Math.max(0,Math.min(100,Number(data.progress)||0));
+    const detail=isGreekUI()
+      ?`${retry?'Voice Boost · ':''}Τμήμα ${index} από ${count}${total?` · ${done}/${total} δευτ.`:''}`
+      :`${retry?'Voice Boost · ':''}Chunk ${index} of ${count}${total?` · ${done}/${total} sec`:''}`;
+    showProgress('transcribe',Math.min(retry?95.2:(state.enhanced?90:94),base+p*span/100),detail);
   }
   if(data.type==='transcribe-progress'){
     const p=Math.max(0,Math.min(100,Number(data.progress)||0));
-    showProgress('transcribe',Math.min(state.enhanced?90:94,62+p*(state.enhanced?.28:.32)));
+    const retry=data.phase==='voice-retry';
+    const done=Math.max(0,Math.round(Number(data.processedSeconds)||0));
+    const total=Math.max(done,Math.round(Number(data.totalSeconds)||0));
+    const count=Math.max(1,Number(data.chunkCount)||1);
+    const index=Math.max(1,Math.min(count,Number(data.chunkIndex)||count));
+    const detail=isGreekUI()
+      ?`${retry?'Voice Boost · ':''}Ολοκληρώθηκε ${index}/${count}${total?` · ${done}/${total} δευτ.`:''}`
+      :`${retry?'Voice Boost · ':''}Completed ${index}/${count}${total?` · ${done}/${total} sec`:''}`;
+    if(retry){
+      showProgress('transcribe',Math.min(95.2,94+p*.012),detail);
+    }else{
+      showProgress('transcribe',Math.min(state.enhanced?90:94,62+p*(state.enhanced?.28:.32)),detail);
+    }
   }
   if(data.type==='voice-retry-start'){
     state.voiceRetry=true;
+    state.workerStage='transcribing';
+    state.workerStartedAt=Date.now();
     stopProgressDrift();
-    showProgress('transcribe',91,isGreekUI()
+    showProgress('transcribe',94,isGreekUI()
       ?'Εντοπίστηκε κυρίως μουσική. Δοκιμάζουμε ξανά αυτόματα με Voice Boost, χρησιμοποιώντας το ίδιο Whisper model και χωρίς επιπλέον AI download.'
       :'Mostly music was detected. Retrying automatically with Voice Boost using the same Whisper model and no additional AI download.');
-    startProgressDrift(94,.10,750);
     trackEvent('voice_boost_retry',{reason:data.reason||'music'});
   }
   if(data.type==='voice-retry-result'){
     state.voiceRetryImproved=Boolean(data.improved);
     stopProgressDrift();
-    showProgress('transcribe',94,data.improved
+    showProgress('transcribe',95.4,data.improved
       ?(isGreekUI()
         ?'Το Voice Boost ανέκτησε περισσότερη ομιλία. Ολοκληρώνουμε τους υπότιτλους.'
         :'Voice Boost recovered more speech. Finishing your captions.')

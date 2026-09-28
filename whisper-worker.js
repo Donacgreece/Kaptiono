@@ -213,6 +213,88 @@ async function transcribeWithTimestampFallback(pipe,audio,opts){
   }
 }
 
+
+const AUDIO_SAMPLE_RATE=16000;
+const TRANSCRIBE_CHUNK_SECONDS=30;
+const MIN_TAIL_SECONDS=2;
+
+function buildTranscriptionRanges(totalSamples){
+  const chunkSamples=TRANSCRIBE_CHUNK_SECONDS*AUDIO_SAMPLE_RATE;
+  const minTailSamples=MIN_TAIL_SECONDS*AUDIO_SAMPLE_RATE;
+  const ranges=[];
+  for(let start=0;start<totalSamples;start+=chunkSamples){
+    ranges.push({start,end:Math.min(totalSamples,start+chunkSamples)});
+  }
+  if(ranges.length>1){
+    const last=ranges[ranges.length-1];
+    if(last.end-last.start<minTailSamples){
+      ranges[ranges.length-2].end=last.end;
+      ranges.pop();
+    }
+  }
+  return ranges;
+}
+
+async function transcribeAudioInChunks(pipe,audio,opts,phase='primary'){
+  const ranges=buildTranscriptionRanges(audio.length);
+  const totalSeconds=audio.length/AUDIO_SAMPLE_RATE;
+  const words=[];
+  const texts=[];
+
+  for(let i=0;i<ranges.length;i++){
+    const {start,end}=ranges[i];
+    const offset=start/AUDIO_SAMPLE_RATE;
+    const chunkDuration=(end-start)/AUDIO_SAMPLE_RATE;
+    const progressBefore=(i/ranges.length)*100;
+
+    postMessage({
+      type:'transcribe-chunk-start',
+      phase,
+      progress:progressBefore,
+      chunkIndex:i+1,
+      chunkCount:ranges.length,
+      processedSeconds:offset,
+      totalSeconds
+    });
+
+    const chunk=audio.subarray(start,end);
+    const out=await transcribeWithTimestampFallback(pipe,chunk,opts);
+    const chunkWords=normalizeChunks(out,chunkDuration);
+
+    for(const item of chunkWords){
+      let wordStart=offset+Number(item.start||0);
+      let wordEnd=offset+Number(item.end||0);
+      const maxStart=Math.max(0,totalSeconds-.02);
+      wordStart=Math.max(offset,Math.min(maxStart,wordStart));
+      wordEnd=Math.min(totalSeconds,Math.max(wordStart+.02,wordEnd));
+      words.push({word:item.word,start:wordStart,end:wordEnd});
+    }
+
+    const chunkText=String(out?.text||'').trim();
+    if(chunkText)texts.push(chunkText);
+
+    postMessage({
+      type:'transcribe-progress',
+      phase,
+      progress:((i+1)/ranges.length)*100,
+      chunkIndex:i+1,
+      chunkCount:ranges.length,
+      processedSeconds:end/AUDIO_SAMPLE_RATE,
+      totalSeconds
+    });
+
+    // Yield between chunks so the worker can flush progress messages promptly.
+    await new Promise(resolve=>setTimeout(resolve,0));
+  }
+
+  words.sort((a,b)=>a.start-b.start||a.end-b.end);
+  return{
+    words,
+    text:texts.join(' ').replace(/\s+/g,' ').trim(),
+    chunkCount:ranges.length
+  };
+}
+
 function transcriptionQuality(text,words){
   const tokens=transcriptTokens(text);
   const markers=tokens.filter(isMusicMarkerToken).length;
@@ -228,10 +310,12 @@ self.onmessage = async ({data})=>{
   if(data.type !== 'transcribe') return;
   try{
     const audio = new Float32Array(data.audio);
-    const duration = audio.length / 16000;
+    const duration = audio.length / AUDIO_SAMPLE_RATE;
     postMessage({type:'device',device:'wasm'});
     const pipe = await getTranscriber(data.model || 'onnx-community/whisper-base_timestamped');
-    postMessage({type:'transcribe-start'});
+
+    const chunkCount=buildTranscriptionRanges(audio.length).length;
+    postMessage({type:'transcribe-start',totalSeconds:duration,chunkCount});
 
     const opts = {
       task:'transcribe',
@@ -241,12 +325,12 @@ self.onmessage = async ({data})=>{
     };
     if(data.language && data.language !== 'auto') opts.language = data.language;
 
-    const firstOut = await transcribeWithTimestampFallback(pipe,audio,opts);
-    const firstWords = normalizeChunks(firstOut,duration);
-    const firstText = String(firstOut?.text||'');
+    const firstResult=await transcribeAudioInChunks(pipe,audio,opts,'primary');
+    const firstWords=firstResult.words;
+    const firstText=firstResult.text;
 
-    let finalOut=firstOut;
     let finalWords=firstWords;
+    let finalText=firstText;
     let voiceRetry=false;
     let voiceRetryImproved=false;
 
@@ -256,9 +340,9 @@ self.onmessage = async ({data})=>{
 
       try{
         const boosted=voiceBoost16k(audio);
-        const retryOut=await transcribeWithTimestampFallback(pipe,boosted,opts);
-        const retryWords=normalizeChunks(retryOut,duration);
-        const retryText=String(retryOut?.text||'');
+        const retryResult=await transcribeAudioInChunks(pipe,boosted,opts,'voice-retry');
+        const retryWords=retryResult.words;
+        const retryText=retryResult.text;
 
         const firstScore=transcriptionQuality(firstText,firstWords);
         const retryScore=transcriptionQuality(retryText,retryWords);
@@ -267,8 +351,8 @@ self.onmessage = async ({data})=>{
           retryScore>=firstScore+4 &&
           !shouldVoiceBoostRetry(retryText,retryWords,duration)
         ){
-          finalOut=retryOut;
           finalWords=retryWords;
+          finalText=retryText;
           voiceRetryImproved=true;
         }
 
@@ -279,11 +363,10 @@ self.onmessage = async ({data})=>{
       }
     }
 
-    postMessage({type:'transcribe-progress',progress:100});
     postMessage({
       type:'result',
       words:finalWords,
-      text:String(finalOut?.text||''),
+      text:finalText,
       voiceRetry,
       voiceRetryImproved,
     });
@@ -291,3 +374,4 @@ self.onmessage = async ({data})=>{
     postMessage({type:'error',message:error?.message||String(error),stack:error?.stack||''});
   }
 };
+

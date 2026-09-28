@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.0.1 - 2026-09-28
+
+### Local transcription reliability
+
+- Removed the fixed 90-second Local AI inactivity cutoff that could stop valid transcription on slower devices.
+- Local Whisper now processes longer audio in approximately 30-second outer chunks and reports real progress after each chunk.
+- Added chunk-aware progress details so users can see which part of the audio is being processed.
+- Added an adaptive Local AI watchdog: model loading and active transcription use different safety limits, with a much longer transcription window.
+- Kept the existing automatic Voice Boost retry and made it use the same chunked transcription path.
+- Updated PWA cache/version metadata to v1.0.1 so the corrected worker is loaded reliably.
+
 ## v1.0.0 - 2026-09-14
 
 - Reorganized repository documentation into `docs/`, moved GitHub community files into `.github/`, and moved release tooling under `tools/release/` without changing application runtime behavior.
