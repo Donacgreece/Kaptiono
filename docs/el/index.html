@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4f6f1" />
+  <meta name="color-scheme" content="light" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="description" content="Πλήρης τεκμηρίωση Kaptiono για Local και Cloud AI υπότιτλους, caption editing, χειροκίνητο timing, Caption Studio, exports, PWA, privacy και troubleshooting." />
+  <link rel="canonical" href="https://kaptiono.com/docs/el/" />
+  <link rel="alternate" hreflang="en" href="https://kaptiono.com/docs/" />
+  <link rel="alternate" hreflang="el" href="https://kaptiono.com/docs/el/" />
+  <link rel="alternate" hreflang="x-default" href="https://kaptiono.com/docs/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Kaptiono" />
+  <meta property="og:title" content="Kaptiono - Τεκμηρίωση" />
+  <meta property="og:description" content="Πλήρης τεκμηρίωση Kaptiono για Local και Cloud AI υπότιτλους, caption editing, χειροκίνητο timing, Caption Studio, exports, PWA, privacy και troubleshooting." />
+  <meta property="og:url" content="https://kaptiono.com/docs/el/" />
+  <meta property="og:image" content="https://kaptiono.com/assets/share/kaptiono-social-v1-1200x630.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Kaptiono - Τεκμηρίωση" />
+  <meta name="twitter:description" content="Πλήρης τεκμηρίωση Kaptiono για Local και Cloud AI υπότιτλους, caption editing, χειροκίνητο timing, Caption Studio, exports, PWA, privacy και troubleshooting." />
+  <meta name="twitter:image" content="https://kaptiono.com/assets/share/kaptiono-social-v1-1200x630.png" />
+  <title>Kaptiono - Τεκμηρίωση</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/footer.css?v=1.0.3" />
+  <link rel="stylesheet" href="/docs/docs.css?v=1.0.3" />
+  <script src="/consent.js?v=1.0.3"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Τεκμηρίωση Kaptiono","name":"Kaptiono - Τεκμηρίωση","url":"https://kaptiono.com/docs/el/","inLanguage":"el","dateModified":"2026-09-30","publisher":{"@type":"Organization","name":"Kaptiono","url":"https://kaptiono.com/"}}</script>
+</head>
+<body>
+  <header class="docs-topbar">
+    <a class="docs-brand" href="/docs/"><img src="/assets/icons/icon-64.png" alt="" /><span><strong>Kaptiono</strong><small>DOCS · 1.0.3</small></span></a>
+    <div class="docs-search-wrap"><input id="docsSearch" class="docs-search" type="search" autocomplete="off" placeholder="Αναζήτηση στην τεκμηρίωση…" aria-label="Αναζήτηση στην τεκμηρίωση…" /><span class="search-key">/</span></div>
+    <div class="docs-actions"><button id="docsSearchToggle" class="docs-menu-btn" type="button" aria-label="Search">⌕</button><div class="docs-lang"><a href="/docs/">EN</a><a class="active" href="/docs/el/">EL</a></div><a class="open-app" href="/">Άνοιγμα Kaptiono<b>↗</b></a><button id="docsMenuBtn" class="docs-menu-btn" type="button" aria-label="Menu">☰</button></div>
+  </header>
+  <div id="docsOverlay" class="docs-mobile-overlay"></div>
+  <div class="docs-layout">
+    <aside class="docs-sidebar"><div class="sidebar-head"><strong>KAPTIONO DOCS</strong><span class="sidebar-version">v1.0.3</span></div><div class="nav-group"><b>Ξεκίνημα</b><a href="#overview">Επισκόπηση</a><a href="#quick-start">Γρήγορη έναρξη</a></div><div class="nav-group"><b>AI & transcription</b><a href="#local-cloud">Local και Cloud</a><a href="#models">Models και γλώσσα</a></div><div class="nav-group"><b>Editing</b><a href="#caption-editor">Caption editor</a><a href="#timing">Timing και timeline</a><a href="#design">Caption Studio</a></div><div class="nav-group"><b>Output & app</b><a href="#export">Export</a><a href="#pwa-privacy">PWA και privacy</a><a href="#troubleshooting">Troubleshooting</a></div><div class="nav-group"><b>Project</b><a href="#developers">Developers</a><a href="#releases">Εκδόσεις</a></div></aside>
+    <main class="docs-main">
+      <section class="docs-hero"><span class="docs-kicker">ΤΕΚΜΗΡΊΩΣΗ ΠΡΟΪΌΝΤΟΣ</span><h1>Τεκμηρίωση Kaptiono</h1><p>Όλα όσα χρειάζεσαι για δημιουργία, διόρθωση, χρονισμό, σχεδίαση και export AI υποτίτλων με το Kaptiono. Η τεκμηρίωση αφορά το τρέχον production workflow της v1.0.3.</p><div class="hero-actions"><a class="primary" href="#quick-start">Γρήγορη έναρξη<b>→</b></a><a class="secondary" href="/">Άνοιγμα Kaptiono</a></div><div class="doc-version-note"><i></i><span>Ενημερωμένο για Kaptiono v1.0.3</span></div></section>
+      <div id="searchSummary" class="search-summary"></div><div id="searchEmpty" class="search-empty"><b>Δεν βρέθηκε κάτι</b><p>Δοκίμασε διαφορετική λέξη ή άνοιξε το μενού θεμάτων.</p></div>
+      
+<section id="overview" class="doc-section" data-search="επισκόπηση τι είναι kaptiono υπότιτλοι creators local cloud ai privacy">
+  <span class="section-eyebrow">Επισκόπηση</span><h2>Τι κάνει το Kaptiono</h2>
+  <p>Το Kaptiono είναι generator και editor AI υποτίτλων που λειτουργεί μέσα στον browser και έχει σχεδιαστεί για creators. Ανοίγεις video από τη συσκευή σου, κάνεις απομαγνητοφώνηση με Local Whisper ή προαιρετικό Cloud High Accuracy, διορθώνεις κείμενο και timing, σχεδιάζεις τους υπότιτλους και κάνεις export χωρίς Kaptiono watermark.</p>
+  <div class="doc-grid"><div class="doc-card"><b>Privacy-first workflow</b><p>Το original video παραμένει στη συσκευή σου. Με Local Whisper παραμένει τοπικά και το audio της απομαγνητοφώνησης.</p></div><div class="doc-card"><b>Local ή Cloud AI</b><p>Local για privacy και ανεξαρτησία από Cloud, Cloud High Accuracy όταν προέχει η μέγιστη ακρίβεια.</p></div><div class="doc-card"><b>Caption Studio</b><p>Διόρθωση κειμένου και timing, τυπογραφία, χρώματα, θέση, animation, box, outline και άλλα controls.</p></div><div class="doc-card"><b>Creator exports</b><p>Λήψη SRT, TXT ή τοπικά rendered video με burned-in captions.</p></div></div>
+  <figure class="docs-shot"><img src="/assets/screenshots/kaptiono-product-showcase.png" alt="Το Kaptiono σε desktop και mobile" /><figcaption>Το Kaptiono v1.0.3 χρησιμοποιεί κοινό responsive workflow σε desktop και mobile.</figcaption></figure>
+</section>
+<section id="quick-start" class="doc-section" data-search="γρήγορη έναρξη workflow video generate captions edit design export mp4 mov m4v webm">
+  <span class="section-eyebrow">Ξεκίνημα</span><h2>Γρήγορη έναρξη</h2>
+  <div class="steps"><div class="step"><div><b>Διάλεξε video</b><p>Άνοιξε MP4, MOV, M4V ή WebM από τη συσκευή σου. Το αρχείο χρησιμοποιείται απευθείας από τον browser.</p></div></div><div class="step"><div><b>Διάλεξε AI model και γλώσσα ομιλίας</b><p>Το Whisper Small είναι το προτεινόμενο Local model. Υπάρχουν επίσης Base, Tiny και Cloud High Accuracy. Η ρητή επιλογή γλώσσας βοηθά ιδιαίτερα στα μικρά clips.</p></div></div><div class="step"><div><b>Δημιούργησε captions</b><p>Το Kaptiono εξάγει audio, τρέχει transcription και δημιουργεί caption groups με word timing.</p></div></div><div class="step"><div><b>Διόρθωσε κείμενο και timing</b><p>Διόρθωσε ορθογραφικά στο caption list. Άλλαξε Start/End ή χρησιμοποίησε το timeline όταν ένας υπότιτλος δεν συγχρονίζεται σωστά.</p></div></div><div class="step"><div><b>Design και export</b><p>Χρησιμοποίησε το Caption Studio και μετά κατέβασε SRT, TXT, Social Compatible MP4 ή Fast Export, ανάλογα με τον browser.</p></div></div></div>
+  <div class="callout"><span class="callout-mark">✓</span><div><b>Οι χειροκίνητες διορθώσεις διατηρούνται</b><p>Από τη v1.0.2 το διορθωμένο caption text συγχρονίζεται στο ενεργό transcript. Στη v1.0.3 προστατεύονται και οι χειροκίνητες αλλαγές timing, ώστε αλλαγές design να μην επαναφέρουν σιωπηλά το αρχικό αποτέλεσμα του Whisper.</p></div></div>
+</section>
+<section id="local-cloud" class="doc-section" data-search="local cloud privacy audio upload high accuracy quota fallback original video">
+  <span class="section-eyebrow">AI processing</span><h2>Local AI και Cloud High Accuracy</h2>
+  <table class="docs-table"><thead><tr><th>Mode</th><th>Processing</th><th>Privacy</th><th>Ιδανικό για</th></tr></thead><tbody><tr><td><strong>Local AI</strong></td><td>Το Whisper τρέχει στον browser μέσω WASM.</td><td>Video και audio transcription μένουν στη συσκευή.</td><td>Privacy, επαναλαμβανόμενη χρήση, ανεξαρτησία από Cloud.</td></tr><tr><td><strong>Cloud High Accuracy</strong></td><td>Το extracted audio στέλνεται στο Kaptiono Cloud transcription endpoint με Whisper Large v3 Turbo.</td><td>Το original video δεν ανεβαίνει. Στέλνεται μόνο το audio που απαιτείται για transcription.</td><td>Μέγιστη ακρίβεια όταν υπάρχει διαθέσιμη Cloud χωρητικότητα.</td></tr></tbody></table>
+  <div class="callout warn"><span class="callout-mark">!</span><div><b>Η διαθεσιμότητα του Cloud μπορεί να αλλάζει</b><p>Το Cloud High Accuracy εξαρτάται από σύνδεση και διαθέσιμο compute quota. Όταν δεν είναι διαθέσιμο, το Kaptiono μπορεί να επιστρέψει σε Local model χωρίς να μπλοκάρει το βασικό workflow.</p></div></div>
+</section>
+<section id="models" class="doc-section" data-search="whisper small base tiny large v3 turbo μοντέλα download 255 85 45 mb γλώσσα auto detect">
+  <span class="section-eyebrow">Transcription</span><h2>Models και γλώσσα ομιλίας</h2>
+  <div class="model-grid"><div class="model-card recommended"><span>LOCAL · RECOMMENDED</span><b>Whisper Small</b><small>Περίπου 255 MB download. Η καλύτερη Local ποιότητα από τα διαθέσιμα Local models.</small></div><div class="model-card"><span>LOCAL · BALANCED</span><b>Whisper Base</b><small>Περίπου 85 MB. Πιο ελαφρύ για συστήματα που δυσκολεύονται με το Small.</small></div><div class="model-card"><span>LOCAL · FAST TEST</span><b>Whisper Tiny</b><small>Περίπου 45 MB. Το πιο γρήγορο/ελαφρύ Local model, με χαμηλότερη ακρίβεια.</small></div><div class="model-card"><span>CLOUD · HIGH ACCURACY</span><b>Large v3 Turbo</b><small>Τρέχει μέσω της Cloud transcription υπηρεσίας όταν είναι διαθέσιμη.</small></div></div>
+  <h3>Πρώτη Local χρήση</h3><p>Τα Local models κατεβαίνουν από τον browser πριν από την πρώτη χρήση και μπορούν να αποθηκευτούν στην browser cache. Το Kaptiono δείχνει το μέγεθος του model πριν το download και μπορεί να προτείνει μικρότερο Local model ή Cloud.</p>
+  <h3>Επιλογή γλώσσας</h3><p>Χρησιμοποίησε Auto Detect για άγνωστη ή μικτή ομιλία. Σε σύντομα clips, η ρητή επιλογή της πραγματικής γλώσσας μπορεί να βελτιώσει αισθητά την αναγνώριση. Η γλώσσα του interface είναι ανεξάρτητη από τη γλώσσα ομιλίας.</p>
+  <h3>Μεγάλα videos και πιο αργοί υπολογιστές</h3><p>Από τη v1.0.1 το Local transcription γίνεται σε chunks περίπου 30 δευτερολέπτων και δίνει progress μεταξύ των chunks. Το παλιό fixed timeout των 90 δευτερολέπτων αφαιρέθηκε, ώστε ένα πιο αργό σύστημα να συνεχίζει αντί να σταματά όσο το Whisper δουλεύει.</p>
+</section>
+<section id="caption-editor" class="doc-section" data-search="caption editor ορθογραφία διορθώσεις κείμενο persistent transcript words reflow">
+  <span class="section-eyebrow">Caption editor</span><h2>Διόρθωση generated κειμένου</h2>
+  <p>Κάθε generated caption εμφανίζεται στο Text panel. Πάτησε μέσα στο κείμενο και κάνε τη διόρθωση απευθείας. Το Kaptiono αναπροσαρμόζει το word timing του συγκεκριμένου caption μέσα στο υπάρχον χρονικό του εύρος.</p>
+  <div class="feature-list"><div><b>Οι διορθώσεις παραμένουν</b>Ορθογραφικά και αλλαγές λέξεων δεν χάνονται αν αλλάξεις μετά design.</div><div><b>Αναπροσαρμογή word timing</b>Αν αλλάξει ο αριθμός των λέξεων, ο χρόνος μοιράζεται ξανά μέσα στο caption range.</div><div><b>Live preview</b>Το overlay του video ενημερώνεται όσο γράφεις.</div><div><b>Export με το διορθωμένο text</b>SRT, TXT και burned-in export χρησιμοποιούν την τρέχουσα διορθωμένη μορφή.</div></div>
+  <div class="callout"><span class="callout-mark">i</span><div><b>Μπορείς να κάνεις design μετά το editing</b><p>Caption Width, Max Words, Max Lines και pacing μπορούν να προκαλέσουν reflow. Από τη v1.0.2 το Kaptiono συγχρονίζει πρώτα τις χειροκίνητες διορθώσεις στο working source ώστε να μη χαθούν.</p></div></div>
+</section>
+<section id="timing" class="doc-section" data-search="timing start end timeline drag resize διάρκεια overlap zoom seek χειροκίνητο 0.75 4">
+  <span class="section-eyebrow">Timing editor</span><h2>Διόρθωση χρόνου υποτίτλων</h2>
+  <p>Η v1.0.3 προσθέτει δύο τρόπους για timing correction: ακριβή Start/End πεδία σε κάθε caption και draggable timeline κάτω από το video.</p>
+  <h3>Start / End πεδία</h3><p>Μπορείς να γράψεις τιμή όπως <span class="inline-code">0:03.250</span>. Πάτησε <span class="kbd">Enter</span> ή βγες από το πεδίο για αποθήκευση. Μη έγκυρες τιμές απορρίπτονται και επανέρχεται το προηγούμενο timing.</p>
+  <h3>Timeline controls</h3><div class="feature-list"><div><b>Μετακίνηση caption</b>Σύρε το κέντρο του block αριστερά ή δεξιά για να μετακινηθούν μαζί Start και End.</div><div><b>Αλλαγή Start</b>Σύρε την αριστερή λαβή.</div><div><b>Αλλαγή End</b>Σύρε τη δεξιά λαβή για αλλαγή διάρκειας.</div><div><b>Zoom</b>0.75× έως 4× για μεγαλύτερη ακρίβεια.</div><div><b>Seek</b>Πάτησε caption block ή το preview button για άμεση μετάβαση στο αντίστοιχο σημείο του video.</div><div><b>Overlap warning</b>Τα overlapping captions επισημαίνονται οπτικά και εμφανίζεται warning.</div></div>
+  <div class="callout warn"><span class="callout-mark">!</span><div><b>Το χειροκίνητο timing γίνεται δεδομένο του project</b><p>Τα manually timed captions παίρνουν protected timing group. Μελλοντικό visual reflow μπορεί να οργανώσει τα υπόλοιπα captions, αλλά δεν αναιρεί σιωπηλά τη χειροκίνητη χρονική διόρθωση.</p></div></div>
+</section>
+<section id="design" class="doc-section" data-search="design caption studio preset font typography χρώματα θέση width rotation lines words animation highlight shadow box padding">
+  <span class="section-eyebrow">Caption Studio</span><h2>Design controls</h2>
+  <p>Το Design panel καθορίζει την εμφάνιση και τη ροή των captions. Οι περισσότερες αλλαγές φαίνονται άμεσα στο live preview.</p>
+  <div class="doc-grid"><div class="doc-card"><b>Typography</b><p>Font family, font size, letter spacing, scale, bold, italic και uppercase.</p></div><div class="doc-card"><b>Color & contrast</b><p>Text, active-word highlight, outline color/width, text opacity και background color.</p></div><div class="doc-card"><b>Position & frame</b><p>Horizontal/vertical position, caption width, alignment και πλήρης περιστροφή.</p></div><div class="doc-card"><b>Flow</b><p>Maximum words, maximum lines και Fast / Balanced / Relaxed pacing.</p></div><div class="doc-card"><b>Motion</b><p>Animation, animation strength, fade timing και word-by-word highlight.</p></div><div class="doc-card"><b>Effects</b><p>Shadow, background box opacity και box padding.</p></div></div>
+  <h3>Controls που μπορούν να κάνουν reflow</h3><p>Caption Width, Max Words, Max Lines και Caption Speed μπορούν να αλλάξουν τον τρόπο που ομαδοποιούνται οι λέξεις. Οι text corrections συγχρονίζονται πρώτα και στη v1.0.3 διατηρούνται και τα χειροκίνητα timing groups.</p>
+</section>
+<section id="export" class="doc-section" data-search="export srt txt mp4 h264 aac social compatible fast export webm mediarecorder burned captions tiktok reels shorts">
+  <span class="section-eyebrow">Export</span><h2>Λήψη αποτελέσματος</h2>
+  <table class="docs-table"><thead><tr><th>Export</th><th>Τι παίρνεις</th><th>Σημειώσεις</th></tr></thead><tbody><tr><td><strong>SRT</strong></td><td>Subtitle file με timestamps και το διορθωμένο caption text.</td><td>Για editors, players και πλατφόρμες που δέχονται εξωτερικούς υπότιτλους.</td></tr><tr><td><strong>TXT</strong></td><td>Καθαρό transcript.</td><td>Για copy, περιγραφές, notes και reuse.</td></tr><tr><td><strong>Social Compatible</strong></td><td>MP4 με H.264 video + AAC audio και burned-in captions.</td><td>Recommended για TikTok, Reels και Shorts όταν ο browser υποστηρίζει τα απαιτούμενα codecs.</td></tr><tr><td><strong>Fast Export</strong></td><td>Browser-native MediaRecorder export, συνήθως WebM σε Chromium.</td><td>Συνήθως γρηγορότερο, αλλά το format εξαρτάται από τον browser.</td></tr></tbody></table>
+  <p>Το video rendering γίνεται τοπικά. Το Kaptiono χρησιμοποιεί controlled MP4 pipeline για Social Compatible και browser MediaRecorder για Fast Export. Σε Safari/iPhone, το audio decode μπορεί να χρησιμοποιήσει bundled LibAV/FFmpeg WASM fallback όταν το native decode δεν αρκεί.</p>
+  <div class="callout"><span class="callout-mark">✓</span><div><b>Χωρίς watermark</b><p>Το βασικό Kaptiono workflow δεν προσθέτει Kaptiono watermark στα video exports με captions.</p></div></div>
+</section>
+<section id="pwa-privacy" class="doc-section" data-search="pwa install ios home screen android desktop privacy local storage analytics cookies cache update">
+  <span class="section-eyebrow">App & privacy</span><h2>PWA, storage και privacy</h2>
+  <h3>Εγκατάσταση Kaptiono</h3><p>Σε Chromium browsers το Kaptiono χρησιμοποιεί το browser install prompt όταν το PWA είναι installable. Σε iPhone/iPad άνοιξε το Share menu του Safari και διάλεξε <strong>Add to Home Screen</strong>. Η επιτυχής εγκατάσταση καταγράφεται τοπικά ώστε να μην εμφανίζεται συνεχώς νέο prompt.</p>
+  <h3>Updates</h3><p>Το service worker εντοπίζει waiting έκδοση και εμφανίζει in-app update flow αντί να κάνει αναγκαστικό reload όσο δουλεύεις.</p>
+  <h3>Διαχείριση δεδομένων</h3><ul><li>Το original video μένει στη συσκευή.</li><li>Με Local Whisper μένει τοπικά και το extracted audio.</li><li>Το Cloud High Accuracy στέλνει μόνο το audio που χρειάζεται για transcription.</li><li>Caption editing και video rendering παραμένουν local.</li><li>Τα optional analytics ελέγχονται από το consent interface.</li></ul>
+</section>
+<section id="troubleshooting" class="doc-section" data-search="troubleshooting αργό model loading crash memory safari iphone export error unsupported codec cloud unavailable 90 seconds">
+  <span class="section-eyebrow">Troubleshooting</span><h2>Συνηθισμένα προβλήματα</h2>
+  <h3>Το Local transcription αργεί</h3><p>Δοκίμασε Whisper Base ή Tiny σε χαμηλότερης ισχύος συσκευές. Το Small δίνει καλύτερη Local ποιότητα αλλά χρειάζεται περισσότερη μνήμη και compute. Σε παλιότερο PC ένα μεγάλο transcription μπορεί να χρειαστεί αρκετά λεπτά. Από τη v1.0.1 δεν σταματά επειδή απλώς ένα Whisper chunk ξεπέρασε τα 90 δευτερόλεπτα.</p>
+  <h3>Ο browser δυσκολεύεται με μεγάλο model</h3><p>Κλείσε memory-heavy tabs, δοκίμασε Base/Tiny ή Cloud High Accuracy όταν είναι διαθέσιμο. Το mobile Safari μπορεί να έχει αυστηρότερα memory limits από desktop browsers.</p>
+  <h3>Το Cloud High Accuracy δεν είναι διαθέσιμο</h3><p>Μπορεί να οφείλεται σε σύνδεση ή Cloud quota. Συνέχισε με Small, Base ή Tiny. Το βασικό caption workflow έχει σχεδιαστεί ώστε να λειτουργεί και χωρίς Cloud.</p>
+  <h3>Το video export δεν υποστηρίζεται</h3><p>Δοκίμασε το άλλο export mode. Αν δεν μπορεί να ξεκινήσει το Social Compatible, ίσως λειτουργεί το Fast Export. SRT και TXT παραμένουν ασφαλή fallbacks επειδή δεν εξαρτώνται από video encoding support.</p>
+  <h3>Το timing δεν είναι σωστό</h3><p>Διόρθωσε Start/End ή χρησιμοποίησε το timeline της v1.0.3. Τα overlaps επισημαίνονται ώστε να τα ελέγξεις πριν το export.</p>
+</section>
+<section id="developers" class="doc-section" data-search="developers architecture app js whisper worker mediabunny libav service worker github pages local development repository license">
+  <span class="section-eyebrow">Developers</span><h2>Architecture και repository</h2>
+  <p>Το Kaptiono είναι static browser application. Το βασικό UI/editing logic βρίσκεται στο <span class="inline-code">app.js</span>, το Local Whisper στο <span class="inline-code">whisper-worker.js</span>, το service worker στο <span class="inline-code">sw.js</span>, ενώ το video/audio handling χρησιμοποιεί Mediabunny και bundled LibAV/FFmpeg WASM fallback για συγκεκριμένες περιπτώσεις audio decoding στον Safari.</p>
+  <div class="code-block"><span class="lime">/</span> index.html<br><span class="lime">/</span> app.js<br><span class="lime">/</span> whisper-worker.js<br><span class="lime">/</span> sw.js<br><span class="lime">/docs/</span> public documentation + project docs<br><span class="lime">/docs/legal/</span> license and third-party compliance notes<br><span class="lime">/docs/releases/</span> release notes</div>
+  <p>Το deployment είναι σχεδιασμένο για GitHub Pages/custom-domain static hosting. Δες τα deployment και legal αρχεία του repository για operational λεπτομέρειες. Ο first-party κώδικας είναι source-available σύμφωνα με την άδεια του project, ενώ τα third-party components διατηρούν τις δικές τους άδειες.</p>
+  <div class="hero-actions"><a class="secondary" href="https://github.com/Donacgreece/Kaptiono" target="_blank" rel="noopener">GitHub repository ↗</a><a class="secondary" href="/docs/legal/LICENSE_SCOPE.md">License scope</a><a class="secondary" href="/THIRD_PARTY_NOTICES.md">Third-party notices</a></div>
+</section>
+<section id="releases" class="doc-section" data-search="releases changelog 1.0.3 1.0.2 1.0.1 1.0.0 timeline persistence chunk transcription">
+  <span class="section-eyebrow">Release notes</span><h2>Πρόσφατες εκδόσεις</h2>
+  <div class="docs-table-wrap"><table class="docs-table"><thead><tr><th>Έκδοση</th><th>Κύρια αλλαγή</th></tr></thead><tbody><tr><td><strong>v1.0.3</strong></td><td>Χειροκίνητο Start/End timing, draggable/resizable caption timeline, zoom, seek και overlap warnings. Τα timing edits διατηρούνται μετά από design changes.</td></tr><tr><td><strong>v1.0.2</strong></td><td>Οι χειροκίνητες διορθώσεις caption text παραμένουν όταν design controls προκαλούν reflow.</td></tr><tr><td><strong>v1.0.1</strong></td><td>Chunked Local Whisper processing και adaptive watchdog για μεγαλύτερα transcription σε πιο αργές συσκευές.</td></tr><tr><td><strong>v1.0.0</strong></td><td>Stable Local/Cloud caption workflow, Caption Studio, exports, PWA update flow και privacy-first production release.</td></tr></tbody></table></div>
+  <p>Αναλυτικά technical notes παραμένουν διαθέσιμα στο <span class="inline-code">/docs/releases/</span> του repository.</p>
+</section>
+
+      <div class="docs-footer-wrap"><footer class="kap-footer">
+  <div class="kap-footer-brand">
+    <a href="/" aria-label="Open Kaptiono"><img src="/assets/icons/icon-64.png" alt="" /><span><strong>Kaptiono</strong><small>v1.0.3</small></span></a>
+    <p>AI subtitles for creators. Local or Cloud AI. The original video stays on your device.</p>
+  </div>
+  <div class="kap-footer-links">
+    <div><b>Product</b><a href="/about/">About</a><a href="/about/#features">Features</a><a href="/about/#faq">FAQ</a><a href="/docs/">Docs</a></div>
+    <div><b>Project</b><a href="/?page=support">Support</a><a href="/?page=roadmap">Roadmap</a><a href="https://github.com/Donacgreece/Kaptiono" target="_blank" rel="noopener">GitHub</a><a href="/THIRD_PARTY_NOTICES.md">Licenses</a></div>
+    <div><b>Privacy &amp; Legal</b><a href="/privacy/">Privacy</a><a href="/cookies/">Cookies</a><a href="/terms/">Terms</a><button class="open-cookie-settings" type="button">Preferences</button></div>
+    <div><b>Business</b><a class="kap-footer-partners" href="/partners/">Partners</a><a href="mailto:info@kaptiono.com">Contact</a></div>
+  </div>
+  <div class="kap-footer-bottom"><span>© 2026 Kaptiono · Free core · No watermark</span><span>Local + Cloud AI · <a href="/THIRD_PARTY_NOTICES.md">Licenses</a></span></div>
+</footer></div>
+    </main>
+    <aside class="docs-toc"><b>Σε αυτή τη σελίδα</b><a href="#overview">Επισκόπηση</a><a href="#quick-start">Γρήγορη έναρξη</a><a href="#local-cloud">Local και Cloud</a><a href="#models">Models</a><a href="#caption-editor">Text editing</a><a href="#timing">Timing</a><a href="#design">Design</a><a href="#export">Export</a><a href="#troubleshooting">Troubleshooting</a></aside>
+  </div>
+  <script src="/docs/docs.js?v=1.0.3"></script>
+</body>
+</html>

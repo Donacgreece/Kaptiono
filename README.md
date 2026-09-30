@@ -1,5 +1,8 @@
 <p align="center">
   <a href="https://kaptiono.com/">
+
+**Documentation:** https://kaptiono.com/docs/  
+**Ελληνικά Docs:** https://kaptiono.com/docs/el/
     <img src="assets/icons/icon-192.png" width="104" height="104" alt="Kaptiono logo">
   </a>
 </p>

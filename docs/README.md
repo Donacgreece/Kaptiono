@@ -1,3 +1,12 @@
+# Kaptiono Documentation
+
+Public product documentation is available at:
+
+- https://kaptiono.com/docs/
+- https://kaptiono.com/docs/el/
+
+This directory also contains deployment, legal/compliance, and versioned release documentation used by the project.
+
 # Kaptiono documentation
 
 Project documentation is grouped here to keep the repository root focused on the production web application and the files GitHub or GitHub Pages expect at top level.

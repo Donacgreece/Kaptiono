@@ -11,6 +11,8 @@ The original video stays on the user's device. Local Whisper models process audi
 - [Kaptiono](https://kaptiono.com/): Production AI subtitle application and PWA.
 - [About Kaptiono](https://kaptiono.com/about/): Product overview, Local versus Cloud processing, features, privacy, device support and FAQ.
 - [Partners](https://kaptiono.com/partners/): Partnership and sponsorship opportunities for creator tools, hardware, software and brands serving video creators.
+- [Documentation](https://kaptiono.com/docs/): Complete English product documentation for transcription, caption editing, manual timing, design, export, PWA, privacy and troubleshooting.
+- [Greek Documentation](https://kaptiono.com/docs/el/): Greek-language product documentation with the same v1.0.3 feature coverage.
 
 ## Privacy and legal
 
