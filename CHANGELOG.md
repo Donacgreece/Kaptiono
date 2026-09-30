@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.2 - 2026-09-30
+
+### Caption editing persistence
+
+- Fixed manual subtitle corrections being lost when applying a design preset or changing caption layout settings.
+- Manual text edits are now synchronized back into the working timed-word transcript before any caption reflow.
+- Design changes that reflow captions, including caption width, max words, max lines and pacing, now preserve corrected spelling and wording.
+- Applying a new caption preset can still change layout and styling without reverting the user's edited transcript.
+- Updated PWA and asset version metadata to v1.0.2 so the corrected editor logic is loaded reliably.
+
 ## v1.0.1 - 2026-09-28
 
 ### Local transcription reliability

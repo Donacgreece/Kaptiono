@@ -20,7 +20,7 @@ Project documentation is grouped here to keep the repository root focused on the
 ## Releases
 
 - [`releases/RELEASE_PROCESS.md`](releases/RELEASE_PROCESS.md)
-- [`releases/RELEASE_NOTES_v1.0.1.md`](releases/RELEASE_NOTES_v1.0.1.md)
+- [`releases/RELEASE_NOTES_v1.0.2.md`](releases/RELEASE_NOTES_v1.0.2.md)
 - [`releases/RELEASE_NOTES_v1.0.0.md`](releases/RELEASE_NOTES_v1.0.0.md)
 
 The main release history remains in [`../CHANGELOG.md`](../CHANGELOG.md).

@@ -1,6 +1,6 @@
 import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
 
-const APP_VERSION='1.0.1';
+const APP_VERSION='1.0.2';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -324,8 +324,23 @@ $$('[data-settings-tab]').forEach(b=>b.addEventListener('click',()=>{$$('[data-s
 
 // Presets and controls
 function renderPresets(){const grid=$('#presetGrid');grid.innerHTML='';Object.entries(presets).forEach(([key,p])=>{const b=document.createElement('button');b.type='button';b.className=`preset-btn ${state.preset===key?'active':''}`;const box=p.background==='box'?`background:${p.background_color};`:'';b.innerHTML=`<span class="preset-preview" style="color:${p.text_color};font-family:${p.font_family};font-weight:${p.bold?900:600};${box}">${escapeHtml(p.sample)}</span><span><strong>${p.title}</strong><small>${p.subtitle}</small></span>`;b.addEventListener('click',()=>selectPreset(key));grid.appendChild(b)})}
-function selectPreset(key){state.preset=key;const p=presets[key];state.style={...p};syncControlsFromStyle();renderPresets();reflowCaptions();updateCaptionOverlay()}
-function patchStyle(patch,reflow=false){Object.assign(state.style,patch);if(reflow)reflowCaptions();updateCaptionOverlay();}
+function syncEditedCaptionsToSourceWords(){
+  if(!state.captions.length)return;
+  const merged=[];
+  for(const caption of state.captions){
+    const words=Array.isArray(caption.words)?caption.words:[];
+    for(const item of words){
+      const word=String(item?.word||'').trim();
+      const start=Number(item?.start);
+      const end=Number(item?.end);
+      if(!word||!Number.isFinite(start)||!Number.isFinite(end)||end<=start)continue;
+      merged.push({word,start,end});
+    }
+  }
+  state.sourceWords=merged.sort((a,b)=>a.start-b.start||a.end-b.end);
+}
+function selectPreset(key){syncEditedCaptionsToSourceWords();state.preset=key;const p=presets[key];state.style={...p};syncControlsFromStyle();renderPresets();reflowCaptions();updateCaptionOverlay()}
+function patchStyle(patch,reflow=false){if(reflow)syncEditedCaptionsToSourceWords();Object.assign(state.style,patch);if(reflow)reflowCaptions();updateCaptionOverlay();}
 
 fonts.forEach(f=>{const o=document.createElement('option');o.value=f;o.textContent=f;$('#fontFamily').appendChild(o)});
 const bindings=[
@@ -525,7 +540,7 @@ function retimeEditedCaptionWords(baseWords,text,start,end){
   return result;
 }
 
-function renderCaptionEditor(){const editor=$('#captionEditor');editor.innerHTML='';$('#emptyCaptions').classList.toggle('hidden',state.captions.length>0);editor.classList.toggle('hidden',!state.captions.length);state.captions.forEach((c,i)=>{if(!c.originalWords)c.originalWords=(c.words||[]).map(w=>({...w}));const row=document.createElement('div');row.className='caption-row';row.innerHTML=`<span class="caption-time">${formatTime(c.start)}<br>${formatTime(c.end)}</span><textarea rows="2"></textarea>`;const ta=row.querySelector('textarea');ta.value=c.text;ta.addEventListener('input',()=>{c.text=ta.value;c.words=retimeEditedCaptionWords(c.originalWords,c.text,c.start,c.end);updateCaptionOverlay()});editor.appendChild(row)})}
+function renderCaptionEditor(){const editor=$('#captionEditor');editor.innerHTML='';$('#emptyCaptions').classList.toggle('hidden',state.captions.length>0);editor.classList.toggle('hidden',!state.captions.length);state.captions.forEach((c,i)=>{if(!c.originalWords)c.originalWords=(c.words||[]).map(w=>({...w}));const row=document.createElement('div');row.className='caption-row';row.innerHTML=`<span class="caption-time">${formatTime(c.start)}<br>${formatTime(c.end)}</span><textarea rows="2"></textarea>`;const ta=row.querySelector('textarea');ta.value=c.text;ta.addEventListener('input',()=>{c.text=ta.value;c.words=retimeEditedCaptionWords(c.originalWords,c.text,c.start,c.end);syncEditedCaptionsToSourceWords();updateCaptionOverlay()});editor.appendChild(row)})}
 
 // Local + Cloud transcription
 const CLOUD_MODEL_VALUE='cloudflare/whisper-large-v3-turbo';

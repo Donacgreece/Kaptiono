@@ -63,7 +63,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "const APP_VERSION='1.0.1'" app.js
+          grep -Fq "const APP_VERSION='1.0.2'" app.js
+          grep -Fq 'function syncEditedCaptionsToSourceWords()' app.js
+          grep -Fq 'syncEditedCaptionsToSourceWords();updateCaptionOverlay()' app.js
           test -s google6ca96312d74da820.html
           grep -Fxq 'google-site-verification: google6ca96312d74da820.html' google6ca96312d74da820.html
           grep -Fq 'extractAudio16kWithLibav' app.js
@@ -82,7 +84,7 @@ jobs:
           test -s .github/SECURITY.md
           test -s .github/CONTRIBUTING.md
           test -s docs/releases/RELEASE_PROCESS.md
-          test -s docs/releases/RELEASE_NOTES_v1.0.1.md
+          test -s docs/releases/RELEASE_NOTES_v1.0.2.md
           test -s assets/screenshots/kaptiono-product-showcase.png
           test -s assets/share/kaptiono-social-v1-1200x630.png
           grep -Fq 'kaptiono-social-v1-1200x630.png' index.html
