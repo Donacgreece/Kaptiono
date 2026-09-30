@@ -1202,3 +1202,98 @@ body.modal-open{overflow:hidden}
   #roadmapPage .roadmap-support-note{display:none!important}
   #roadmapPage .roadmap-hero-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* v1.0.3 caption timing editor and draggable timeline */
+.caption-editor{max-height:460px}
+.caption-row{
+  grid-template-columns:minmax(176px,.72fr) minmax(0,1.28fr);
+  align-items:stretch;
+  transition:border-color .16s,box-shadow .16s,background .16s;
+}
+.caption-row.selected{border-color:#a7d62d;box-shadow:0 0 0 2px rgba(167,214,45,.13);background:#fcfff5}
+.caption-row.has-overlap{border-color:#e8b45c}
+.caption-timing{display:flex;align-items:stretch;gap:6px;min-width:0}
+.caption-time-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;flex:1;min-width:0}
+.caption-time-fields label{min-width:0;display:flex;flex-direction:column;gap:4px}
+.caption-time-fields label>span{font-size:8px;line-height:1;font-weight:900;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.caption-time-input{
+  width:100%;height:36px;border:1px solid #dbe0db;border-radius:9px;background:#f8f9f7;
+  color:var(--ink);font:800 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+  padding:0 7px;outline:none;min-width:0;
+}
+.caption-time-input:focus{border-color:#9bc72d;box-shadow:0 0 0 2px rgba(167,214,45,.14);background:#fff}
+.caption-time-input.invalid{border-color:#d9534f;background:#fff4f3}
+.caption-seek-btn{
+  align-self:flex-end;width:34px;height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;
+  cursor:pointer;font-size:10px;font-weight:900;flex:none;
+}
+.caption-seek-btn:hover{border-color:#a7d62d;background:#fbfff2}
+.caption-row textarea{min-height:62px}
+
+.caption-timeline{
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:#fbfcfa;
+  padding:12px 12px 10px;
+}
+.caption-timeline-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:9px}
+.caption-timeline-head>div{display:flex;flex-direction:column;gap:3px;min-width:0}
+.caption-timeline-head strong{font-size:11px}
+.caption-timeline-head small{font-size:9px;line-height:1.35;color:var(--muted);max-width:470px}
+.timeline-zoom-control{display:flex;align-items:center;gap:7px;flex:none;font-size:9px;font-weight:900;color:#667069}
+.timeline-zoom-control input{width:84px;accent-color:#9bc72d}
+.timeline-zoom-control output{width:30px;text-align:right;font-size:9px}
+.caption-timeline-viewport{
+  overflow-x:auto;overflow-y:hidden;border:1px solid var(--line);border-radius:12px;background:#121713;
+  scrollbar-width:thin;scrollbar-color:#789b2f #161b17;
+}
+.caption-timeline-viewport::-webkit-scrollbar{height:8px}
+.caption-timeline-viewport::-webkit-scrollbar-track{background:#161b17}
+.caption-timeline-viewport::-webkit-scrollbar-thumb{background:#789b2f;border-radius:999px}
+.caption-timeline-track{height:90px;min-width:100%;position:relative;overflow:hidden}
+.caption-timeline-ruler{position:absolute;left:0;right:0;top:0;height:25px;border-bottom:1px solid #2a312c;pointer-events:none}
+.timeline-ruler-mark{position:absolute;top:0;height:25px;transform:translateX(-1px);color:#89928c;font-size:8px}
+.timeline-ruler-mark i{position:absolute;left:0;top:15px;width:1px;height:10px;background:#39423c}
+.timeline-ruler-mark b{position:absolute;left:4px;top:4px;white-space:nowrap;font-weight:700}
+.timeline-ruler-end b{left:auto;right:4px;transform:translateX(0)}
+.caption-timeline-blocks{position:absolute;left:0;right:0;top:31px;height:48px}
+.timeline-caption{
+  position:absolute;top:0;height:42px;min-width:10px;border:1px solid #88b520;border-radius:9px;
+  background:#a7d62d;color:#111713;padding:0 10px;display:flex;align-items:center;gap:6px;
+  overflow:hidden;cursor:grab;touch-action:none;user-select:none;box-shadow:0 4px 10px rgba(0,0,0,.16);
+}
+.timeline-caption:hover,.timeline-caption.selected{background:#bcf13a;border-color:#c9ff52;z-index:4}
+.timeline-caption.dragging{cursor:grabbing;z-index:8;box-shadow:0 8px 20px rgba(0,0,0,.28)}
+.timeline-caption.has-overlap{border-color:#ffb958;box-shadow:inset 0 0 0 1px #ffb958,0 4px 10px rgba(0,0,0,.16)}
+.timeline-caption>b{font-size:8px;line-height:1;background:#111713;color:#caff4d;border-radius:6px;padding:4px;flex:none}
+.timeline-caption>em{font-size:9px;font-style:normal;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.timeline-handle{position:absolute;top:0;bottom:0;width:8px;background:rgba(17,23,19,.13);cursor:ew-resize;z-index:2}
+.timeline-handle-start{left:0;border-radius:8px 0 0 8px}
+.timeline-handle-end{right:0;border-radius:0 8px 8px 0}
+.timeline-caption:hover .timeline-handle{background:rgba(17,23,19,.24)}
+.caption-timeline-playhead{
+  position:absolute;top:0;bottom:0;width:2px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25);
+  z-index:10;pointer-events:none;transform:translateX(-1px);
+}
+.caption-timeline-playhead:before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:0 0 5px 5px;background:#fff}
+.caption-timeline-warning{
+  margin-top:8px;display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:9px;background:#fff4df;
+  color:#785a1e;font-size:9px;line-height:1.35;
+}
+.caption-timeline-warning>span{width:18px;height:18px;border-radius:50%;background:#f1c15d;display:grid;place-items:center;font-weight:900;flex:none}
+.caption-timeline-warning>b{font-weight:700}
+
+@media(max-width:900px){
+  .caption-timeline-head{flex-direction:column;gap:8px}
+  .timeline-zoom-control{width:100%;justify-content:flex-end}
+}
+@media(max-width:620px){
+  .caption-row{grid-template-columns:1fr;gap:7px}
+  .caption-timing{align-items:flex-end}
+  .caption-time-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .caption-time-input{height:38px;font-size:11px}
+  .caption-seek-btn{height:38px}
+  .caption-timeline{padding:10px 9px 9px}
+  .caption-timeline-head small{font-size:8px}
+  .timeline-zoom-control input{width:110px}
+  .caption-timeline-track{height:86px}
+  .timeline-caption{height:40px}
+}

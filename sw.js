@@ -1,6 +1,6 @@
-const CACHE='kaptiono-web-v1.0.2';
+const CACHE='kaptiono-web-v1.0.3';
 const SHELL=[
-  './','./index.html','./styles.css?v=1.0.2','./footer.css?v=1.0.2','./app.js?v=1.0.2','./consent.js?v=1.0.2','./legal.js?v=1.0.2','./whisper-worker.js?v=1.0.2','./manifest.webmanifest','./about/','./about/index.html','./about/about.css?v=1.0.2','./about/about.js?v=1.0.2','./partners/','./partners/index.html','./partners/partners.css?v=1.0.2','./partners/partners.js?v=1.0.2',
+  './','./index.html','./styles.css?v=1.0.3','./footer.css?v=1.0.3','./app.js?v=1.0.3','./consent.js?v=1.0.3','./legal.js?v=1.0.3','./whisper-worker.js?v=1.0.3','./manifest.webmanifest','./about/','./about/index.html','./about/about.css?v=1.0.3','./about/about.js?v=1.0.3','./partners/','./partners/index.html','./partners/partners.css?v=1.0.3','./partners/partners.js?v=1.0.3',
   './privacy/','./cookies/','./terms/','./NOTICE','./docs/legal/LICENSE_SCOPE.md','./THIRD_PARTY_NOTICES.md','./docs/legal/PATENT_NOTICE.md','./docs/legal/THIRD_PARTY_SOURCE_OFFER.md','./docs/legal/LIBAV_RUNTIME_REPLACEMENT.md',
   './assets/icons/icon-64.png','./assets/icons/icon-192.png','./assets/icons/icon-512.png',
   './assets/icons/apple-touch-icon.png','./assets/icons/favicon-32x32.png','./assets/icons/favicon-16x16.png',

@@ -2,7 +2,7 @@
 
 > Kaptiono is a privacy-first AI subtitle generator and caption editor for creators. It supports Local Whisper transcription in the browser and an optional Cloud High Accuracy mode.
 
-Current stable release: v1.0.2.
+Current stable release: v1.0.3.
 
 The original video stays on the user's device. Local Whisper models process audio on-device. When Cloud High Accuracy is explicitly selected, only the extracted audio required for transcription is sent through the Kaptiono Cloud transcription service. Caption editing and video export remain local.
 

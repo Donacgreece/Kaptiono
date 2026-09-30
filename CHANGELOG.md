@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.0.3 - 2026-09-30
+
+### Caption timing editor
+
+- Added editable Start and End timecodes for every generated caption with millisecond precision.
+- Added a draggable and resizable caption timeline directly under the video preview.
+- Caption blocks can be moved earlier or later, while their left and right handles adjust start/end timing.
+- Added timeline zoom from 0.75x to 4x and direct seek-to-caption controls.
+- Added overlap detection and visual warnings for captions whose time ranges intersect.
+- Manual timing changes now retime word-level timestamps and synchronize them back to the working transcript.
+- Manually timed captions are protected during later design reflow so timing corrections are not silently lost.
+- Preserved the v1.0.2 behavior that keeps manual spelling and wording corrections through design changes.
+- Updated PWA and asset version metadata to v1.0.3.
+
 ## v1.0.2 - 2026-09-30
 
 ### Caption editing persistence
