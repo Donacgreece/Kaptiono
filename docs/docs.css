@@ -6,9 +6,9 @@
 
 /* v1.0.3 docs navigation cleanup: one desktop navigation only. */
 @media (min-width:901px){
-  .docs-layout{width:min(1180px,calc(100% - 32px));grid-template-columns:minmax(0,1fr) 210px;gap:36px}
+  .docs-layout{width:min(1180px,calc(100% - 32px));grid-template-columns:minmax(0,1fr) 210px;gap:36px;overflow:visible}
   .docs-sidebar{display:none!important}
-  .docs-toc{display:block;grid-column:2;position:sticky;top:92px;max-height:calc(100dvh - 112px);overflow:auto;padding-top:5px}
+  .docs-toc{display:block;grid-column:2;position:sticky;top:92px;align-self:start;height:max-content;max-height:calc(100dvh - 112px);overflow-y:auto;overflow-x:visible;padding-top:5px}
 }
 @media (max-width:900px){
   html{scroll-padding-top:78px}
@@ -41,7 +41,7 @@
 
 
 /* v1.0.3 docs mobile responsive hardening. */
-html,body{max-width:100%;overflow-x:hidden}
+html,body{max-width:100%;overflow-x:clip}
 .docs-topbar,.docs-layout,.docs-main,.docs-hero,.doc-section,.docs-footer-wrap,.kap-footer{min-width:0;max-width:100%}
 .docs-main{width:100%}
 .docs-hero img,.doc-section img,.docs-footer-wrap img{max-width:100%;height:auto}
