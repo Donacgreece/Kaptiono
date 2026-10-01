@@ -63,7 +63,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq "const APP_VERSION='1.0.3'" app.js
+          grep -Fq "const APP_VERSION='1.0.4'" app.js
           grep -Fq 'function syncEditedCaptionsToSourceWords()' app.js
           grep -Fq 'function renderCaptionTimeline()' app.js
           grep -Fq 'function applyCaptionTiming(' app.js
@@ -86,7 +86,7 @@ jobs:
           test -s .github/SECURITY.md
           test -s .github/CONTRIBUTING.md
           test -s docs/releases/RELEASE_PROCESS.md
-          test -s docs/releases/RELEASE_NOTES_v1.0.3.md
+          test -s docs/releases/RELEASE_NOTES_v1.0.4.md
           test -s assets/screenshots/kaptiono-product-showcase.png
           test -s assets/share/kaptiono-social-v1-1200x630.png
           grep -Fq 'kaptiono-social-v1-1200x630.png' index.html
