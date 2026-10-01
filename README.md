@@ -1,8 +1,5 @@
 <p align="center">
   <a href="https://kaptiono.com/">
-
-**Documentation:** https://kaptiono.com/docs/  
-**Ελληνικά Docs:** https://kaptiono.com/docs/el/
     <img src="assets/icons/icon-192.png" width="104" height="104" alt="Kaptiono logo">
   </a>
 </p>
@@ -12,6 +9,14 @@
 <p align="center">
   <strong>Privacy-first AI subtitles for creators.</strong><br>
   Local Whisper in the browser, optional Cloud High Accuracy, built-in caption editing and no-watermark export.
+</p>
+
+<p align="center">
+  <a href="https://kaptiono.com/"><strong>Website</strong></a>
+  &nbsp;•&nbsp;
+  <a href="https://kaptiono.com/docs/"><strong>Documentation</strong></a>
+  &nbsp;•&nbsp;
+  <a href="https://kaptiono.com/docs/el/"><strong>Ελληνικά Docs</strong></a>
 </p>
 
 <p align="center">
