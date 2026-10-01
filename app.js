@@ -1,6 +1,6 @@
-import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.55.7/+esm';
+import { Input, ALL_FORMATS, BlobSource, AudioSampleSink, Output, Mp4OutputFormat, BufferTarget, Conversion } from 'https://cdn.jsdelivr.net/npm/mediabunny@1.61.0/+esm';
 
-const APP_VERSION='1.0.3';
+const APP_VERSION='1.0.4';
 const KAPTIONO_LIBAV_VERSION='6.10.9.0';
 const KAPTIONO_LIBAV_VARIANT='kaptiono-audio-cli';
 const KAPTIONO_LIBAV_DEFAULT_BASE='./vendor/libav/';
@@ -2458,6 +2458,35 @@ function socialVideoBitrate(width,height,fps){
   return Math.round(base1080*resolutionFactor*fpsFactor);
 }
 
+async function getPrimaryAudioSpan(input){
+  try{
+    const track=await input.getPrimaryAudioTrack();
+    if(!track)return null;
+    const [start,end]=await Promise.all([
+      track.getFirstTimestamp().catch(()=>0),
+      track.computeDuration().catch(async()=>await track.getDurationFromMetadata().catch(()=>null))
+    ]);
+    if(!Number.isFinite(Number(end)))return null;
+    const a=Number(start)||0,b=Number(end);
+    return {start:a,end:b,span:Math.max(0,b-a)};
+  }catch{return null}
+}
+async function assertExportAudioIntegrity(sourceInput,blob){
+  const source=await getPrimaryAudioSpan(sourceInput);
+  if(!source||source.span<=0)return;
+  const outInput=new Input({formats:ALL_FORMATS,source:new BlobSource(blob)});
+  try{
+    const output=await getPrimaryAudioSpan(outInput);
+    if(!output)throw new Error('AUDIO_TRACK_MISSING');
+    const tolerance=Math.max(.35,source.span*.01);
+    if(output.span+tolerance<source.span){
+      const e=new Error('AUDIO_DURATION_MISMATCH');
+      e.sourceAudioSpan=source.span;e.outputAudioSpan=output.span;
+      throw e;
+    }
+  }finally{try{outInput.dispose?.()}catch{}}
+}
+
 async function renderSocialMp4(){
   const input=new Input({formats:ALL_FORMATS,source:new BlobSource(state.file)});
   try{
@@ -2491,6 +2520,7 @@ async function renderSocialMp4(){
       input,
       output,
       tracks:'primary',
+      copy:{mode:'preferred',shiftTolerance:0,boundaryPolicy:'expand'},
       video:{
         codec:'avc',
         bitrate,
@@ -2516,7 +2546,9 @@ async function renderSocialMp4(){
         }
       },
       audio:{
-        codec:'aac'
+        codec:'aac',
+        forceTranscode:false,
+        bitrate:192_000
       }
     });
 
@@ -2535,8 +2567,10 @@ async function renderSocialMp4(){
 
     const buffer=target.buffer;
     if(!buffer||!buffer.byteLength)throw new Error('EMPTY_MP4_OUTPUT');
+    const blob=new Blob([buffer],{type:'video/mp4'});
+    await assertExportAudioIntegrity(input,blob);
     return {
-      blob:new Blob([buffer],{type:'video/mp4'}),
+      blob,
       ext:'mp4',
       fps,
       width,
@@ -2586,7 +2620,7 @@ async function renderLegacyVideo(){
     };
     await src.play();draw();
     await new Promise((res,rej)=>{src.onended=res;src.onerror=()=>rej(new Error('Playback failed during export'));});
-    setExportUi('finalize',null);rec.stop();await stopped;
+    setExportUi('finalize',null);await new Promise(r=>setTimeout(r,220));try{rec.requestData()}catch{}await new Promise(r=>setTimeout(r,80));rec.stop();await stopped;
     const outMime=rec.mimeType||format.mime;
     return {blob:new Blob(blobs,{type:outMime}),ext:format.ext,fps:30,width:w,height:h,pipeline:'legacy-mediarecorder'};
   }finally{
@@ -2608,7 +2642,16 @@ async function exportVideo(){
   state.exporting=true;updateExportButtons();setExportUi('prepare',null);
   try{
     await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-    const result=state.exportMode==='social'?await renderSocialMp4():await renderLegacyVideo();
+    let result;
+    if(state.exportMode==='social'){
+      try{result=await renderSocialMp4()}catch(e){
+        const audioFailure=['AUDIO_TRACK_MISSING','AUDIO_DURATION_MISMATCH'].includes(String(e?.message||''));
+        if(audioFailure&&preferredVideoRecorderFormat()){
+          console.warn('Social export audio integrity check failed; using safe recorder fallback.',e);
+          result=await renderLegacyVideo();
+        }else throw e;
+      }
+    }else result=await renderLegacyVideo();
 
     downloadBlob(result.blob,`${baseName()}.${result.ext}`);
     trackEvent('video_export_completed',{

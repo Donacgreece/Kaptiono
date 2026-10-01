@@ -38,3 +38,85 @@
   .docs-footer-wrap{margin-top:12px}
 }
 
+
+
+/* v1.0.3 docs mobile responsive hardening. */
+html,body{max-width:100%;overflow-x:hidden}
+.docs-topbar,.docs-layout,.docs-main,.docs-hero,.doc-section,.docs-footer-wrap,.kap-footer{min-width:0;max-width:100%}
+.docs-main{width:100%}
+.docs-hero img,.doc-section img,.docs-footer-wrap img{max-width:100%;height:auto}
+.doc-section p,.doc-section li,.doc-card,.model-card,.callout,.step,.kap-footer{overflow-wrap:anywhere}
+.docs-table-wrap{max-width:100%}
+.code-block{max-width:100%}
+
+@media (max-width:900px){
+  .docs-topbar{display:flex;align-items:center;justify-content:space-between;width:100%;padding:0 10px;gap:8px}
+  .docs-brand{min-width:0;max-width:42%;overflow:hidden;flex:0 1 auto}
+  .docs-brand span{min-width:0;overflow:hidden}
+  .docs-brand strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .docs-actions{min-width:0;flex:0 0 auto;gap:5px}
+  .docs-search-wrap{position:absolute;top:67px;left:10px;right:10px;width:auto;max-width:none}
+  .docs-layout{width:calc(100% - 20px);max-width:calc(100% - 20px);margin-left:auto;margin-right:auto}
+  .docs-sidebar{width:min(300px,calc(100vw - 24px));max-width:calc(100vw - 24px);box-sizing:border-box}
+  .docs-sidebar .nav-group a{overflow-wrap:anywhere}
+  .docs-hero,.doc-section{width:100%}
+  .docs-footer-wrap{width:100%;overflow:hidden}
+  .docs-footer-wrap .kap-footer{width:100%!important;max-width:100%;box-sizing:border-box}
+}
+
+@media (max-width:620px){
+  .docs-topbar{padding:0 8px;gap:5px}
+  .docs-brand{max-width:34%}
+  .docs-brand img{flex:0 0 auto}
+  .docs-actions{gap:4px}
+  .docs-lang{height:36px;padding:2px}
+  .docs-lang a{min-width:29px;font-size:9px}
+  .docs-menu-btn,.legal-home-link{width:36px;height:36px;min-width:36px;flex:0 0 36px;border-radius:11px}
+  .docs-layout{width:calc(100% - 16px);max-width:calc(100% - 16px);margin-top:12px}
+  .docs-hero{padding:24px 18px;border-radius:22px}
+  .docs-hero h1{font-size:clamp(32px,10vw,38px);line-height:1;overflow-wrap:anywhere}
+  .docs-hero>p{font-size:13px;line-height:1.65}
+  .doc-section{padding:20px 16px;border-radius:19px}
+  .doc-section h2{font-size:clamp(26px,8vw,31px);overflow-wrap:anywhere}
+  .doc-section h3{font-size:16px}
+  .doc-grid,.feature-list,.model-grid{grid-template-columns:1fr}
+  .callout{grid-template-columns:28px minmax(0,1fr);padding:13px;gap:10px}
+  .callout-mark{width:28px;height:28px}
+  .step{grid-template-columns:32px minmax(0,1fr);padding:13px;gap:10px}
+  .hero-actions{width:100%}
+  .hero-actions a{width:100%;max-width:100%;justify-content:center;text-align:center}
+
+  .docs-table-wrap{width:100%;max-width:100%;overflow:visible;border:0;border-radius:0;margin:14px 0}
+  .docs-table{display:block;width:100%;min-width:0!important;border:0;background:transparent}
+  .docs-table thead{display:none}
+  .docs-table tbody{display:block;width:100%}
+  .docs-table tr{display:block;width:100%;padding:10px 0;border-bottom:1px solid #e3e8e3}
+  .docs-table tr:first-child{padding-top:0}
+  .docs-table tr:last-child{border-bottom:0;padding-bottom:0}
+  .docs-table td{display:grid;width:100%;min-width:0;grid-template-columns:minmax(78px,30%) minmax(0,1fr);gap:10px;padding:5px 0;border:0;font-size:10.5px;line-height:1.5;overflow-wrap:anywhere;word-break:normal}
+  .docs-table td::before{content:attr(data-label);font-size:8px;line-height:1.4;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#7d877f}
+  .docs-table td:empty{display:none}
+
+  .code-block{width:100%;max-width:100%;overflow-x:auto;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}
+  .inline-code,code{overflow-wrap:anywhere;word-break:break-word}
+  .docs-shot{max-width:100%}
+  .docs-shot img{width:100%;max-width:100%}
+  .kap-footer-links{width:100%;max-width:100%}
+  .kap-footer-links>div{min-width:0}
+  .kap-footer-links a,.kap-footer-links button{overflow-wrap:anywhere;white-space:normal}
+}
+
+@media (max-width:430px){
+  .docs-brand{max-width:none}
+  .docs-brand strong{display:none}
+  .docs-brand img{width:34px;height:34px}
+  .docs-actions{margin-left:auto}
+  .docs-menu-btn,.legal-home-link{width:34px;height:34px;min-width:34px;flex-basis:34px}
+  .docs-lang{height:34px}
+  .docs-lang a{min-width:27px}
+  .docs-search-wrap{left:8px;right:8px}
+  .docs-sidebar{width:calc(100vw - 18px);max-width:calc(100vw - 18px);padding:18px 14px 26px}
+  .docs-hero{padding:22px 16px}
+  .doc-section{padding:18px 14px}
+  .docs-table td{grid-template-columns:72px minmax(0,1fr);gap:8px}
+}

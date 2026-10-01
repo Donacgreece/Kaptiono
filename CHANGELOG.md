@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.0.4 - 2026-10-01
+
+### Video export audio reliability
+
+- Upgraded Mediabunny from 1.55.7 to 1.61.0.
+- Social Compatible export now prefers lossless audio packet copy when the source is already AAC, avoiding unnecessary AAC re-encoding.
+- Added post-export audio duration validation before download.
+- If Social Compatible produces a missing or materially shortened audio track, Kaptiono automatically retries with the safe recorder export path when available.
+- Fast Export now flushes pending recorder audio data before stopping, reducing the risk of losing the audio tail.
+
 ## v1.0.3 - 2026-09-30
 
 ### Caption timing editor

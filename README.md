@@ -16,7 +16,7 @@
 
 <p align="center">
   <a href="https://kaptiono.com/"><img src="https://img.shields.io/badge/Website-kaptiono.com-111713" alt="Website"></a>
-  <a href="https://github.com/Donacgreece/Kaptiono/releases/latest"><img src="https://img.shields.io/badge/Release-v1.0.3-111713" alt="Latest release"></a>
+  <a href="https://github.com/Donacgreece/Kaptiono/releases/latest"><img src="https://img.shields.io/badge/Release-v1.0.4-111713" alt="Latest release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial%201.0.0-111713" alt="License"></a>
   <img src="https://img.shields.io/badge/Status-Stable-111713" alt="Stable status">
 </p>
@@ -52,7 +52,7 @@ The core product combines:
 
 Production application: **https://kaptiono.com/**
 
-Current stable release: **v1.0.3**
+Current stable release: **v1.0.4**
 
 ## Product showcase
 
@@ -62,7 +62,7 @@ Current stable release: **v1.0.3**
   </a>
 </p>
 
-The showcase reflects the current Kaptiono v1.0.3 experience across desktop and mobile.
+The showcase reflects the current Kaptiono v1.0.4 experience across desktop and mobile.
 
 ## Processing modes
 
